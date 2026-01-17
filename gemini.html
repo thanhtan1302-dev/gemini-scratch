@@ -37,7 +37,7 @@ async function askGemini(text) {
     const data = await res.json();
 
     document.getElementById("result").innerText =
-      data.candidates?.[0]?.content?.parts?.[0]?.text
+      JSON.stringify(data, null, 2);
       || "❌ Gemini không trả lời";
   } catch (e) {
     document.getElementById("result").innerText =
@@ -47,3 +47,4 @@ async function askGemini(text) {
 </script>
 </body>
 </html>
+
