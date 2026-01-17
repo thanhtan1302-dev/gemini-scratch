@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Học Cùng Bé - Toán & Tiếng Việt Lớp 1</title>
+    <title>Học Cùng Bé - Thế Giới Sắc Màu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap');
+        
         body { 
             font-family: 'Lexend', sans-serif; 
             margin: 0;
@@ -15,247 +16,356 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: #f0f2f5;
+            background: #FFDEE9;
+            background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
         }
+
         .app-viewport { 
             width: 480px; 
             height: 360px; 
             overflow: hidden;
             position: relative;
-            background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border: 6px solid #FF85A1;
+            border-radius: 30px;
             display: flex;
             flex-direction: column;
         }
-        .chat-container { flex: 1; overflow-y: auto; padding: 10px; background: #f8fafc; }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
+
+        .chat-container { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 10px; 
+            background: #FFF9E3;
+            background-image: radial-gradient(#FFD1D1 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+
+        .header-bg {
+            background: #FF85A1;
+            background: linear-gradient(90deg, #FF85A1 0%, #FFB7B2 100%);
+        }
+
+        .bubble-ai {
+            background: white;
+            border-radius: 18px 18px 18px 4px;
+            border: 2px solid #FFB7B2;
+            position: relative;
+        }
+
+        .bubble-user {
+            background: #4facfe;
+            background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 5px;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: #FF85A1;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
         .game-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: white;
+            background: #ffffff;
             z-index: 100;
             display: flex;
             flex-direction: column;
             padding: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #FFB7B2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .mic-active {
+            animation: pulse-red 1s infinite;
+            background-color: #ef4444 !important;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        #game-canvas {
+            background: #e0f2fe;
+            border-radius: 15px;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .suggestions-bar {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            overflow-x: auto;
+            background: white;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .suggestions-bar::-webkit-scrollbar { display: none; }
+        
+        .suggestion-chip {
+            background: #F0F9FF;
+            border: 1.5px solid #BAE6FD;
+            color: #0369A1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .suggestion-chip:hover {
+            background: #BAE6FD;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
-    <div class="app-viewport bg-gradient-to-br from-blue-50 to-pink-50">
-        <nav class="p-2 glass border-b flex justify-between items-center z-50">
-            <h1 class="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-pink-600">
-                <i class="fas fa-graduation-cap"></i> Bé Học Lớp 1
+    <div class="app-viewport">
+        <!-- Header -->
+        <nav class="p-3 header-bg flex justify-center items-center z-50 shadow-md">
+            <h1 class="text-white font-extrabold text-lg flex items-center gap-2">
+                <span>🚀</span> KHÁM PHÁ CÙNG BÉ
             </h1>
-            <div class="flex gap-1">
-                <span class="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-600 rounded-full">Toán</span>
-                <span class="text-[10px] px-2 py-0.5 bg-pink-100 text-pink-600 rounded-full">Tiếng Việt</span>
-            </div>
         </nav>
 
-        <div id="chat-messages" class="chat-container space-y-3 text-sm">
-            <div class="flex gap-2">
-                <div class="bg-white p-2 rounded-lg shadow-sm border border-gray-100 max-w-[85%] text-gray-800">
-                    Chào bé! Mình là gia sư AI. Bé muốn học Toán hay Tiếng Việt hôm nay nào? 🍎
+        <!-- Chat Area -->
+        <div id="chat-messages" class="chat-container space-y-4">
+            <div class="flex items-end gap-2">
+                <div class="avatar shadow-sm">🤖</div>
+                <div class="bubble-ai p-3 shadow-sm max-w-[80%] text-sm">
+                    Chào bé yêu! 🌈 Bé có thể gõ chữ, nói qua Micro hoặc chọn các gợi ý bên dưới để cùng học nhé! 🍎🍓
                 </div>
             </div>
         </div>
 
-        <div class="p-2 border-t bg-white">
-            <div class="flex gap-1">
-                <input type="text" id="user-input" placeholder="Hỏi bài hoặc tạo game..." 
-                    class="flex-1 p-2 text-sm border rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-400">
-                <button id="send-btn" onclick="handleSend()" class="bg-blue-600 text-white px-3 py-1 rounded-xl hover:bg-blue-700 disabled:opacity-50">
-                    <i class="fas fa-paper-plane text-xs"></i>
+        <!-- Suggestions Bar -->
+        <div class="suggestions-bar border-t border-gray-100">
+            <button class="suggestion-chip" onclick="quickSend('Đố bé phép cộng trong phạm vi 10')">➕ Đố Toán</button>
+            <button class="suggestion-chip" onclick="quickSend('Kể cho bé nghe một câu chuyện cổ tích ngắn')">📖 Kể chuyện</button>
+            <button class="suggestion-chip" onclick="quickSend('Tạo trò chơi hứng quả cho bé nhé')">🍎 Chơi game</button>
+            <button class="suggestion-chip" onclick="quickSend('Dạy bé vần khó trong Tiếng Việt')">🅰️ Học vần</button>
+            <button class="suggestion-chip" onclick="quickSend('Khen bé một câu thật hay đi')">💖 Khen ngợi</button>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-3 bg-white border-t-2 border-pink-100">
+            <div class="flex gap-2 items-center">
+                <button id="mic-btn" onclick="toggleSpeech()" class="bg-yellow-400 text-white w-10 h-10 rounded-full hover:bg-yellow-500 shadow-lg transform active:scale-95 transition flex items-center justify-center">
+                    <i class="fas fa-microphone" id="mic-icon"></i>
+                </button>
+                
+                <input type="text" id="user-input" placeholder="Nói hoặc viết cho Robot nhé..." 
+                    class="flex-1 p-3 text-sm border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 bg-pink-50/30">
+                
+                <button id="send-btn" onclick="handleSend()" class="bg-pink-500 text-white w-10 h-10 rounded-full hover:bg-pink-600 shadow-lg transform active:scale-95 transition">
+                    <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
         </div>
 
+        <!-- Game Area Overlay -->
         <div id="game-section" class="hidden game-overlay">
-            <div class="flex justify-between items-center mb-2">
-                <h2 id="game-title" class="text-sm font-bold text-blue-600">Trò Chơi</h2>
-                <button onclick="closeGame()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
+            <div class="flex justify-between items-center mb-2 border-b-2 border-yellow-100 pb-2">
+                <h2 id="game-title" class="text-md font-extrabold text-pink-600">🎮 TRÒ CHƠI NHỎ</h2>
+                <button onclick="closeGame()" class="bg-gray-100 w-8 h-8 rounded-full text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
             </div>
-            <div id="game-content" class="flex-1 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-yellow-200 rounded-xl p-2 text-center">
+            <div id="game-content" class="flex-1 flex flex-col items-center justify-center gap-2 bg-blue-50/50 rounded-2xl p-2 text-center relative overflow-hidden">
+                <canvas id="game-canvas"></canvas>
+                <div id="game-ui" class="w-full"></div>
             </div>
         </div>
     </div>
 
     <script>
-        /**
-         * Kỹ thuật che giấu API Key cải tiến
-         */
         const _p1 = "AIzaSyD8t";
         const _p2 = "dberxxkY_9WKuqP";
         const _p3 = "qqZLYqw9_r5o07Q";
-        
-        const getK = () => {
-            // Ghép nối các phần của khóa một cách minh bạch hơn để tránh lỗi logic giải mã
-            return _p1 + _p2 + _p3;
-        };
+        const getK = () => _p1 + _p2 + _p3;
 
         const messagesContainer = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
+        const micBtn = document.getElementById('mic-btn');
         const gameSection = document.getElementById('game-section');
         const gameContent = document.getElementById('game-content');
+        const gameCanvas = document.getElementById('game-canvas');
+        const ctx = gameCanvas.getContext('2d');
 
-        const systemPrompt = `Bạn là gia sư lớp 1 thân thiện. Trả lời cực kỳ ngắn gọn, dùng biểu tượng cảm xúc.
+        const systemPrompt = `Bạn là gia sư lớp 1 thân thiện. Luôn trả lời ngắn gọn + icon.
         Nhiệm vụ:
-        1. Giải thích kiến thức toán/tiếng việt lớp 1 cho trẻ em (phép cộng trừ phạm vi 10, vần, âm).
-        2. Nếu người dùng yêu cầu tạo game, trả về văn bản hướng dẫn ngắn gọn và một khối JSON duy nhất ở cuối: 
-        {"isGame":true, "title":"Tên game", "type":"quiz", "questions":[{"q":"Câu hỏi?","a":["ĐA1","ĐA2"],"correct":"ĐA1"}]}`;
+        1. Giải thích bài học toán, tiếng việt, tự nhiên xã hội lớp 1.
+        2. Nếu tạo game nhanh (hứng quả, chạm hình), trả về JSON: 
+        {"isGame":true, "title":"...", "type":"canvas_catch", "targetEmoji":"🍎", "speed":3}`;
+
+        let gameActive = false;
+        let gameData = null;
+
+        let recognition;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'vi-VN';
+            recognition.onstart = () => micBtn.classList.add('mic-active');
+            recognition.onresult = (e) => { userInput.value = e.results[0][0].transcript; handleSend(); };
+            recognition.onend = () => micBtn.classList.remove('mic-active');
+        }
+
+        function toggleSpeech() { if (recognition) recognition.start(); }
+
+        function quickSend(text) {
+            userInput.value = text;
+            handleSend();
+        }
 
         async function handleSend() {
             const text = userInput.value.trim();
             if (!text || sendBtn.disabled) return;
-
             addMessage(text, 'user');
             userInput.value = '';
             sendBtn.disabled = true;
 
             const typingDiv = document.createElement('div');
-            typingDiv.className = 'text-[10px] text-gray-400 italic mb-2';
             typingDiv.id = 'typing-indicator';
-            typingDiv.innerText = 'Gia sư đang suy nghĩ...';
+            typingDiv.className = 'flex items-end gap-2 mb-3';
+            typingDiv.innerHTML = `<div class="avatar">🤖</div><div class="typing-indicator bubble-ai"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
             messagesContainer.appendChild(typingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             try {
                 const response = await callGemini(text);
-                const indicator = document.getElementById('typing-indicator');
-                if (indicator) indicator.remove();
+                document.getElementById('typing-indicator')?.remove();
                 
                 const jsonMatch = response.match(/\{.*\}/s);
                 let cleanText = response;
-                
                 if (jsonMatch) {
                     try {
-                        const gameData = JSON.parse(jsonMatch[0].trim());
+                        const data = JSON.parse(jsonMatch[0].trim());
                         cleanText = response.replace(jsonMatch[0], '').trim();
-                        if (gameData.isGame) renderGame(gameData);
-                    } catch (e) {
-                        console.error("Lỗi phân tích JSON game:", e);
-                    }
+                        if (data.isGame) renderGame(data);
+                    } catch (e) {}
                 }
-
-                addMessage(cleanText || "Bé cùng chơi game nhé!", 'ai');
+                addMessage(cleanText || "Cùng chơi nhé! 🎈", 'ai');
             } catch (error) {
-                const indicator = document.getElementById('typing-indicator');
-                if (indicator) indicator.remove();
-                console.error("Lỗi khi gửi tin nhắn:", error);
-                
-                let errorMsg = "Ôi, máy chủ bận một chút. Bé thử nhắn lại nhé!";
-                if (error.message.includes("API key")) {
-                    errorMsg = "Lỗi xác thực khóa ứng dụng. Vui lòng kiểm tra lại khóa.";
-                }
-                addMessage(errorMsg, 'ai');
-            } finally {
-                sendBtn.disabled = false;
-            }
+                document.getElementById('typing-indicator')?.remove();
+                addMessage("Robot mệt quá, bé nhắn lại nhé! 🧸", 'ai');
+            } finally { sendBtn.disabled = false; }
         }
 
-        async function callGemini(prompt, retries = 5) {
-            const key = getK();
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${key}`;
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] }
-            };
-
-            let lastError;
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const res = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (!res.ok) {
-                        const errorData = await res.json().catch(() => ({}));
-                        throw new Error(errorData?.error?.message || `HTTP ${res.status}`);
-                    }
-                    
-                    const data = await res.json();
-                    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                    
-                    if (!textResponse) throw new Error("Phản hồi rỗng từ AI");
-                    return textResponse;
-                } catch (e) {
-                    lastError = e;
-                    if (i < retries - 1) {
-                        const delay = Math.pow(2, i) * 1000;
-                        await new Promise(r => setTimeout(r, delay));
-                    }
-                }
-            }
-            throw lastError;
+        async function callGemini(prompt) {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${getK()}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                })
+            });
+            const data = await res.json();
+            return data.candidates[0].content.parts[0].text;
         }
 
         function addMessage(text, sender) {
             const div = document.createElement('div');
-            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`;
-            const inner = document.createElement('div');
-            inner.className = `p-2 rounded-lg max-w-[85%] shadow-sm text-sm ${
-                sender === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white border border-gray-100 rounded-tl-none text-gray-800'
-            }`;
-            inner.innerText = text;
-            div.appendChild(inner);
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4 items-end gap-2`;
+            div.innerHTML = sender === 'ai' ? 
+                `<div class="avatar shadow-sm">🤖</div><div class="bubble-ai p-3 shadow-sm max-w-[80%] text-sm">${text}</div>` :
+                `<div class="bubble-user p-3 shadow-sm max-w-[80%] text-sm font-medium">${text}</div>`;
             messagesContainer.appendChild(div);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
         function renderGame(data) {
             gameSection.classList.remove('hidden');
-            document.getElementById('game-title').innerText = data.title || "Trò Chơi Của Bé";
-            gameContent.innerHTML = '';
-            
-            if (data.type === 'quiz' && data.questions && data.questions.length > 0) {
-                const q = data.questions[0];
-                const qDiv = document.createElement('div');
-                qDiv.className = 'w-full';
-                qDiv.innerHTML = `
-                    <p class="text-sm mb-3 font-bold text-gray-700">${q.q}</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        ${q.a.map(ans => `
-                            <button onclick="checkAnswer(this, '${ans}', '${q.correct}')" 
-                                class="p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs hover:bg-blue-100 transition font-medium">
-                                ${ans}
-                            </button>
-                        `).join('')}
-                    </div>
-                    <div id="game-feedback" class="mt-3 h-4 text-[11px] font-bold"></div>
-                `;
-                gameContent.appendChild(qDiv);
-            }
-        }
-
-        function checkAnswer(btn, selected, correct) {
-            const fb = document.getElementById('game-feedback');
-            if (selected === correct) {
-                btn.className = 'p-2 bg-green-500 text-white rounded-lg text-xs font-bold w-full';
-                fb.innerHTML = '<span class="text-green-600">Tuyệt vời! Bé làm đúng rồi! 🎉</span>';
+            document.getElementById('game-title').innerText = "🎈 " + (data.title || "Trò Chơi");
+            gameData = data;
+            gameCanvas.width = gameContent.clientWidth - 20;
+            gameCanvas.height = 200;
+            if (data.type === 'canvas_catch') {
+                startCatchGame(data);
             } else {
-                btn.className = 'p-2 bg-red-100 border-red-400 text-red-700 rounded-lg border text-xs w-full';
-                fb.innerHTML = '<span class="text-red-500">Gần đúng rồi, chọn lại nào! 💪</span>';
+                gameCanvas.style.display = 'none';
+                document.getElementById('game-ui').innerHTML = `<p class="text-sm font-bold">Game này đang được Robot vẽ... Bé chờ xíu nhé!</p>`;
             }
         }
 
-        function closeGame() { 
-            gameSection.classList.add('hidden'); 
+        function startCatchGame(data) {
+            gameCanvas.style.display = 'block';
+            document.getElementById('game-ui').innerHTML = '';
+            gameActive = true;
+            let basketX = gameCanvas.width / 2;
+            let items = [];
+            let gameScore = 0;
+            const spawnItem = () => { items.push({ x: Math.random() * (gameCanvas.width - 20) + 10, y: -20 }); };
+            const loop = () => {
+                if (!gameActive) return;
+                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+                ctx.font = "30px Arial";
+                ctx.fillText("🧺", basketX - 15, gameCanvas.height - 10);
+                items.forEach((item, index) => {
+                    item.y += data.speed || 2;
+                    ctx.fillText(data.targetEmoji || "🍎", item.x, item.y);
+                    if (item.y > gameCanvas.height - 40 && Math.abs(item.x - basketX) < 25) {
+                        items.splice(index, 1);
+                        gameScore++;
+                    } else if (item.y > gameCanvas.height) { items.splice(index, 1); }
+                });
+                if (Math.random() < 0.02) spawnItem();
+                ctx.fillStyle = "#1e40af";
+                ctx.font = "bold 12px Lexend";
+                ctx.fillText("Điểm: " + gameScore, 10, 20);
+                requestAnimationFrame(loop);
+            };
+            const move = (e) => {
+                const rect = gameCanvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                basketX = clientX - rect.left;
+            };
+            gameCanvas.addEventListener('mousemove', move);
+            gameCanvas.addEventListener('touchmove', move);
+            loop();
         }
 
-        userInput.addEventListener('keypress', (e) => { 
-            if (e.key === 'Enter') handleSend(); 
-        });
+        function closeGame() { gameActive = false; gameSection.classList.add('hidden'); }
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>
 </body>
 </html>
