@@ -4,7 +4,7 @@
 <script>
 async function askGemini(prompt) {
   const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI",
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI",
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -20,6 +20,7 @@ async function askGemini(prompt) {
 </script>
 </body>
 </html>
+
 
 
 
