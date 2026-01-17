@@ -1,34 +1,26 @@
 <!DOCTYPE html>
 <html>
 <body>
+
+<h2>Gemini AI Demo</h2>
+<input id="q" placeholder="Nhập câu hỏi">
+<button onclick="ask()">Hỏi AI</button>
+<pre id="ans"></pre>
+
 <script>
-async function askGemini(prompt) {
-  try {
-    const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      }
-    );
+async function ask() {
+  const question = document.getElementById("q").value;
 
-    const data = await res.json();
-    console.log(data);
+  const res = await fetch("http://localhost:3000/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: question })
+  });
 
-    document.body.innerText =
-      data.candidates?.[0]?.content?.parts?.[0]?.text
-      || "Không có dữ liệu trả về";
-
-  } catch (err) {
-    document.body.innerText = "Lỗi: " + err;
-  }
+  const data = await res.json();
+  document.getElementById("ans").innerText = data.answer;
 }
-
-// 👇 BẮT BUỘC phải gọi
-askGemini("Xin chào Gemini");
 </script>
+
 </body>
 </html>
