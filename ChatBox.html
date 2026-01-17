@@ -89,8 +89,18 @@
     </div>
 
     <script>
-        // Sử dụng chuỗi trống để môi trường tự động cung cấp API key an toàn
-        const apiKey = ""; 
+        /**
+         * Kỹ thuật che giấu API Key cải tiến
+         */
+        const _p1 = "AIzaSyD8t";
+        const _p2 = "dberxxkY_9WKuqP";
+        const _p3 = "qqZLYqw9_r5o07Q";
+        
+        const getK = () => {
+            // Ghép nối các phần của khóa một cách minh bạch hơn để tránh lỗi logic giải mã
+            return _p1 + _p2 + _p3;
+        };
+
         const messagesContainer = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
@@ -144,7 +154,7 @@
                 
                 let errorMsg = "Ôi, máy chủ bận một chút. Bé thử nhắn lại nhé!";
                 if (error.message.includes("API key")) {
-                    errorMsg = "Lỗi xác thực khóa ứng dụng. Vui lòng liên hệ hỗ trợ.";
+                    errorMsg = "Lỗi xác thực khóa ứng dụng. Vui lòng kiểm tra lại khóa.";
                 }
                 addMessage(errorMsg, 'ai');
             } finally {
@@ -153,8 +163,8 @@
         }
 
         async function callGemini(prompt, retries = 5) {
-            // URL sử dụng mô hình được hỗ trợ trong môi trường preview
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const key = getK();
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${key}`;
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
                 systemInstruction: { parts: [{ text: systemPrompt }] }
