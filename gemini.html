@@ -3,24 +3,32 @@
 <body>
 <script>
 async function askGemini(prompt) {
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    }
-  );
-  const data = await res.json();
-  document.body.innerText =
-    data.candidates[0].content.parts[0].text;
+  try {
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      }
+    );
+
+    const data = await res.json();
+    console.log(data);
+
+    document.body.innerText =
+      data.candidates?.[0]?.content?.parts?.[0]?.text
+      || "Không có dữ liệu trả về";
+
+  } catch (err) {
+    document.body.innerText = "Lỗi: " + err;
+  }
 }
+
+// 👇 BẮT BUỘC phải gọi
+askGemini("Xin chào Gemini");
 </script>
 </body>
 </html>
-
-
-
-
