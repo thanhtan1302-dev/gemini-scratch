@@ -96,7 +96,7 @@
     </div>
 
     <script>
-        const apiKey = ""; 
+        const apiKey = "AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI"; 
         const messagesContainer = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const gameSection = document.getElementById('game-section');
@@ -141,7 +141,7 @@
         }
 
         async function callGemini(prompt, retries = 5) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-preview-09-2025:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
                 systemInstruction: { parts: [{ text: systemPrompt }] }
