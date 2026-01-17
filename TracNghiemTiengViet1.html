@@ -6,139 +6,205 @@
     <title>Bé Học Tiếng Việt Lớp 1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Quicksand:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
         
         body {
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background: #FFDEE9;
+            background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             margin: 0;
-            overflow-x: hidden;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Hiệu ứng bóng bay nền */
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 10s infinite ease-in;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ff4757;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #ffffff;
+            z-index: 10;
         }
 
         .game-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            border: 6px solid #fffa65;
             border-radius: 2rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            width: 95%;
-            max-width: 600px;
-            padding: 2rem;
+            box-shadow: 0 20px 0px rgba(0,0,0,0.05);
+            width: 480px;
+            height: 380px; /* Tăng nhẹ để chứa thêm deco */
+            padding: 1rem;
             text-align: center;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 10;
         }
 
         .btn-answer {
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 3px solid #e2e8f0;
+            border: 3px solid #70a1ff;
+            background: #ffffff;
+            border-radius: 1rem;
+            font-size: 1rem;
+            color: #2f3542;
         }
 
         .btn-answer:hover:not(:disabled) {
-            transform: scale(1.03);
-            border-color: #3b82f6;
-            background-color: #eff6ff;
+            transform: translateY(-3px);
+            background: #eccc68;
+            border-color: #ffa502;
         }
 
         .correct {
-            background-color: #10b981 !important;
+            background-color: #2ed573 !important;
             color: white !important;
-            border-color: #059669 !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 4px 0px #1e90ff;
         }
 
         .wrong {
-            background-color: #ef4444 !important;
+            background-color: #ff4757 !important;
             color: white !important;
-            border-color: #dc2626 !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 4px 0px #c0392b;
         }
 
         .progress-bar {
             height: 12px;
-            background-color: #e2e8f0;
-            border-radius: 6px;
+            background-color: #f1f2f6;
+            border-radius: 10px;
+            border: 2px solid #ced6e0;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            background: linear-gradient(90deg, #ff9f43, #ff6b6b);
             transition: width 0.3s ease;
         }
 
         .level-badge {
-            background: #f59e0b;
+            background: #5352ed;
             color: white;
-            padding: 0.25rem 1rem;
-            border-radius: 1rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 2rem;
             font-weight: bold;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
+            box-shadow: 0 3px 0px #3742fa;
         }
 
-        /* Animations */
-        @keyframes pop {
-            0% { transform: scale(0.9); }
-            100% { transform: scale(1); }
+        #question-image {
+            font-size: 4rem;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+            margin-bottom: 0.2rem;
         }
-        .animate-pop { animation: pop 0.3s ease-out; }
+
+        .deco-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
 
-    <div id="game-container" class="game-card animate-pop">
+    <!-- Tạo bóng bay trang trí -->
+    <script>
+        for (let i = 0; i < 15; i++) {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            const size = Math.random() * 60 + 20 + 'px';
+            b.style.width = size;
+            b.style.height = size;
+            b.style.left = Math.random() * 100 + 'vw';
+            b.style.animationDuration = Math.random() * 5 + 5 + 's';
+            b.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(b);
+        }
+    </script>
+
+    <h1 class="main-title">🌟 TRẮC NGHIỆM TIẾNG VIỆT 1 🌟</h1>
+
+    <div id="game-container" class="game-card">
+        <!-- Trang trí góc -->
+        <div class="deco-icon" style="top: 10px; left: 10px;">🎨</div>
+        <div class="deco-icon" style="top: 10px; right: 10px;">🚀</div>
+
         <!-- Màn hình bắt đầu -->
         <div id="start-screen">
-            <h1 class="text-4xl font-bold text-blue-600 mb-4">Vui Học Tiếng Việt</h1>
-            <div class="mb-8">
-                <svg viewBox="0 0 200 200" class="w-48 h-48 mx-auto">
-                    <circle cx="100" cy="100" r="80" fill="#EBF4FF" />
-                    <text x="50%" y="55%" font-family="Arial" font-size="60" text-anchor="middle" fill="#3B82F6">A Ă Â</text>
-                </svg>
+            <div class="mb-4">
+                <div class="text-6xl animate-bounce">🎒</div>
             </div>
-            <p class="text-gray-600 mb-8">Chào mừng bé đến với trò chơi trắc nghiệm Tiếng Việt lớp 1! Hãy cùng vượt qua 5 vòng thi nhé.</p>
-            <button onclick="startGame()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-transform transform hover:scale-105">
-                Bắt Đầu Chơi
+            <h2 class="text-2xl font-bold text-blue-500 mb-2">Sẵn sàng chưa bé?</h2>
+            <p class="text-gray-600 mb-6 text-sm">Vượt qua 5 vòng để nhận huy chương nhé!</p>
+            <button onclick="startGame()" class="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-orange-500 hover:to-yellow-400 text-white font-bold py-3 px-10 rounded-full text-xl shadow-[0_5px_0px_#d35400] transition-all active:translate-y-1 active:shadow-none">
+                CHƠI NGAY
             </button>
         </div>
 
         <!-- Màn hình chơi game -->
-        <div id="quiz-screen" class="hidden">
-            <div class="flex justify-between items-center mb-4">
-                <span class="level-badge" id="level-display">Vòng 1</span>
-                <span class="font-bold text-gray-700">Điểm: <span id="score-display" class="text-blue-600">0</span></span>
-            </div>
-            
-            <div class="progress-bar mb-6">
-                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
-            </div>
-
-            <div id="question-image" class="mb-6 h-40 flex items-center justify-center bg-gray-50 rounded-xl">
-                <!-- Image/SVG will be inserted here -->
+        <div id="quiz-screen" class="hidden h-full flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <span class="level-badge" id="level-display">Vòng 1</span>
+                    <span class="font-bold text-sm text-pink-500">⭐ Điểm: <span id="score-display">0</span></span>
+                </div>
+                <div class="progress-bar mb-2">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                </div>
             </div>
 
-            <h2 id="question-text" class="text-2xl font-bold text-gray-800 mb-8">Đang tải câu hỏi...</h2>
-
-            <div id="answers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Answer buttons will be inserted here -->
+            <div id="question-image" class="animate-pulse">
+                <!-- Emoji icon here -->
             </div>
 
-            <div class="mt-8 flex justify-center gap-4">
-                <button onclick="endGame()" class="text-red-500 hover:text-red-700 font-medium underline">Kết thúc sớm</button>
+            <h2 id="question-text" class="text-lg font-bold text-gray-800 px-2"></h2>
+
+            <div id="answers-grid" class="grid grid-cols-2 gap-3 px-4">
+                <!-- Answer buttons -->
+            </div>
+
+            <div class="mt-2">
+                <button onclick="endGame()" class="text-xs font-bold text-gray-400 hover:text-red-500 uppercase tracking-widest">Dừng cuộc chơi</button>
             </div>
         </div>
 
         <!-- Màn hình kết quả -->
         <div id="result-screen" class="hidden">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">Kết Quả Cuối Cùng</h2>
-            <div class="text-6xl font-bold text-blue-600 mb-4" id="final-score">0</div>
-            <p id="result-message" class="text-xl text-gray-600 mb-8">Bé đã hoàn thành xuất sắc!</p>
-            <button onclick="location.reload()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg">
-                Chơi Lại
+            <div class="text-6xl mb-2">🏆</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-1">Kết Quả Của Bé</h2>
+            <div class="text-5xl font-black text-orange-500 mb-2" id="final-score">0</div>
+            <p id="result-message" class="text-md font-bold text-blue-500 mb-6"></p>
+            <button onclick="location.reload()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-10 rounded-full shadow-[0_4px_0px_#2980b9] text-lg active:translate-y-1 active:shadow-none">
+                CHƠI LẠI NÀO
             </button>
         </div>
     </div>
 
-    <!-- Âm thanh giả lập qua Web Audio API -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
@@ -147,7 +213,7 @@
             const gain = audioCtx.createGain();
             osc.type = type;
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -156,86 +222,131 @@
         }
 
         function playCorrectSound() {
-            playTone(523.25, 'sine', 0.2); // C5
-            setTimeout(() => playTone(659.25, 'sine', 0.3), 100); // E5
+            playTone(523.25, 'sine', 0.2);
+            setTimeout(() => playTone(659.25, 'sine', 0.3), 100);
         }
 
         function playWrongSound() {
-            playTone(220, 'triangle', 0.3); // A3
-            setTimeout(() => playTone(196, 'triangle', 0.3), 150); // G3
+            playTone(220, 'triangle', 0.3);
+            setTimeout(() => playTone(196, 'triangle', 0.3), 150);
         }
 
-        // Dữ liệu câu hỏi theo từng vòng (Level 1-5)
-        const allQuestions = [
-            // Level 1: Chữ cái đơn giản
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const rawQuestions = [
             [
-                { q: "Hình nào là quả 'Cam'?", img: "🍊", options: ["Táo", "Cam", "Lê", "Mận"], correct: 1 },
-                { q: "Chữ cái nào còn thiếu: 'C_ cá'?", img: "🐟", options: ["u", "a", "o", "ô"], correct: 1 },
-                { q: "Hình này là con gì?", img: "🐣", options: ["Vịt", "Gà", "Chim", "Cá"], correct: 1 },
-                { q: "Chữ 'B' đứng đầu từ nào?", img: "⚽", options: ["Cá", "Bóng", "Dưa", "Gà"], correct: 1 },
-                { q: "Vần 'a' có trong từ nào?", img: "🏠", options: ["Nhà", "Học", "Ngủ", "Đi"], correct: 0 },
-                { q: "Bé chọn chữ 'o'?", img: "⭕", options: ["a", "e", "o", "u"], correct: 2 },
-                { q: "Đây là quả gì?", img: "🍌", options: ["Khế", "Ổi", "Chuối", "Cam"], correct: 2 },
-                { q: "Con gì kêu 'Meo meo'?", img: "🐱", options: ["Chó", "Mèo", "Lợn", "Gà"], correct: 1 },
-                { q: "Chữ cái đầu của từ 'Xe'?", img: "🚲", options: ["X", "S", "C", "K"], correct: 0 },
-                { q: "Bé tìm chữ 'ă'?", img: "🌙", options: ["a", "â", "ă", "o"], correct: 2 }
+                { q: "Quả gì đây nhỉ?", img: "🍊", options: ["Táo", "Cam", "Lê", "Mận"], correct: "Cam" },
+                { q: "Điền chữ: 'C_ cá'?", img: "🐟", options: ["u", "a", "o", "ô"], correct: "a" },
+                { q: "Con gì đáng yêu thế này?", img: "🐣", options: ["Vịt", "Gà", "Chim", "Cá"], correct: "Gà" },
+                { q: "Từ nào bắt đầu bằng 'B'?", img: "⚽", options: ["Cá", "Bóng", "Dưa", "Gà"], correct: "Bóng" },
+                { q: "Từ nào có vần 'a'?", img: "🏠", options: ["Nhà", "Học", "Ngủ", "Đi"], correct: "Nhà" },
+                { q: "Bé tìm chữ 'o'?", img: "⭕", options: ["a", "e", "o", "u"], correct: "o" },
+                { q: "Quả gì chín vàng?", img: "🍌", options: ["Khế", "Ổi", "Chuối", "Cam"], correct: "Chuối" },
+                { q: "Con gì kêu 'Meo meo'?", img: "🐱", options: ["Chó", "Mèo", "Lợn", "Gà"], correct: "Mèo" },
+                { q: "Chữ đầu của 'Xe'?", img: "🚲", options: ["X", "S", "C", "K"], correct: "X" },
+                { q: "Bé tìm chữ 'ă'?", img: "🌙", options: ["a", "â", "ă", "o"], correct: "ă" }
             ],
-            // Level 2: Ghép âm cơ bản
             [
-                { q: "Từ nào có vần 'an'?", img: " bàn", options: ["Bàn", "Bút", "Cặp", "Sách"], correct: 0 },
-                { q: "Điền vào chỗ trống: 'H_ học'?", img: "✍️", options: ["i", "ê", "ơ", "ô"], correct: 1 },
-                { q: "Từ 'Cá' thêm dấu sắc thành gì?", img: "🐟", options: ["Cà", "Cả", "Cá", "Cạ"], correct: 2 },
-                { q: "Hình nào là 'Cái ca'?", img: "🥛", options: ["Bát", "Ca", "Đũa", "Thìa"], correct: 1 },
-                { q: "Chọn từ đúng: 'Qu_ táo'?", img: "🍎", options: ["a", "ả", "ả", "ã"], correct: 1 },
-                { q: "Vần 'oi' có trong từ nào?", img: "🐘", options: ["Voi", "Gà", "Vịt", "Chó"], correct: 0 },
-                { q: "Từ nào có chữ 'd'?", img: "🍈", options: ["Dưa", "Gà", "Cá", "Lê"], correct: 0 },
-                { q: "Chọn chữ cái phù hợp: '_ỏ cỏ'?", img: "🌱", options: ["B", "C", "G", "H"], correct: 1 },
-                { q: "Từ 'Mẹ' có thanh gì?", img: "👩", options: ["Huyền", "Sắc", "Nặng", "Hỏi"], correct: 2 },
-                { q: "Ghép 'b' với 'ơ' và thanh huyền?", img: "🧈", options: ["Bơ", "Bờ", "Bở", "Bớ"], correct: 1 }
+                { q: "Từ nào có vần 'an'?", img: "🧺", options: ["Bàn", "Bút", "Cặp", "Sách"], correct: "Bàn" },
+                { q: "Điền chữ: 'H_ học'?", img: "✍️", options: ["i", "ê", "ơ", "ô"], correct: "ê" },
+                { q: "Từ 'Cá' thêm dấu huyền?", img: "🐟", options: ["Cà", "Cả", "Cá", "Cạ"], correct: "Cà" },
+                { q: "Đây là vật dụng gì?", img: "🥛", options: ["Bát", "Ca", "Đũa", "Thìa"], correct: "Ca" },
+                { q: "Quả táo là 'Qu_ táo'?", img: "🍎", options: ["a", "ả", "á", "ã"], correct: "ả" },
+                { q: "Con gì có vần 'oi'?", img: "🐘", options: ["Voi", "Gà", "Vịt", "Chó"], correct: "Voi" },
+                { q: "Từ nào có chữ 'd'?", img: "🍈", options: ["Dưa", "Gà", "Cá", "Lê"], correct: "Dưa" },
+                { q: "Điền: '_ỏ cỏ'?", img: "🌱", options: ["B", "C", "G", "H"], correct: "C" },
+                { q: "Từ 'Mẹ' có thanh gì?", img: "👩", options: ["Huyền", "Sắc", "Nặng", "Hỏi"], correct: "Nặng" },
+                { q: "Ghép 'b' + 'ơ' + huyền?", img: "🧈", options: ["Bơ", "Bờ", "Bở", "Bớ"], correct: "Bờ" }
             ],
-            // Level 3-5 (Rút gọn ví dụ cho mã nguồn)
-            // ... (Tương tự tăng độ khó dần với vần phức tạp)
+            [
+                { q: "Vần 'ươn' có trong từ?", img: "🌻", options: ["Vườn", "Biển", "Núi", "Sông"], correct: "Vườn" },
+                { q: "Điền: 'C_ chim'?", img: "🦅", options: ["on", "an", "en", "in"], correct: "on" },
+                { q: "Quả gì sần sùi?", img: "🍈", options: ["Cam", "Bưởi", "Chanh", "Quýt"], correct: "Bưởi" },
+                { q: "Từ nào viết đúng?", img: "📐", options: ["Thước kẻ", "Thướt kẻ", "Thức kẻ", "Thướ kẽ"], correct: "Thước kẻ" },
+                { q: "Bé chọn vần 'iê'?", img: "🪁", options: ["Diều", "Đào", "Dừa", "Dế"], correct: "Diều" },
+                { q: "Con gì có vần 'uô'?", img: "🐢", options: ["Rùa", "Cua", "Cá", "Tôm"], correct: "Cua" },
+                { q: "Vần 'ai' nằm ở đâu?", img: "👂", options: ["Tai", "Tay", "Tóc", "Mắt"], correct: "Tai" },
+                { q: "Điền: 'M_ học'?", img: "🏫", options: ["ô", "ơ", "ê", "a"], correct: "ơ" },
+                { q: "Chọn: 'Cá _'?", img: "🦐", options: ["tôm", "cua", "ngựa", "voi"], correct: "ngựa" },
+                { q: "Vần 'uôi' có ở quả?", img: "🍌", options: ["Chuối", "Bưởi", "Chanh", "Mận"], correct: "Chuối" }
+            ],
+            [
+                { q: "Câu nào bé thấy đúng?", img: "📖", options: ["Bé đi học", "Bé học đi", "Đi bé học", "Học đi bé"], correct: "Bé đi học" },
+                { q: "Mẹ rất _ bé?", img: "❤️", options: ["yêu", "ghét", "đi", "ngủ"], correct: "yêu" },
+                { q: "Đang làm gì thế kia?", img: "🏃", options: ["Chạy", "Bàn", "Ghế", "Cửa"], correct: "Chạy" },
+                { q: "Bé học ở đâu?", img: "🏫", options: ["Nhà", "Chợ", "Trường", "Trạm"], correct: "Trường" },
+                { q: "Điền: 'Bé vẽ h_'?", img: "🌻", options: ["oa", "oe", "ua", "ia"], correct: "oa" },
+                { q: "Câu nào đúng nghĩa?", img: "🍎", options: ["Bé ăn táo", "Táo ăn bé", "Bé táo ăn", "Ăn bé táo"], correct: "Bé ăn táo" },
+                { q: "Đồ vật để viết bài?", img: "✏️", options: ["Bút", "Đi", "Hát", "Vui"], correct: "Bút" },
+                { q: "Điền: 'Bố _ báo'?", img: "🗞️", options: ["đọc", "ăn", "ngủ", "chơi"], correct: "đọc" },
+                { q: "Vần 'ng' có ở từ?", img: "👂", options: ["nghe", "nhìn", "nói", "cười"], correct: "nghe" },
+                { q: "Bầu trời thế nào?", img: "☀️", options: ["Trời nắng", "Nắng trời", "Trời ăn", "Ăn trời"], correct: "Trời nắng" }
+            ],
+            [
+                { q: "Từ nào sai chính tả?", img: "❌", options: ["Con ngé", "Con nghé", "Con nghe", "Con cá"], correct: "Con ngé" },
+                { q: "Vần: 'Kh_ khé'?", img: "⭐", options: ["uê", "oê", "ia", "ưa"], correct: "uê" },
+                { q: "Trả lời: 'Bé đi đâu?'", img: "❓", options: ["Bé đi học.", "Bé là học.", "Bé ăn cơm.", "Bé ngủ."], correct: "Bé đi học." },
+                { q: "Vần 'uyên' có ở?", img: "🛶", options: ["Thuyền", "Thiên", "Thuận", "Thanh"], correct: "Thuyền" },
+                { q: "Có ba, có mẹ, có bé là?", img: "👨‍👩‍👧‍👦", options: ["Gia đình", "Bạn bè", "Lớp học", "Chợ"], correct: "Gia đình" },
+                { q: "Điền: 'Tr_ xanh'?", img: "🎋", options: ["e", "ê", "i", "o"], correct: "e" },
+                { q: "Câu nào bé lễ phép?", img: "🙏", options: ["Con chào mẹ", "Mẹ chào con", "Chào mẹ", "Đi đây"], correct: "Con chào mẹ" },
+                { q: "Điền: 'Q_ hương'?", img: "🌾", options: ["uê", "uơ", "ia", "ưa"], correct: "uê" },
+                { q: "Vần 'oanh' có ở?", img: "🐦", options: ["Chim oanh", "Chim sẻ", "Chim sáo", "Chim sâu"], correct: "Chim oanh" },
+                { q: "Bé thấy trò chơi này _?", img: "😊", options: ["vui", "buồn", "đói", "mệt"], correct: "vui" }
+            ]
         ];
 
-        // Tạo dữ liệu giả cho Level 3,4,5 để đủ cấu trúc
-        for(let i=2; i<5; i++) {
-            allQuestions[i] = JSON.parse(JSON.stringify(allQuestions[0]));
-            allQuestions[i].forEach(q => q.q = `[Vòng ${i+1}] ` + q.q);
-        }
-
+        let gameQuestions = [];
         let currentLevel = 0;
         let currentQuestionIndex = 0;
         let score = 0;
         let canAnswer = true;
 
+        function prepareQuestions() {
+            gameQuestions = rawQuestions.map(levelQuestions => {
+                const shuffledLevel = shuffleArray([...levelQuestions]);
+                return shuffledLevel.map(q => {
+                    const options = shuffleArray([...q.options]);
+                    const correctIndex = options.indexOf(q.correct);
+                    return { ...q, options, correct: correctIndex };
+                });
+            });
+        }
+
         function startGame() {
             document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
             document.getElementById('quiz-screen').classList.remove('hidden');
             score = 0;
             currentLevel = 0;
             currentQuestionIndex = 0;
+            prepareQuestions();
             updateScore();
             loadQuestion();
         }
 
         function loadQuestion() {
             canAnswer = true;
-            const levelData = allQuestions[currentLevel];
+            const levelData = gameQuestions[currentLevel];
             const q = levelData[currentQuestionIndex];
             
             document.getElementById('level-display').innerText = `Vòng ${currentLevel + 1}`;
             document.getElementById('progress-fill').style.width = `${(currentQuestionIndex / 10) * 100}%`;
             document.getElementById('question-text').innerText = q.q;
-            
-            // Render "Image" (Emoji for simplicity, can be SVG)
-            document.getElementById('question-image').innerHTML = `<span style="font-size: 80px">${q.img}</span>`;
+            document.getElementById('question-image').innerText = q.img;
             
             const grid = document.getElementById('answers-grid');
             grid.innerHTML = '';
             
             q.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = 'btn-answer bg-white p-4 rounded-xl text-lg font-bold text-gray-700 shadow-sm';
+                btn.className = 'btn-answer p-2 font-bold shadow-[0_4px_0px_#747d8c] active:translate-y-1 active:shadow-none';
                 btn.innerText = opt;
                 btn.onclick = () => checkAnswer(index, btn);
                 grid.appendChild(btn);
@@ -246,7 +357,7 @@
             if (!canAnswer) return;
             canAnswer = false;
 
-            const q = allQuestions[currentLevel][currentQuestionIndex];
+            const q = gameQuestions[currentLevel][currentQuestionIndex];
             const buttons = document.querySelectorAll('.btn-answer');
 
             if (selectedIndex === q.correct) {
@@ -254,17 +365,14 @@
                 btn.classList.add('correct');
                 playCorrectSound();
             } else {
-                score = Math.max(0, score - 1); // Trừ điểm nhưng không dưới 0
+                score = Math.max(0, score - 1);
                 btn.classList.add('wrong');
                 buttons[q.correct].classList.add('correct');
                 playWrongSound();
             }
 
             updateScore();
-
-            setTimeout(() => {
-                nextQuestion();
-            }, 1500);
+            setTimeout(nextQuestion, 1200);
         }
 
         function nextQuestion() {
@@ -272,7 +380,6 @@
             if (currentQuestionIndex >= 10) {
                 currentLevel++;
                 currentQuestionIndex = 0;
-                
                 if (currentLevel >= 5) {
                     endGame();
                     return;
@@ -291,9 +398,9 @@
             document.getElementById('final-score').innerText = score;
             
             let msg = "";
-            if (score >= 40) msg = "Tuyệt vời! Bé là thiên tài Tiếng Việt!";
-            else if (score >= 25) msg = "Làm tốt lắm! Bé cố gắng thêm chút nữa nhé!";
-            else msg = "Bé đã rất cố gắng! Hãy cùng luyện tập thêm nhé.";
+            if (score >= 45) msg = "Bé là Trạng Nguyên Tiếng Việt! 🥇";
+            else if (score >= 30) msg = "Bé làm tốt lắm, nhận huy chương Bạc nè! 🥈";
+            else msg = "Cố gắng luyện tập thêm bé nhé! 📚";
             
             document.getElementById('result-message').innerText = msg;
         }
