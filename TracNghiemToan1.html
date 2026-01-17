@@ -10,127 +10,172 @@
         
         body {
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background: #FFDEE9;
+            background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             margin: 0;
-            overflow-x: hidden;
+            padding: 10px;
         }
 
-        .card {
-            background: white;
+        .main-header {
+            font-size: 26px;
+            font-weight: 900;
+            color: #FF477E;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #game-container {
+            width: 480px;
+            height: 360px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            border: 6px solid #FF7EB3;
             border-radius: 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            transition: all 0.3s ease;
+            box-shadow: 0 15px 35px rgba(255, 71, 126, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-image: radial-gradient(#FF7EB3 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: white;
+            background-position: 0 0;
+            background-opacity: 0.05;
         }
 
         .option-btn {
-            transition: all 0.2s;
-            border: 2px solid #e2e8f0;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid #FF7EB3;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 1.2rem;
+            background: white;
+            color: #FF477E;
         }
 
-        .option-btn:hover {
-            transform: translateY(-2px);
-            border-color: #3b82f6;
-            background-color: #eff6ff;
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            background-color: #FFF0F5;
+            box-shadow: 0 5px 15px rgba(255, 126, 179, 0.3);
         }
 
-        .option-btn:active {
-            transform: scale(0.98);
+        .correct {
+            background-color: #2ECC71 !important;
+            color: white !important;
+            border-color: #27AE60 !important;
+            transform: scale(1.1);
+        }
+
+        .incorrect {
+            background-color: #FF4757 !important;
+            color: white !important;
+            border-color: #FF6B81 !important;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
         .progress-bar {
-            height: 10px;
-            background-color: #e2e8f0;
-            border-radius: 5px;
+            height: 12px;
+            background-color: #FFE4E1;
+            border-radius: 6px;
             overflow: hidden;
+            border: 1px solid #FFB6C1;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, #FF7EB3, #FF477E);
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .correct {
-            background-color: #10b981 !important;
-            color: white !important;
-            border-color: #10b981 !important;
+        .floating {
+            animation: floating 3s ease-in-out infinite;
         }
 
-        .incorrect {
-            background-color: #ef4444 !important;
-            color: white !important;
-            border-color: #ef4444 !important;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
-        }
-
-        .animate-bounce-custom {
-            animation: bounce 2s infinite;
         }
     </style>
 </head>
 <body>
 
-    <div id="game-container" class="w-full max-w-lg p-4">
+    <h1 class="main-header">✨ TRẮC NGHIỆM TOÁN 1 🎈</h1>
+
+    <div id="game-container">
         <!-- Màn hình bắt đầu -->
-        <div id="start-screen" class="card p-8 text-center">
-            <h1 class="text-4xl font-bold text-blue-600 mb-4 animate-bounce-custom">Bé Giỏi Toán 🧮</h1>
-            <p class="text-gray-600 mb-8 text-lg">Chào mừng bé đến với thế giới con số! Cùng vượt qua 5 vòng thử thách nhé.</p>
-            <div class="space-y-4">
-                <div class="bg-blue-50 p-4 rounded-xl text-left text-sm text-blue-800">
-                    <p>✨ <b>Luật chơi:</b></p>
-                    <ul class="list-disc ml-5 mt-2">
-                        <li>Mỗi vòng có 10 câu hỏi.</li>
-                        <li>Đúng: +1 điểm | Sai: -1 điểm.</li>
-                        <li>Có 5 vòng độ khó tăng dần.</li>
-                    </ul>
+        <div id="start-screen" class="screen text-center">
+            <div class="text-6xl mb-2 floating">🦁</div>
+            <h2 class="text-3xl font-extrabold text-pink-600 mb-2">Bé Tập Tính Nhẩm</h2>
+            <p class="text-gray-500 text-sm mb-6 font-medium">Cùng tham gia giải đố với bạn Sư Tử nhé!</p>
+            <button onclick="startGame()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-2xl shadow-[0_6px_0_#d13d6a] transition active:translate-y-1 active:shadow-none text-xl">
+                CHƠI NGAY 🚀
+            </button>
+        </div>
+
+        <!-- Màn hình chơi game -->
+        <div id="quiz-screen" class="screen hidden">
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-1 bg-pink-100 px-3 py-1 rounded-full text-[10px] font-bold text-pink-600 uppercase">
+                    ⭐ Vòng <span id="current-round">1</span>/5
                 </div>
-                <button onclick="startGame()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg transform transition active:scale-95 text-xl">
-                    Bắt đầu chơi ngay!
+                <div class="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full text-[10px] font-bold text-yellow-700 uppercase">
+                    💎 Điểm: <span id="score">0</span>
+                </div>
+            </div>
+            
+            <div class="progress-bar mb-4">
+                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            </div>
+
+            <div class="text-center flex-grow flex flex-col justify-center">
+                <div id="round-emoji" class="text-3xl mb-2">🍎</div>
+                <h2 id="question-text" class="text-4xl font-bold text-gray-800 mb-6 bg-white p-4 rounded-3xl border-2 border-dashed border-pink-200">1 + 1 = ?</h2>
+                <div id="options-container" class="grid grid-cols-2 gap-3">
+                    <!-- Đáp án -->
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-between items-center text-[10px] font-bold text-gray-400">
+                <span>CÂU <span id="question-num">1</span>/10</span>
+                <button onclick="finishGame()" class="text-red-400 hover:text-red-600 uppercase flex items-center gap-1">
+                    🚪 Thoát
                 </button>
             </div>
         </div>
 
-        <!-- Màn hình chơi game -->
-        <div id="quiz-screen" class="card p-6 hidden">
-            <div class="flex justify-between items-center mb-4">
-                <div class="text-sm font-bold text-gray-500">VÒNG <span id="current-round">1</span>/5</div>
-                <div class="text-sm font-bold text-blue-600">ĐIỂM: <span id="score">0</span></div>
+        <!-- Màn hình kết quả -->
+        <div id="result-screen" class="screen text-center hidden">
+            <div id="result-emoji" class="text-6xl mb-2">🎉</div>
+            <h2 id="result-title" class="text-2xl font-bold text-pink-600 mb-1">Xuất Sắc!</h2>
+            <div class="bg-yellow-50 py-4 rounded-3xl mb-6 border-4 border-yellow-200 shadow-inner">
+                <p class="text-xs text-yellow-600 font-bold uppercase mb-1">Cúp Vàng Của Bé</p>
+                <p id="final-score" class="text-6xl font-black text-yellow-700">0</p>
             </div>
-            
-            <div class="progress-bar mb-6">
-                <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
-            </div>
-
-            <div id="question-box" class="text-center py-8">
-                <h2 id="question-text" class="text-5xl font-bold text-gray-800 mb-8">1 + 1 = ?</h2>
-                <div id="options-container" class="grid grid-cols-2 gap-4">
-                    <!-- Các nút đáp án sẽ được chèn vào đây -->
-                </div>
-            </div>
-
-            <div class="mt-6 text-center text-gray-400 text-xs">
-                Câu hỏi <span id="question-num">1</span>/10
-            </div>
-        </div>
-
-        <!-- Màn hình kết quả vòng -->
-        <div id="result-screen" class="card p-8 text-center hidden">
-            <h2 id="result-title" class="text-3xl font-bold text-blue-600 mb-2">Tuyệt vời!</h2>
-            <p id="result-message" class="text-gray-600 mb-6 text-lg">Bé đã hoàn thành Vòng 1.</p>
-            <div class="bg-yellow-50 p-6 rounded-2xl mb-8">
-                <p class="text-sm text-yellow-600 uppercase tracking-widest font-bold">Tổng điểm</p>
-                <p id="final-score" class="text-5xl font-black text-yellow-700">10</p>
-            </div>
-            <button id="next-btn" onclick="nextAction()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-2xl shadow-lg transform transition active:scale-95 text-xl">
-                Tiếp tục
+            <button id="next-btn" onclick="nextAction()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-2xl shadow-[0_6px_0_#2d9154] transition active:translate-y-1 active:shadow-none text-xl">
+                TIẾP TỤC 🌈
             </button>
         </div>
     </div>
@@ -143,99 +188,81 @@
         const totalQuestionsPerRound = 10;
         const totalRounds = 5;
 
-        const screens = {
-            start: document.getElementById('start-screen'),
-            quiz: document.getElementById('quiz-screen'),
-            result: document.getElementById('result-screen')
-        };
+        const roundEmojis = ['🍎', '🦒', '🎈', '🍰', '🦖'];
+        const resultEmojis = ['🥉', '🥈', '🥇', '🏆', '👑'];
 
-        function showScreen(screenKey) {
-            Object.values(screens).forEach(s => s.classList.add('hidden'));
-            screens[screenKey].classList.remove('hidden');
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+            }
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
         }
 
         function generateQuestions(round) {
-            const newQuestions = [];
+            const qs = [];
             for (let i = 0; i < totalQuestionsPerRound; i++) {
                 let a, b, op, ans;
-                
-                switch(round) {
-                    case 1: // Cộng trừ phạm vi 10
-                        op = Math.random() > 0.5 ? '+' : '-';
-                        if (op === '+') {
-                            a = Math.floor(Math.random() * 6);
-                            b = Math.floor(Math.random() * (10 - a));
-                            ans = a + b;
-                        } else {
-                            a = Math.floor(Math.random() * 11);
-                            b = Math.floor(Math.random() * (a + 1));
-                            ans = a - b;
-                        }
-                        break;
-                    case 2: // Cộng trừ phạm vi 20
-                        op = Math.random() > 0.5 ? '+' : '-';
-                        if (op === '+') {
-                            a = Math.floor(Math.random() * 11) + 5;
-                            b = Math.floor(Math.random() * (20 - a));
-                            ans = a + b;
-                        } else {
-                            a = Math.floor(Math.random() * 11) + 10;
-                            b = Math.floor(Math.random() * (a + 1));
-                            ans = a - b;
-                        }
-                        break;
-                    case 3: // Tìm x (ô trống) cơ bản
-                        a = Math.floor(Math.random() * 10);
-                        ans = Math.floor(Math.random() * 10);
-                        let sum = a + ans;
-                        newQuestions.push({
-                            q: `${a} + ? = ${sum}`,
-                            options: generateOptions(ans),
-                            answer: ans
-                        });
-                        continue;
-                    case 4: // Cộng trừ tròn chục trong phạm vi 100
-                        a = (Math.floor(Math.random() * 9) + 1) * 10;
-                        b = (Math.floor(Math.random() * (a/10))) * 10;
-                        op = Math.random() > 0.5 ? '+' : '-';
-                        if (op === '+') {
-                            b = (Math.floor(Math.random() * ((100-a)/10)) + 1) * 10;
-                            ans = a + b;
-                        } else {
-                            ans = a - b;
-                        }
-                        break;
-                    case 5: // Hỗn hợp cộng trừ 2 chữ số (không nhớ/có nhớ nhẹ)
-                        a = Math.floor(Math.random() * 40) + 10;
-                        b = Math.floor(Math.random() * 40) + 1;
-                        op = Math.random() > 0.5 ? '+' : '-';
-                        ans = op === '+' ? a + b : a - b;
-                        break;
+                if (round === 1) { 
+                    op = Math.random() > 0.5 ? '+' : '-';
+                    if (op === '+') { a = Math.floor(Math.random() * 6); b = Math.floor(Math.random() * (11 - a)); ans = a + b; }
+                    else { a = Math.floor(Math.random() * 11); b = Math.floor(Math.random() * (a + 1)); ans = a - b; }
+                } else if (round === 2) {
+                    op = Math.random() > 0.5 ? '+' : '-';
+                    a = Math.floor(Math.random() * 11) + 5;
+                    b = op === '+' ? Math.floor(Math.random() * (21 - a)) : Math.floor(Math.random() * a);
+                    ans = op === '+' ? a + b : a - b;
+                } else if (round === 3) {
+                    a = Math.floor(Math.random() * 10); ans = Math.floor(Math.random() * 10);
+                    qs.push({ q: `${a} + ? = ${a + ans}`, options: generateOptions(ans), answer: ans }); continue;
+                } else if (round === 4) {
+                    a = (Math.floor(Math.random() * 9) + 1) * 10; b = (Math.floor(Math.random() * 5)) * 10;
+                    op = Math.random() > 0.5 ? '+' : '-';
+                    ans = op === '+' ? a + b : a - b;
+                } else {
+                    a = Math.floor(Math.random() * 50) + 10; b = Math.floor(Math.random() * 30);
+                    op = Math.random() > 0.5 ? '+' : '-';
+                    ans = op === '+' ? a + b : a - b;
                 }
-
-                newQuestions.push({
-                    q: `${a} ${op} ${b} = ?`,
-                    options: generateOptions(ans),
-                    answer: ans
-                });
+                qs.push({ q: `${a} ${op} ${b} = ?`, options: generateOptions(ans), answer: ans });
             }
-            return newQuestions;
+            return qs;
         }
 
-        function generateOptions(correctAnswer) {
-            let opts = new Set([correctAnswer]);
-            while (opts.size < 4) {
-                let offset = Math.floor(Math.random() * 5) + 1;
-                let wrong = Math.random() > 0.5 ? correctAnswer + offset : correctAnswer - offset;
-                if (wrong >= 0) opts.add(wrong);
+        function generateOptions(correct) {
+            let s = new Set([correct]);
+            while(s.size < 4) {
+                let w = correct + (Math.floor(Math.random() * 7) - 3);
+                if (w >= 0 && w !== correct) s.add(w);
             }
-            return Array.from(opts).sort(() => Math.random() - 0.5);
+            return Array.from(s).sort(() => Math.random() - 0.5);
         }
 
         function startGame() {
-            currentRound = 1;
-            score = 0;
-            startRound();
+            score = 0; currentRound = 1; startRound();
         }
 
         function startRound() {
@@ -243,81 +270,68 @@
             questions = generateQuestions(currentRound);
             document.getElementById('current-round').innerText = currentRound;
             document.getElementById('score').innerText = score;
-            showScreen('quiz');
+            document.getElementById('round-emoji').innerText = roundEmojis[currentRound-1];
+            showScreen('quiz-screen');
             loadQuestion();
         }
 
         function loadQuestion() {
-            const qData = questions[currentQuestionIdx];
-            document.getElementById('question-text').innerText = qData.q;
+            const data = questions[currentQuestionIdx];
+            document.getElementById('question-text').innerText = data.q;
             document.getElementById('question-num').innerText = currentQuestionIdx + 1;
-            
-            const progress = ((currentQuestionIdx) / totalQuestionsPerRound) * 100;
-            document.getElementById('progress-fill').style.width = `${progress}%`;
-
+            document.getElementById('progress-fill').style.width = `${(currentQuestionIdx / 10) * 100}%`;
             const container = document.getElementById('options-container');
             container.innerHTML = '';
-            
-            qData.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn py-4 px-6 text-2xl font-bold rounded-2xl bg-white text-gray-700';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(opt, btn);
-                container.appendChild(btn);
+            data.options.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = 'option-btn font-bold shadow-[0_4px_0_#FF7EB3] active:translate-y-1 active:shadow-none';
+                b.innerText = opt;
+                b.onclick = () => {
+                    const all = document.querySelectorAll('.option-btn');
+                    all.forEach(btn => btn.disabled = true);
+                    if (opt === data.answer) {
+                        b.classList.add('correct'); playSound('correct'); score++;
+                    } else {
+                        b.classList.add('incorrect'); playSound('wrong'); score = Math.max(0, score - 1);
+                        all.forEach(btn => { if(parseInt(btn.innerText) === data.answer) btn.classList.add('correct'); });
+                    }
+                    document.getElementById('score').innerText = score;
+                    setTimeout(() => {
+                        currentQuestionIdx++;
+                        if (currentQuestionIdx < 10) loadQuestion();
+                        else showRoundResult();
+                    }, 800);
+                };
+                container.appendChild(b);
             });
         }
 
-        function checkAnswer(selected, btn) {
-            const correct = questions[currentQuestionIdx].answer;
-            const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.disabled = true);
-
-            if (selected === correct) {
-                btn.classList.add('correct');
-                score += 1;
+        function showRoundResult() {
+            showScreen('result-screen');
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('result-emoji').innerText = resultEmojis[currentRound-1];
+            const btn = document.getElementById('next-btn');
+            if (currentRound < 5) {
+                document.getElementById('result-title').innerText = "Vòng " + currentRound + " Xong!";
+                btn.innerText = "SANG VÒNG " + (currentRound + 1) + " 🎁";
             } else {
-                btn.classList.add('incorrect');
-                score = Math.max(0, score - 1); // Không để điểm âm nếu bạn muốn, hoặc cứ trừ
-                // Hiển thị đáp án đúng
-                allBtns.forEach(b => {
-                    if (parseInt(b.innerText) === correct) b.classList.add('correct');
-                });
+                document.getElementById('result-title').innerText = "BÉ LÀ THIÊN TÀI! 👑";
+                btn.innerText = "CHƠI LẠI TỪ ĐẦU 🍎";
             }
-
-            document.getElementById('score').innerText = score;
-
-            setTimeout(() => {
-                currentQuestionIdx++;
-                if (currentQuestionIdx < totalQuestionsPerRound) {
-                    loadQuestion();
-                } else {
-                    showRoundResult();
-                }
-            }, 1200);
         }
 
-        function showRoundResult() {
-            showScreen('result');
+        function finishGame() {
+            showScreen('result-screen');
+            document.getElementById('result-emoji').innerText = "🏁";
+            document.getElementById('result-title').innerText = "Tạm Nghỉ Nhé!";
             document.getElementById('final-score').innerText = score;
-            
-            if (currentRound < totalRounds) {
-                document.getElementById('result-title').innerText = "Thật Tuyệt Vời! 🎉";
-                document.getElementById('result-message').innerText = `Bé đã hoàn thành Vòng ${currentRound}. Sẵn sàng cho thử thách khó hơn chưa?`;
-                document.getElementById('next-btn').innerText = "Sang Vòng Tiếp Theo";
-            } else {
-                document.getElementById('result-title').innerText = "🏆 CHIẾN THẮNG!";
-                document.getElementById('result-message').innerText = "Chúc mừng bé đã vượt qua tất cả các thử thách toán học!";
-                document.getElementById('next-btn').innerText = "Chơi Lại Từ Đầu";
-            }
+            document.getElementById('next-btn').innerText = "CHƠI LẠI NÀO";
+            currentRound = 5;
         }
 
         function nextAction() {
-            if (currentRound < totalRounds) {
-                currentRound++;
-                startRound();
-            } else {
-                startGame();
-            }
+            if (currentRound < 5) { currentRound++; startRound(); }
+            else startGame();
         }
     </script>
 </body>
