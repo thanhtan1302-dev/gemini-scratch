@@ -1,54 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Gemini AI</title>
+<meta charset="UTF-8">
+<title>Gemini Debug</title>
 </head>
-<script>
-alert("JS ĐÃ CHẠY");
-</script>
 <body>
-<h2>Đang hỏi Gemini...</h2>
-<pre id="result">Đang xử lý...</pre>
+
+<h3>Gemini status:</h3>
+<pre id="result">Đang xử lý..</pre>
 
 <script>
+alert("JS ĐÃ CHẠY");
+
 const params = new URLSearchParams(window.location.search);
 const prompt = params.get("prompt");
 
-if (!prompt) {
-  document.getElementById("result").innerText =
-    "❌ Không nhận được câu hỏi!";
-} else {
+document.getElementById("result").innerText =
+  "Prompt nhận được: " + prompt;
+
+if (prompt) {
   askGemini(prompt);
+} else {
+  document.getElementById("result").innerText =
+    "❌ KHÔNG có prompt trong URL";
 }
 
-async function askGemini(text) {
-  try {
-    const res = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            { parts: [{ text: decodeURIComponent(text) }] }
-          ]
-        })
-      }
-    );
+async function askGemini(p) {
+  document.getElementById("result").innerText = "⏳ Đang gọi Gemini...";
 
-    const data = await res.json();
+  const res = await fetch(
+    "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyDHvCQd19WNOBeXQZRpgBvlABMOtNcjQqI",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: decodeURIComponent(p) }] }]
+      })
+    }
+  );
 
-    document.getElementById("result").innerText =
-      JSON.stringify(data, null, 2);
-      || "❌ Gemini không trả lời";
-  } catch (e) {
-    document.getElementById("result").innerText =
-      "❌ Lỗi JavaScript: " + e;
-  }
+  const data = await res.json();
+  document.getElementById("result").innerText =
+    JSON.stringify(data, null, 2);
 }
 </script>
+
 </body>
 </html>
-
-
