@@ -17,7 +17,6 @@
             height: 100vh;
             background: #f0f2f5;
         }
-        /* Cố định kích thước khung ứng dụng */
         .app-viewport { 
             width: 480px; 
             height: 360px; 
@@ -34,7 +33,6 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        /* Animation cho game */
         .game-overlay {
             position: absolute;
             top: 0;
@@ -52,7 +50,6 @@
 <body>
 
     <div class="app-viewport bg-gradient-to-br from-blue-50 to-pink-50">
-        <!-- Header nhỏ gọn -->
         <nav class="p-2 glass border-b flex justify-between items-center z-50">
             <h1 class="text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-pink-600">
                 <i class="fas fa-graduation-cap"></i> Bé Học Lớp 1
@@ -63,89 +60,107 @@
             </div>
         </nav>
 
-        <!-- Chat Area -->
         <div id="chat-messages" class="chat-container space-y-3 text-sm">
             <div class="flex gap-2">
-                <div class="bg-white p-2 rounded-lg shadow-sm border border-gray-100 max-w-[85%]">
-                    Chào bé! Mình là gia sư AI. Bé muốn học gì nào? 🍎
+                <div class="bg-white p-2 rounded-lg shadow-sm border border-gray-100 max-w-[85%] text-gray-800">
+                    Chào bé! Mình là gia sư AI. Bé muốn học Toán hay Tiếng Việt hôm nay nào? 🍎
                 </div>
             </div>
         </div>
 
-        <!-- Input Area -->
         <div class="p-2 border-t bg-white">
             <div class="flex gap-1">
                 <input type="text" id="user-input" placeholder="Hỏi bài hoặc tạo game..." 
                     class="flex-1 p-2 text-sm border rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-400">
-                <button onclick="handleSend()" class="bg-blue-600 text-white px-3 py-1 rounded-xl hover:bg-blue-700">
+                <button id="send-btn" onclick="handleSend()" class="bg-blue-600 text-white px-3 py-1 rounded-xl hover:bg-blue-700 disabled:opacity-50">
                     <i class="fas fa-paper-plane text-xs"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Game Area Overlay -->
         <div id="game-section" class="hidden game-overlay">
             <div class="flex justify-between items-center mb-2">
                 <h2 id="game-title" class="text-sm font-bold text-blue-600">Trò Chơi</h2>
                 <button onclick="closeGame()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
             </div>
-            <div id="game-content" class="flex-1 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-yellow-200 rounded-xl p-2">
-                <!-- Game elements -->
+            <div id="game-content" class="flex-1 flex flex-col items-center justify-center gap-3 border-2 border-dashed border-yellow-200 rounded-xl p-2 text-center">
             </div>
         </div>
     </div>
 
     <script>
-        const apiKey = "AIzaSyDTids27Ttzb6601njhjekoEvDrQg5abHc"; 
+        // Sử dụng chuỗi trống để môi trường tự động cung cấp API key an toàn
+        const apiKey = ""; 
         const messagesContainer = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
         const gameSection = document.getElementById('game-section');
         const gameContent = document.getElementById('game-content');
 
-        const systemPrompt = `Bạn là gia sư lớp 1. Trả lời ngắn gọn, dễ hiểu trong khung chat hẹp. 
-        Nếu tạo game, trả về JSON kèm theo: {"isGame":true, "title":"...", "type":"quiz", "questions":[{"q":"...","a":["..."],"correct":"..."}]}`;
+        const systemPrompt = `Bạn là gia sư lớp 1 thân thiện. Trả lời cực kỳ ngắn gọn, dùng biểu tượng cảm xúc.
+        Nhiệm vụ:
+        1. Giải thích kiến thức toán/tiếng việt lớp 1 cho trẻ em (phép cộng trừ phạm vi 10, vần, âm).
+        2. Nếu người dùng yêu cầu tạo game, trả về văn bản hướng dẫn ngắn gọn và một khối JSON duy nhất ở cuối: 
+        {"isGame":true, "title":"Tên game", "type":"quiz", "questions":[{"q":"Câu hỏi?","a":["ĐA1","ĐA2"],"correct":"ĐA1"}]}`;
 
         async function handleSend() {
             const text = userInput.value.trim();
-            if (!text) return;
+            if (!text || sendBtn.disabled) return;
 
             addMessage(text, 'user');
             userInput.value = '';
+            sendBtn.disabled = true;
 
             const typingDiv = document.createElement('div');
-            typingDiv.className = 'text-[10px] text-gray-400 italic';
-            typingDiv.innerText = 'Đang suy nghĩ...';
+            typingDiv.className = 'text-[10px] text-gray-400 italic mb-2';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerText = 'Gia sư đang suy nghĩ...';
             messagesContainer.appendChild(typingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             try {
                 const response = await callGemini(text);
-                messagesContainer.removeChild(typingDiv);
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) indicator.remove();
                 
                 const jsonMatch = response.match(/\{.*\}/s);
                 let cleanText = response;
                 
                 if (jsonMatch) {
                     try {
-                        const gameData = JSON.parse(jsonMatch[0]);
+                        const gameData = JSON.parse(jsonMatch[0].trim());
                         cleanText = response.replace(jsonMatch[0], '').trim();
-                        renderGame(gameData);
-                    } catch (e) {}
+                        if (gameData.isGame) renderGame(gameData);
+                    } catch (e) {
+                        console.error("Lỗi phân tích JSON game:", e);
+                    }
                 }
 
-                addMessage(cleanText || "Xong rồi nè bé!", 'ai');
+                addMessage(cleanText || "Bé cùng chơi game nhé!", 'ai');
             } catch (error) {
-                messagesContainer.removeChild(typingDiv);
-                addMessage("Lỗi kết nối rồi!", 'ai');
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) indicator.remove();
+                console.error("Lỗi khi gửi tin nhắn:", error);
+                
+                let errorMsg = "Ôi, máy chủ bận một chút. Bé thử nhắn lại nhé!";
+                if (error.message.includes("API key")) {
+                    errorMsg = "Lỗi xác thực khóa ứng dụng. Vui lòng liên hệ hỗ trợ.";
+                }
+                addMessage(errorMsg, 'ai');
+            } finally {
+                sendBtn.disabled = false;
             }
         }
 
         async function callGemini(prompt, retries = 5) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            // URL sử dụng mô hình được hỗ trợ trong môi trường preview
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
-                //systemInstruction: { parts: [{ text: systemPrompt }] }
+                systemInstruction: { parts: [{ text: systemPrompt }] }
             };
+
+            let lastError;
             for (let i = 0; i < retries; i++) {
                 try {
                     const res = await fetch(url, {
@@ -153,21 +168,34 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
+                    
+                    if (!res.ok) {
+                        const errorData = await res.json().catch(() => ({}));
+                        throw new Error(errorData?.error?.message || `HTTP ${res.status}`);
+                    }
+                    
                     const data = await res.json();
-                    return data.candidates[0].content.parts[0].text;
+                    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    if (!textResponse) throw new Error("Phản hồi rỗng từ AI");
+                    return textResponse;
                 } catch (e) {
-                    if (i === retries - 1) throw e;
-                    await new Promise(r => setTimeout(r, 1000));
+                    lastError = e;
+                    if (i < retries - 1) {
+                        const delay = Math.pow(2, i) * 1000;
+                        await new Promise(r => setTimeout(r, delay));
+                    }
                 }
             }
+            throw lastError;
         }
 
         function addMessage(text, sender) {
             const div = document.createElement('div');
-            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-3`;
             const inner = document.createElement('div');
             inner.className = `p-2 rounded-lg max-w-[85%] shadow-sm text-sm ${
-                sender === 'user' ? 'bg-blue-600 text-white' : 'bg-white border'
+                sender === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white border border-gray-100 rounded-tl-none text-gray-800'
             }`;
             inner.innerText = text;
             div.appendChild(inner);
@@ -177,24 +205,24 @@
 
         function renderGame(data) {
             gameSection.classList.remove('hidden');
-            document.getElementById('game-title').innerText = data.title;
+            document.getElementById('game-title').innerText = data.title || "Trò Chơi Của Bé";
             gameContent.innerHTML = '';
             
-            if (data.type === 'quiz') {
+            if (data.type === 'quiz' && data.questions && data.questions.length > 0) {
                 const q = data.questions[0];
                 const qDiv = document.createElement('div');
-                qDiv.className = 'text-center w-full';
+                qDiv.className = 'w-full';
                 qDiv.innerHTML = `
-                    <p class="text-base mb-4 font-bold text-gray-700">${q.q}</p>
+                    <p class="text-sm mb-3 font-bold text-gray-700">${q.q}</p>
                     <div class="grid grid-cols-2 gap-2">
                         ${q.a.map(ans => `
                             <button onclick="checkAnswer(this, '${ans}', '${q.correct}')" 
-                                class="p-2 bg-gray-50 rounded-lg border text-xs hover:bg-blue-50 transition">
+                                class="p-2 bg-blue-50 rounded-lg border border-blue-100 text-xs hover:bg-blue-100 transition font-medium">
                                 ${ans}
                             </button>
                         `).join('')}
                     </div>
-                    <div id="game-feedback" class="mt-2 h-4 text-[10px] font-bold"></div>
+                    <div id="game-feedback" class="mt-3 h-4 text-[11px] font-bold"></div>
                 `;
                 gameContent.appendChild(qDiv);
             }
@@ -203,17 +231,21 @@
         function checkAnswer(btn, selected, correct) {
             const fb = document.getElementById('game-feedback');
             if (selected === correct) {
-                btn.className = 'p-2 bg-green-100 border-green-500 text-green-700 rounded-lg border text-xs';
-                fb.innerHTML = 'Đúng rồi! ✨';
+                btn.className = 'p-2 bg-green-500 text-white rounded-lg text-xs font-bold w-full';
+                fb.innerHTML = '<span class="text-green-600">Tuyệt vời! Bé làm đúng rồi! 🎉</span>';
             } else {
-                btn.className = 'p-2 bg-red-100 border-red-500 text-red-700 rounded-lg border text-xs';
-                fb.innerHTML = 'Thử lại nhé!';
+                btn.className = 'p-2 bg-red-100 border-red-400 text-red-700 rounded-lg border text-xs w-full';
+                fb.innerHTML = '<span class="text-red-500">Gần đúng rồi, chọn lại nào! 💪</span>';
             }
         }
 
-        function closeGame() { gameSection.classList.add('hidden'); }
+        function closeGame() { 
+            gameSection.classList.add('hidden'); 
+        }
 
-        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
+        userInput.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') handleSend(); 
+        });
     </script>
 </body>
 </html>
