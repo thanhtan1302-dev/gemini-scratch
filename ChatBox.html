@@ -22,7 +22,7 @@
 
         .app-viewport { 
             width: 480px; 
-            height: 360px; 
+            height: 480px; 
             overflow: hidden;
             position: relative;
             background: #ffffff;
@@ -36,7 +36,7 @@
         .chat-container { 
             flex: 1; 
             overflow-y: auto; 
-            padding: 10px; 
+            padding: 15px; 
             background: #FFF9E3;
             background-image: radial-gradient(#FFD1D1 0.5px, transparent 0.5px);
             background-size: 20px 20px;
@@ -61,11 +61,17 @@
             border-radius: 18px 18px 4px 18px;
         }
 
-        .typing-indicator {
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #FFB7B2;
             display: flex;
-            gap: 4px;
-            padding: 5px;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
+
         .dot {
             width: 6px;
             height: 6px;
@@ -81,39 +87,51 @@
             40% { transform: scale(1); }
         }
 
-        .game-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            z-index: 100;
+        .suggestions-container {
+            padding: 8px 12px;
             display: flex;
-            flex-direction: column;
-            padding: 15px;
-            animation: slideIn 0.3s ease-out;
+            gap: 8px;
+            overflow-x: auto;
+            background: white;
+            white-space: nowrap;
+            scrollbar-width: none;
+            border-top: 1px solid #fce7f3;
         }
-
-        @keyframes slideIn {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+        .suggestions-container::-webkit-scrollbar { display: none; }
+        
+        .suggestion-chip {
+            background: #fff1f2;
+            color: #e11d48;
+            border: 1px solid #fecdd3;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-
-        .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #FFB7B2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+        .suggestion-chip:hover {
+            background: #ffe4e6;
+            transform: scale(1.05);
         }
 
         .mic-active {
             animation: pulse-red 1s infinite;
             background-color: #ef4444 !important;
+            color: white !important;
+        }
+
+        .speak-btn {
+            font-size: 14px;
+            color: #FF85A1;
+            cursor: pointer;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .speak-btn.playing {
+            color: #4ade80;
+            animation: pulse-green 1s infinite;
         }
 
         @keyframes pulse-red {
@@ -122,249 +140,229 @@
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        #game-canvas {
-            background: #e0f2fe;
-            border-radius: 15px;
-            cursor: pointer;
-            touch-action: none;
-        }
-
-        .suggestions-bar {
-            display: flex;
-            gap: 8px;
-            padding: 8px;
-            overflow-x: auto;
-            background: white;
-            white-space: nowrap;
-            scrollbar-width: none;
-        }
-        .suggestions-bar::-webkit-scrollbar { display: none; }
-        
-        .suggestion-chip {
-            background: #F0F9FF;
-            border: 1.5px solid #BAE6FD;
-            color: #0369A1;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .suggestion-chip:hover {
-            background: #BAE6FD;
-            transform: translateY(-2px);
+        @keyframes pulse-green {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
     <div class="app-viewport">
-        <!-- Header -->
         <nav class="p-3 header-bg flex justify-center items-center z-50 shadow-md">
             <h1 class="text-white font-extrabold text-lg flex items-center gap-2">
                 <span>🚀</span> KHÁM PHÁ CÙNG BÉ
             </h1>
         </nav>
 
-        <!-- Chat Area -->
         <div id="chat-messages" class="chat-container space-y-4">
             <div class="flex items-end gap-2">
-                <div class="avatar shadow-sm">🤖</div>
+                <div class="avatar shadow-sm">👩‍🏫</div>
                 <div class="bubble-ai p-3 shadow-sm max-w-[80%] text-sm">
-                    Chào bé yêu! 🌈 Bé có thể gõ chữ, nói qua Micro hoặc chọn các gợi ý bên dưới để cùng học nhé! 🍎🍓
+                    Chào con yêu! 🌈 Cô giáo rất vui được gặp con. Hôm nay con muốn học gì cùng cô nào? 🍎🍓
+                    <i class="fas fa-volume-up speak-btn" onclick="speakWithGemini(this, 'Chào con yêu! Cô giáo rất vui được gặp con. Hôm nay con muốn học gì cùng cô nào?')"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Suggestions Bar -->
-        <div class="suggestions-bar border-t border-gray-100">
-            <button class="suggestion-chip" onclick="quickSend('Đố bé phép cộng trong phạm vi 10')">➕ Đố Toán</button>
-            <button class="suggestion-chip" onclick="quickSend('Kể cho bé nghe một câu chuyện cổ tích ngắn')">📖 Kể chuyện</button>
-            <button class="suggestion-chip" onclick="quickSend('Tạo trò chơi hứng quả cho bé nhé')">🍎 Chơi game</button>
-            <button class="suggestion-chip" onclick="quickSend('Dạy bé vần khó trong Tiếng Việt')">🅰️ Học vần</button>
-            <button class="suggestion-chip" onclick="quickSend('Khen bé một câu thật hay đi')">💖 Khen ngợi</button>
-        </div>
+        <div id="suggestions-bar" class="suggestions-container"></div>
 
-        <!-- Input Area -->
         <div class="p-3 bg-white border-t-2 border-pink-100">
             <div class="flex gap-2 items-center">
-                <button id="mic-btn" onclick="toggleSpeech()" class="bg-yellow-400 text-white w-10 h-10 rounded-full hover:bg-yellow-500 shadow-lg transform active:scale-95 transition flex items-center justify-center">
-                    <i class="fas fa-microphone" id="mic-icon"></i>
+                <button id="mic-btn" class="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center transition-all hover:bg-pink-200 focus:outline-none">
+                    <i class="fas fa-microphone"></i>
                 </button>
-                
-                <input type="text" id="user-input" placeholder="Nói hoặc viết cho Robot nhé..." 
+
+                <input type="text" id="user-input" placeholder="Viết hoặc nói với Cô nhé..." 
                     class="flex-1 p-3 text-sm border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 bg-pink-50/30">
                 
-                <button id="send-btn" onclick="handleSend()" class="bg-pink-500 text-white w-10 h-10 rounded-full hover:bg-pink-600 shadow-lg transform active:scale-95 transition">
+                <button id="send-btn" onclick="handleSend()" class="bg-pink-500 text-white w-10 h-10 rounded-full hover:bg-pink-600 shadow-lg transition flex items-center justify-center">
                     <i class="fas fa-paper-plane"></i>
                 </button>
-            </div>
-        </div>
-
-        <!-- Game Area Overlay -->
-        <div id="game-section" class="hidden game-overlay">
-            <div class="flex justify-between items-center mb-2 border-b-2 border-yellow-100 pb-2">
-                <h2 id="game-title" class="text-md font-extrabold text-pink-600">🎮 TRÒ CHƠI NHỎ</h2>
-                <button onclick="closeGame()" class="bg-gray-100 w-8 h-8 rounded-full text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="game-content" class="flex-1 flex flex-col items-center justify-center gap-2 bg-blue-50/50 rounded-2xl p-2 text-center relative overflow-hidden">
-                <canvas id="game-canvas"></canvas>
-                <div id="game-ui" class="w-full"></div>
             </div>
         </div>
     </div>
 
     <script>
+        const apiKey = ""; 
         const _p1 = "AIzaSyD8t";
         const _p2 = "dberxxkY_9WKuqP";
         const _p3 = "qqZLYqw9_r5o07Q";
-        const getK = () => _p1 + _p2 + _p3;
+        const getK = () => apiKey || (_p1 + _p2 + _p3);
 
         const messagesContainer = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const micBtn = document.getElementById('mic-btn');
-        const gameSection = document.getElementById('game-section');
-        const gameContent = document.getElementById('game-content');
-        const gameCanvas = document.getElementById('game-canvas');
-        const ctx = gameCanvas.getContext('2d');
+        const suggestionsBar = document.getElementById('suggestions-bar');
 
-        const systemPrompt = `Bạn là gia sư lớp 1 thân thiện. Luôn trả lời ngắn gọn + icon.
-        Nhiệm vụ:
-        1. Giải thích bài học toán, tiếng việt, tự nhiên xã hội lớp 1.
-        2. Nếu tạo game nhanh (hứng quả, chạm hình), trả về JSON: 
-        {"isGame":true, "title":"...", "type":"canvas_catch", "targetEmoji":"🍎", "speed":3}`;
+        const initialSuggestions = ["Học toán cộng", "Kể chuyện cổ tích", "Tập đọc vần", "Khen con đi"];
 
-        let gameActive = false;
-        let gameData = null;
+        function pcmToWav(pcmData, sampleRate) {
+            const buffer = new ArrayBuffer(44 + pcmData.length * 2);
+            const view = new DataView(buffer);
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+            };
+            writeString(0, 'RIFF');
+            view.setUint32(4, 32 + pcmData.length * 2, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(36, 'data');
+            view.setUint32(40, pcmData.length * 2, true);
+            for (let i = 0; i < pcmData.length; i++) view.setInt16(44 + i * 2, pcmData[i], true);
+            return buffer;
+        }
+
+        async function speakWithGemini(btnElement, text) {
+            if (btnElement) btnElement.classList.add('playing');
+            const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}]/gu, '');
+            
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${getK()}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `Đọc bằng giọng Tiếng Việt vi-VN cực kỳ ngọt ngào, truyền cảm cho bé lớp 1: ${cleanText}` }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: { voiceName: "Leda" }
+                                }
+                            }
+                        },
+                        model: "gemini-2.5-flash-preview-tts"
+                    })
+                });
+
+                const result = await response.json();
+                const audioDataB64 = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                
+                if (audioDataB64) {
+                    const binaryString = atob(audioDataB64);
+                    const pcmData = new Int16Array(binaryString.length / 2);
+                    for (let i = 0; i < pcmData.length; i++) {
+                        pcmData[i] = binaryString.charCodeAt(i * 2) | (binaryString.charCodeAt(i * 2 + 1) << 8);
+                    }
+                    
+                    const wavBuffer = pcmToWav(pcmData, 24000);
+                    const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+                    const audio = new Audio(URL.createObjectURL(blob));
+                    audio.onended = () => { if (btnElement) btnElement.classList.remove('playing'); };
+                    audio.play();
+                }
+            } catch (error) {
+                console.error("TTS Error:", error);
+                if (btnElement) btnElement.classList.remove('playing');
+            }
+        }
+
+        function updateSuggestions(options) {
+            suggestionsBar.innerHTML = '';
+            options.forEach(text => {
+                const chip = document.createElement('div');
+                chip.className = 'suggestion-chip';
+                chip.innerText = text;
+                chip.onclick = () => {
+                    userInput.value = text;
+                    handleSend();
+                };
+                suggestionsBar.appendChild(chip);
+            });
+        }
+
+        updateSuggestions(initialSuggestions);
 
         let recognition;
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
             recognition = new SpeechRecognition();
             recognition.lang = 'vi-VN';
             recognition.onstart = () => micBtn.classList.add('mic-active');
-            recognition.onresult = (e) => { userInput.value = e.results[0][0].transcript; handleSend(); };
+            recognition.onresult = (event) => {
+                userInput.value = event.results[0][0].transcript;
+                handleSend();
+            };
             recognition.onend = () => micBtn.classList.remove('mic-active');
-        }
-
-        function toggleSpeech() { if (recognition) recognition.start(); }
-
-        function quickSend(text) {
-            userInput.value = text;
-            handleSend();
+            micBtn.addEventListener('click', () => { try { recognition.start(); } catch (e) { recognition.stop(); } });
         }
 
         async function handleSend() {
             const text = userInput.value.trim();
             if (!text || sendBtn.disabled) return;
+
             addMessage(text, 'user');
             userInput.value = '';
             sendBtn.disabled = true;
 
             const typingDiv = document.createElement('div');
             typingDiv.id = 'typing-indicator';
-            typingDiv.className = 'flex items-end gap-2 mb-3';
-            typingDiv.innerHTML = `<div class="avatar">🤖</div><div class="typing-indicator bubble-ai"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+            typingDiv.className = 'flex items-end gap-2 mb-4';
+            typingDiv.innerHTML = `<div class="avatar">👩‍🏫</div><div class="bubble-ai p-3 shadow-sm flex gap-1"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
             messagesContainer.appendChild(typingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             try {
-                const response = await callGemini(text);
-                document.getElementById('typing-indicator')?.remove();
+                const result = await callGeminiWithSuggestions(text);
+                if (document.getElementById('typing-indicator')) document.getElementById('typing-indicator').remove();
                 
-                const jsonMatch = response.match(/\{.*\}/s);
-                let cleanText = response;
-                if (jsonMatch) {
-                    try {
-                        const data = JSON.parse(jsonMatch[0].trim());
-                        cleanText = response.replace(jsonMatch[0], '').trim();
-                        if (data.isGame) renderGame(data);
-                    } catch (e) {}
-                }
-                addMessage(cleanText || "Cùng chơi nhé! 🎈", 'ai');
+                const aiMsgElement = addMessage(result.answer, 'ai');
+                const btn = aiMsgElement.querySelector('.speak-btn');
+                
+                // TỰ ĐỘNG GỌI HÀM ĐỌC SAU KHI CÓ CÂU TRẢ LỜI
+                speakWithGemini(btn, result.answer); 
+                
+                if (result.suggestions) updateSuggestions(result.suggestions);
             } catch (error) {
-                document.getElementById('typing-indicator')?.remove();
-                addMessage("Robot mệt quá, bé nhắn lại nhé! 🧸", 'ai');
-            } finally { sendBtn.disabled = false; }
+                if (document.getElementById('typing-indicator')) document.getElementById('typing-indicator').remove();
+                addMessage("Cô bận xíu, bé đợi nhé! 🧸", 'ai');
+            } finally {
+                sendBtn.disabled = false;
+            }
         }
 
-        async function callGemini(prompt) {
+        async function callGeminiWithSuggestions(prompt) {
+            const systemPrompt = `Bạn là cô giáo dạy lớp 1. Trả lời ngọt ngào, xưng 'Cô', gọi 'con ơi', 'bé yêu'. Trả lời dưới 30 từ. Gợi ý 3 câu tiếp theo ngắn. PHẢN HỒI JSON: {"answer": "...", "suggestions": ["...", "...", "..."]}`;
             const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${getK()}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: { responseMimeType: "application/json" }
                 })
             });
             const data = await res.json();
-            return data.candidates[0].content.parts[0].text;
+            return JSON.parse(data.candidates[0].content.parts[0].text);
         }
 
         function addMessage(text, sender) {
             const div = document.createElement('div');
             div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4 items-end gap-2`;
-            div.innerHTML = sender === 'ai' ? 
-                `<div class="avatar shadow-sm">🤖</div><div class="bubble-ai p-3 shadow-sm max-w-[80%] text-sm">${text}</div>` :
-                `<div class="bubble-user p-3 shadow-sm max-w-[80%] text-sm font-medium">${text}</div>`;
+            if (sender === 'ai') {
+                div.innerHTML = `
+                    <div class="avatar shadow-sm">👩‍🏫</div>
+                    <div class="bubble-ai p-3 shadow-sm max-w-[80%] text-sm">
+                        ${text}
+                        <i class="fas fa-volume-up speak-btn" onclick="speakWithGemini(this, '${text.replace(/'/g, "\\'")}')"></i>
+                    </div>`;
+            } else {
+                div.innerHTML = `<div class="bubble-user p-3 shadow-sm max-w-[80%] text-sm font-medium">${text}</div>`;
+            }
             messagesContainer.appendChild(div);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return div;
         }
 
-        function renderGame(data) {
-            gameSection.classList.remove('hidden');
-            document.getElementById('game-title').innerText = "🎈 " + (data.title || "Trò Chơi");
-            gameData = data;
-            gameCanvas.width = gameContent.clientWidth - 20;
-            gameCanvas.height = 200;
-            if (data.type === 'canvas_catch') {
-                startCatchGame(data);
-            } else {
-                gameCanvas.style.display = 'none';
-                document.getElementById('game-ui').innerHTML = `<p class="text-sm font-bold">Game này đang được Robot vẽ... Bé chờ xíu nhé!</p>`;
-            }
-        }
-
-        function startCatchGame(data) {
-            gameCanvas.style.display = 'block';
-            document.getElementById('game-ui').innerHTML = '';
-            gameActive = true;
-            let basketX = gameCanvas.width / 2;
-            let items = [];
-            let gameScore = 0;
-            const spawnItem = () => { items.push({ x: Math.random() * (gameCanvas.width - 20) + 10, y: -20 }); };
-            const loop = () => {
-                if (!gameActive) return;
-                ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-                ctx.font = "30px Arial";
-                ctx.fillText("🧺", basketX - 15, gameCanvas.height - 10);
-                items.forEach((item, index) => {
-                    item.y += data.speed || 2;
-                    ctx.fillText(data.targetEmoji || "🍎", item.x, item.y);
-                    if (item.y > gameCanvas.height - 40 && Math.abs(item.x - basketX) < 25) {
-                        items.splice(index, 1);
-                        gameScore++;
-                    } else if (item.y > gameCanvas.height) { items.splice(index, 1); }
-                });
-                if (Math.random() < 0.02) spawnItem();
-                ctx.fillStyle = "#1e40af";
-                ctx.font = "bold 12px Lexend";
-                ctx.fillText("Điểm: " + gameScore, 10, 20);
-                requestAnimationFrame(loop);
-            };
-            const move = (e) => {
-                const rect = gameCanvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                basketX = clientX - rect.left;
-            };
-            gameCanvas.addEventListener('mousemove', move);
-            gameCanvas.addEventListener('touchmove', move);
-            loop();
-        }
-
-        function closeGame() { gameActive = false; gameSection.classList.add('hidden'); }
         userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>
 </body>
