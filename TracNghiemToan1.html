@@ -23,105 +23,103 @@
             align-items: center;
             justify-content: center;
             margin: 0;
-            padding: 20px;
-            overflow: hidden; /* Tránh cuộn trang trên mobile */
+            padding: 5px;
+            overflow: hidden;
         }
 
-        /* Container thích ứng theo màn hình (Fluid Design) */
         #game-container {
-            width: 100%;
-            max-width: 600px; /* Độ phân giải cao hơn */
-            aspect-ratio: 4 / 3; /* Giữ tỷ lệ màn hình chuẩn */
+            width: 480px;
+            height: 300px;
             position: relative;
             background: rgba(255, 255, 255, 0.98);
-            border: 8px solid var(--secondary-pink);
-            border-radius: 3rem;
-            box-shadow: 0 25px 50px -12px rgba(255, 71, 126, 0.4);
+            border: 6px solid var(--secondary-pink);
+            border-radius: 2rem;
+            box-shadow: 0 15px 35px rgba(255, 71, 126, 0.3);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
         }
 
-        /* HD Background Pattern */
         .screen {
             width: 100%;
             height: 100%;
-            padding: 30px;
+            padding: 12px 15px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             background-image: 
-                radial-gradient(circle at 2px 2px, var(--secondary-pink) 1px, transparent 0);
-            background-size: 32px 32px;
+                radial-gradient(circle at 1.5px 1.5px, var(--secondary-pink) 0.8px, transparent 0);
+            background-size: 24px 24px;
             background-color: white;
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+            pointer-events: none;
         }
 
         .option-btn {
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid var(--secondary-pink);
-            font-size: clamp(1.5rem, 5vw, 2.5rem); /* Chữ tự co giãn */
+            border: 3px solid var(--secondary-pink);
+            font-size: 1.4rem;
             font-weight: 800;
-            padding: 1rem;
-            border-radius: 1.5rem;
+            padding: 0.3rem;
+            border-radius: 1rem;
             background: white;
             color: var(--primary-pink);
+            cursor: pointer;
         }
 
         .option-btn:hover:not(:disabled) {
             transform: scale(1.03);
             background-color: #FFF0F5;
-            box-shadow: 0 10px 20px rgba(255, 126, 179, 0.2);
         }
 
         .correct {
             background-color: #2ECC71 !important;
             color: white !important;
             border-color: #27AE60 !important;
-            box-shadow: 0 8px 0 #27AE60 !important;
+            box-shadow: 0 4px 0 #27AE60 !important;
         }
 
         .incorrect {
             background-color: #FF4757 !important;
             color: white !important;
             border-color: #FF6B81 !important;
-            box-shadow: 0 8px 0 #c0392b !important;
+            box-shadow: 0 4px 0 #c0392b !important;
             animation: shake 0.5s;
         }
 
-        /* Nút kết thúc nổi bật */
         .btn-finish {
-            font-size: 1.2rem;
+            font-size: 0.85rem;
             font-weight: 900;
             color: #FF4757;
             background: #FFE4E6;
-            padding: 8px 20px;
-            border-radius: 15px;
-            border: 3px solid #FF4757;
+            padding: 3px 10px;
+            border-radius: 8px;
+            border: 2px solid #FF4757;
             text-transform: uppercase;
-            letter-spacing: 1px;
             transition: all 0.2s;
-        }
-
-        .btn-finish:hover {
-            background: #FF4757;
-            color: white;
-            transform: scale(1.1);
+            cursor: pointer;
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         .progress-bar {
-            height: 16px;
+            height: 8px;
             background-color: #FFE4E1;
-            border-radius: 8px;
+            border-radius: 4px;
             overflow: hidden;
-            border: 2px solid #FFB6C1;
+            border: 1px solid #FFB6C1;
+            margin: 5px 0;
         }
 
         .progress-fill {
@@ -132,23 +130,21 @@
             transition: width 0.5s ease;
         }
 
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
         .floating {
             animation: floating 4s ease-in-out infinite;
         }
 
         @keyframes floating {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
         }
 
-        @media (max-width: 480px) {
-            #game-container { border-radius: 1.5rem; border-width: 4px; }
-            .screen { padding: 15px; }
+        .main-header {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--primary-pink);
+            margin-bottom: 5px;
+            text-shadow: 1px 1px white;
         }
     </style>
 </head>
@@ -158,40 +154,41 @@
 
     <div id="game-container">
         <!-- Màn hình bắt đầu -->
-        <div id="start-screen" class="screen text-center">
-            <div class="text-8xl mb-4 floating drop-shadow-xl">🦁</div>
-            <h2 class="text-4xl font-extrabold text-pink-600 mb-4 tracking-tight">Bé Tập Tính Nhẩm</h2>
-            <p class="text-gray-500 text-lg mb-8 font-semibold">Cùng vui học với bạn Sư Tử siêu cấp!</p>
-            <button onclick="startGame()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-black py-6 rounded-3xl shadow-[0_10px_0_#d13d6a] transition-all hover:-translate-y-1 active:translate-y-1 active:shadow-none text-3xl">
-                BẮT ĐẦU 🚀
-            </button>
+        <div id="start-screen" class="screen text-center justify-center items-center">
+            <div class="text-6xl mb-1 floating drop-shadow-lg">🦁</div>
+            <h2 class="text-2xl font-extrabold text-pink-600 mb-0 tracking-tight">Bé Tập Tính Nhẩm</h2>
+            <p class="text-gray-500 text-xs mb-3 font-semibold">Vui học toán cùng Sư Tử!</p>
+            
+            <div class="flex flex-col gap-2 w-full max-w-[240px]">
+                <button onclick="startGame()" class="bg-pink-500 hover:bg-pink-600 text-white font-black py-4 rounded-2xl shadow-[0_5px_0_#d13d6a] transition-all active:translate-y-1 active:shadow-none text-xl cursor-pointer">
+                    BẮT ĐẦU 🚀
+                </button>
+            </div>
         </div>
 
         <!-- Màn hình chơi game -->
         <div id="quiz-screen" class="screen hidden">
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center gap-2 bg-pink-100 px-4 py-2 rounded-2xl text-sm font-black text-pink-600 uppercase border-2 border-pink-200">
+            <div class="flex justify-between items-center">
+                <div class="bg-pink-100 px-2 py-0.5 rounded-lg text-[9px] font-black text-pink-600 border border-pink-200 uppercase">
                     ⭐ VÒNG <span id="current-round">1</span>
                 </div>
-                <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-2xl text-sm font-black text-yellow-700 uppercase border-2 border-yellow-200">
-                    💎 ĐIỂM: <span id="score">0</span>
+                <div class="bg-yellow-100 px-2 py-0.5 rounded-lg text-[9px] font-black text-yellow-700 border border-yellow-200 uppercase">
+                    💎 ĐIỂM: <span id="score-display">0</span>
                 </div>
             </div>
             
-            <div class="progress-bar mb-6 shadow-sm">
+            <div class="progress-bar shadow-sm">
                 <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
             </div>
 
-            <div class="text-center flex-grow flex flex-col justify-center gap-4">
-                <div id="round-emoji" class="text-5xl floating">🍎</div>
-                <h2 id="question-text" class="text-5xl font-black text-gray-800 bg-white p-8 rounded-[2.5rem] border-4 border-dashed border-pink-100 shadow-inner">1 + 1 = ?</h2>
-                <div id="options-container" class="grid grid-cols-2 gap-4">
-                    <!-- Đáp án -->
-                </div>
+            <div class="text-center flex flex-col justify-center gap-1">
+                <div id="round-emoji" class="text-2xl">🍎</div>
+                <h2 id="question-text" class="text-3xl font-black text-gray-800 bg-white py-2 rounded-xl border-2 border-dashed border-pink-100 shadow-inner">...</h2>
+                <div id="options-container" class="grid grid-cols-2 gap-2 px-6"></div>
             </div>
 
-            <div class="mt-6 flex justify-between items-center">
-                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">CÂU <span id="question-num">1</span>/10</span>
+            <div class="flex justify-between items-center mt-1">
+                <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">CÂU <span id="question-num">1</span>/10</span>
                 <button onclick="finishGame()" class="btn-finish">
                     🏁 KẾT THÚC
                 </button>
@@ -199,16 +196,15 @@
         </div>
 
         <!-- Màn hình kết quả -->
-        <div id="result-screen" class="screen text-center hidden">
-            <div id="result-emoji" class="text-8xl mb-4 drop-shadow-2xl">🎉</div>
-            <h2 id="result-title" class="text-3xl font-black text-pink-600 mb-2">QUÁ TUYỆT VỜI!</h2>
-            <div class="bg-yellow-50 py-6 rounded-[2rem] mb-8 border-4 border-yellow-200 shadow-xl relative overflow-hidden">
-                <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 10px 10px, gold 2px, transparent 0); background-size: 20px 20px;"></div>
-                <p class="text-sm text-yellow-600 font-black uppercase mb-2 tracking-widest">CÚP VÀNG CỦA BÉ</p>
-                <p id="final-score" class="text-7xl font-black text-yellow-700">0</p>
+        <div id="result-screen" class="screen text-center hidden justify-center items-center">
+            <div id="result-emoji" class="text-5xl mb-1 drop-shadow-xl">🎉</div>
+            <h2 id="result-title" class="text-lg font-black text-pink-600 mb-1 uppercase">Kết Quả</h2>
+            <div class="bg-yellow-50 py-2 px-10 rounded-2xl mb-3 border-2 border-yellow-200 shadow-md">
+                <p class="text-[9px] text-yellow-600 font-black uppercase tracking-widest">ĐIỂM SỐ</p>
+                <p id="final-score" class="text-5xl font-black text-yellow-700">0</p>
             </div>
-            <button id="next-btn" onclick="nextAction()" class="w-full bg-green-500 hover:bg-green-600 text-white font-black py-6 rounded-3xl shadow-[0_10px_0_#2d9154] transition-all hover:-translate-y-1 active:translate-y-1 active:shadow-none text-2xl uppercase">
-                TIẾP TỤC LUÔN 🌈
+            <button id="next-btn" onclick="nextAction()" class="w-full max-w-[240px] bg-green-500 hover:bg-green-600 text-white font-black py-3 rounded-2xl shadow-[0_5px_0_#2d9154] transition-all active:translate-y-1 active:shadow-none text-lg uppercase cursor-pointer">
+                TIẾP TỤC 🌈
             </button>
         </div>
     </div>
@@ -219,39 +215,54 @@
         let score = 0;
         let questions = [];
         const totalQuestionsPerRound = 10;
+        let audioCtx = null;
 
         const roundEmojis = ['🍎', '🦒', '🎈', '🍰', '🦖'];
         const resultEmojis = ['🥉', '🥈', '🥇', '🏆', '👑'];
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            if (type === 'correct') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
-            } else if (type === 'wrong') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.2);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
-            }
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.4);
+        function showScreen(id) {
+            const screens = ['start-screen', 'quiz-screen', 'result-screen'];
+            screens.forEach(s => {
+                const el = document.getElementById(s);
+                if (s === id) el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            });
         }
 
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+        function playSound(type) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                } else {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                }
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) { console.log("Audio play failed"); }
+        }
+
+        function generateOptions(correct) {
+            let s = new Set([correct]);
+            while(s.size < 4) {
+                let w = correct + (Math.floor(Math.random() * 5) - 2);
+                if (w >= 0 && w !== correct) s.add(w);
+                else if (w < 0) s.add(correct + s.size);
+            }
+            return Array.from(s).sort(() => Math.random() - 0.5);
         }
 
         function generateQuestions(round) {
@@ -262,21 +273,10 @@
                     op = Math.random() > 0.5 ? '+' : '-';
                     if (op === '+') { a = Math.floor(Math.random() * 6); b = Math.floor(Math.random() * (11 - a)); ans = a + b; }
                     else { a = Math.floor(Math.random() * 11); b = Math.floor(Math.random() * (a + 1)); ans = a - b; }
-                } else if (round === 2) {
+                } else {
                     op = Math.random() > 0.5 ? '+' : '-';
                     a = Math.floor(Math.random() * 11) + 5;
                     b = op === '+' ? Math.floor(Math.random() * (21 - a)) : Math.floor(Math.random() * a);
-                    ans = op === '+' ? a + b : a - b;
-                } else if (round === 3) {
-                    a = Math.floor(Math.random() * 10); ans = Math.floor(Math.random() * 10);
-                    qs.push({ q: `${a} + ? = ${a + ans}`, options: generateOptions(ans), answer: ans }); continue;
-                } else if (round === 4) {
-                    a = (Math.floor(Math.random() * 9) + 1) * 10; b = (Math.floor(Math.random() * 5)) * 10;
-                    op = Math.random() > 0.5 ? '+' : '-';
-                    ans = op === '+' ? a + b : a - b;
-                } else {
-                    a = Math.floor(Math.random() * 50) + 10; b = Math.floor(Math.random() * 30);
-                    op = Math.random() > 0.5 ? '+' : '-';
                     ans = op === '+' ? a + b : a - b;
                 }
                 qs.push({ q: `${a} ${op} ${b} = ?`, options: generateOptions(ans), answer: ans });
@@ -284,54 +284,59 @@
             return qs;
         }
 
-        function generateOptions(correct) {
-            let s = new Set([correct]);
-            while(s.size < 4) {
-                let w = correct + (Math.floor(Math.random() * 7) - 3);
-                if (w >= 0 && w !== correct) s.add(w);
-            }
-            return Array.from(s).sort(() => Math.random() - 0.5);
-        }
-
         function startGame() {
-            score = 0; currentRound = 1; startRound();
+            score = 0; 
+            currentRound = 1; 
+            startRound();
         }
 
         function startRound() {
             currentQuestionIdx = 0;
             questions = generateQuestions(currentRound);
             document.getElementById('current-round').innerText = currentRound;
-            document.getElementById('score').innerText = score;
-            document.getElementById('round-emoji').innerText = roundEmojis[currentRound-1];
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('round-emoji').innerText = roundEmojis[currentRound-1] || '🍎';
             showScreen('quiz-screen');
             loadQuestion();
         }
 
         function loadQuestion() {
+            if (currentQuestionIdx >= questions.length) {
+                showRoundResult();
+                return;
+            }
             const data = questions[currentQuestionIdx];
             document.getElementById('question-text').innerText = data.q;
             document.getElementById('question-num').innerText = currentQuestionIdx + 1;
             document.getElementById('progress-fill').style.width = `${(currentQuestionIdx / 10) * 100}%`;
+            
             const container = document.getElementById('options-container');
             container.innerHTML = '';
+            
             data.options.forEach(opt => {
                 const b = document.createElement('button');
-                b.className = 'option-btn shadow-[0_8px_0_#FF7EB3] active:translate-y-1 active:shadow-none';
+                b.className = 'option-btn shadow-[0_4px_0_#FF7EB3] active:translate-y-0.5 active:shadow-none';
                 b.innerText = opt;
                 b.onclick = () => {
-                    const all = document.querySelectorAll('.option-btn');
+                    const all = container.querySelectorAll('.option-btn');
                     all.forEach(btn => btn.disabled = true);
+                    
                     if (opt === data.answer) {
-                        b.classList.add('correct'); playSound('correct'); score += 10;
+                        b.classList.add('correct'); 
+                        playSound('correct'); 
+                        score += 10;
                     } else {
-                        b.classList.add('incorrect'); playSound('wrong'); score = Math.max(0, score - 5);
-                        all.forEach(btn => { if(parseInt(btn.innerText) === data.answer) btn.classList.add('correct'); });
+                        b.classList.add('incorrect'); 
+                        playSound('wrong'); 
+                        all.forEach(btn => { 
+                            if(parseInt(btn.innerText) === data.answer) btn.classList.add('correct'); 
+                        });
                     }
-                    document.getElementById('score').innerText = score;
+                    
+                    document.getElementById('score-display').innerText = score;
                     setTimeout(() => {
                         currentQuestionIdx++;
-                        if (currentQuestionIdx < 10) loadQuestion();
-                        else showRoundResult();
+                        loadQuestion();
                     }, 800);
                 };
                 container.appendChild(b);
@@ -341,29 +346,32 @@
         function showRoundResult() {
             showScreen('result-screen');
             document.getElementById('final-score').innerText = score;
-            document.getElementById('result-emoji').innerText = resultEmojis[currentRound-1];
+            document.getElementById('result-emoji').innerText = resultEmojis[currentRound-1] || '🎉';
             const btn = document.getElementById('next-btn');
             if (currentRound < 5) {
-                document.getElementById('result-title').innerText = "VÒNG " + currentRound + " HOÀN THÀNH!";
-                btn.innerText = "SANG VÒNG " + (currentRound + 1) + " LUÔN 🚀";
+                document.getElementById('result-title').innerText = "VÒNG " + currentRound + " XONG!";
+                btn.innerText = "SANG VÒNG " + (currentRound + 1) + " 🚀";
             } else {
-                document.getElementById('result-title').innerText = "BÉ LÀ THIÊN TÀI TOÁN HỌC! 👑";
-                btn.innerText = "CHƠI LẠI TỪ ĐẦU NHÉ 🍎";
+                document.getElementById('result-title').innerText = "THIÊN TÀI! 👑";
+                btn.innerText = "CHƠI LẠI TỪ ĐẦU 🍎";
             }
         }
 
         function finishGame() {
-            showScreen('result-screen');
-            document.getElementById('result-emoji').innerText = "🏁";
-            document.getElementById('result-title').innerText = "TỔNG KẾT ĐIỂM";
-            document.getElementById('final-score').innerText = score;
-            document.getElementById('next-btn').innerText = "QUAY LẠI TRANG CHỦ 🏠";
             currentRound = 5;
+            showRoundResult();
+            document.getElementById('result-title').innerText = "TỔNG KẾT";
+            document.getElementById('next-btn').innerText = "VỀ TRANG CHỦ 🏠";
         }
 
         function nextAction() {
-            if (currentRound < 5) { currentRound++; startRound(); }
-            else { showScreen('start-screen'); currentRound = 1; }
+            if (currentRound < 5 && document.getElementById('next-btn').innerText.includes("VÒNG")) { 
+                currentRound++; 
+                startRound(); 
+            } else { 
+                showScreen('start-screen'); 
+                currentRound = 1; 
+            }
         }
     </script>
 </body>
