@@ -3,179 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bé Học Toán Lớp 1</title>
+    <title>Bé Học Toán Lớp 1 - HD Graphics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
         
+        :root {
+            --primary-pink: #FF477E;
+            --secondary-pink: #FF7EB3;
+            --bg-gradient: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+        }
+
         body {
             font-family: 'Quicksand', sans-serif;
-            background: #FFDEE9;
-            background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+            background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             margin: 0;
-            padding: 10px;
+            padding: 20px;
+            overflow: hidden; /* Tránh cuộn trang trên mobile */
         }
 
-        .main-header {
-            font-size: 26px;
-            font-weight: 900;
-            color: #FF477E;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 0px #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        /* Container thích ứng theo màn hình (Fluid Design) */
         #game-container {
-            width: 480px;
-            height: 360px;
+            width: 100%;
+            max-width: 600px; /* Độ phân giải cao hơn */
+            aspect-ratio: 4 / 3; /* Giữ tỷ lệ màn hình chuẩn */
             position: relative;
-            background: rgba(255, 255, 255, 0.95);
-            border: 6px solid #FF7EB3;
-            border-radius: 2rem;
-            box-shadow: 0 15px 35px rgba(255, 71, 126, 0.2);
+            background: rgba(255, 255, 255, 0.98);
+            border: 8px solid var(--secondary-pink);
+            border-radius: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(255, 71, 126, 0.4);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            transition: all 0.3s ease;
         }
 
+        /* HD Background Pattern */
         .screen {
             width: 100%;
             height: 100%;
-            padding: 20px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background-image: radial-gradient(#FF7EB3 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: 
+                radial-gradient(circle at 2px 2px, var(--secondary-pink) 1px, transparent 0);
+            background-size: 32px 32px;
             background-color: white;
-            background-position: 0 0;
-            background-opacity: 0.05;
+            position: relative;
         }
 
         .option-btn {
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 3px solid #FF7EB3;
-            font-size: 1.5rem;
-            padding: 0.5rem;
-            border-radius: 1.2rem;
+            border: 4px solid var(--secondary-pink);
+            font-size: clamp(1.5rem, 5vw, 2.5rem); /* Chữ tự co giãn */
+            font-weight: 800;
+            padding: 1rem;
+            border-radius: 1.5rem;
             background: white;
-            color: #FF477E;
+            color: var(--primary-pink);
         }
 
         .option-btn:hover:not(:disabled) {
-            transform: scale(1.05);
+            transform: scale(1.03);
             background-color: #FFF0F5;
-            box-shadow: 0 5px 15px rgba(255, 126, 179, 0.3);
+            box-shadow: 0 10px 20px rgba(255, 126, 179, 0.2);
         }
 
         .correct {
             background-color: #2ECC71 !important;
             color: white !important;
             border-color: #27AE60 !important;
-            transform: scale(1.1);
+            box-shadow: 0 8px 0 #27AE60 !important;
         }
 
         .incorrect {
             background-color: #FF4757 !important;
             color: white !important;
             border-color: #FF6B81 !important;
+            box-shadow: 0 8px 0 #c0392b !important;
             animation: shake 0.5s;
+        }
+
+        /* Nút kết thúc nổi bật */
+        .btn-finish {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #FF4757;
+            background: #FFE4E6;
+            padding: 8px 20px;
+            border-radius: 15px;
+            border: 3px solid #FF4757;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .btn-finish:hover {
+            background: #FF4757;
+            color: white;
+            transform: scale(1.1);
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .progress-bar {
-            height: 12px;
+            height: 16px;
             background-color: #FFE4E1;
-            border-radius: 6px;
+            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid #FFB6C1;
+            border: 2px solid #FFB6C1;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #FF7EB3, #FF477E);
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: linear-gradient(90deg, #FF7EB3, #FF477E, #FF7EB3);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+            transition: width 0.5s ease;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .floating {
-            animation: floating 3s ease-in-out infinite;
+            animation: floating 4s ease-in-out infinite;
         }
 
         @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        @media (max-width: 480px) {
+            #game-container { border-radius: 1.5rem; border-width: 4px; }
+            .screen { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <h1 class="main-header">✨ TRẮC NGHIỆM TOÁN 1 🎈</h1>
+    <h1 class="main-header select-none">✨ TOÁN LỚP 1 - HD 🎈</h1>
 
     <div id="game-container">
         <!-- Màn hình bắt đầu -->
         <div id="start-screen" class="screen text-center">
-            <div class="text-6xl mb-2 floating">🦁</div>
-            <h2 class="text-3xl font-extrabold text-pink-600 mb-2">Bé Tập Tính Nhẩm</h2>
-            <p class="text-gray-500 text-sm mb-6 font-medium">Cùng tham gia giải đố với bạn Sư Tử nhé!</p>
-            <button onclick="startGame()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-2xl shadow-[0_6px_0_#d13d6a] transition active:translate-y-1 active:shadow-none text-xl">
-                CHƠI NGAY 🚀
+            <div class="text-8xl mb-4 floating drop-shadow-xl">🦁</div>
+            <h2 class="text-4xl font-extrabold text-pink-600 mb-4 tracking-tight">Bé Tập Tính Nhẩm</h2>
+            <p class="text-gray-500 text-lg mb-8 font-semibold">Cùng vui học với bạn Sư Tử siêu cấp!</p>
+            <button onclick="startGame()" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-black py-6 rounded-3xl shadow-[0_10px_0_#d13d6a] transition-all hover:-translate-y-1 active:translate-y-1 active:shadow-none text-3xl">
+                BẮT ĐẦU 🚀
             </button>
         </div>
 
         <!-- Màn hình chơi game -->
         <div id="quiz-screen" class="screen hidden">
-            <div class="flex justify-between items-center mb-2">
-                <div class="flex items-center gap-1 bg-pink-100 px-3 py-1 rounded-full text-[10px] font-bold text-pink-600 uppercase">
-                    ⭐ Vòng <span id="current-round">1</span>/5
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2 bg-pink-100 px-4 py-2 rounded-2xl text-sm font-black text-pink-600 uppercase border-2 border-pink-200">
+                    ⭐ VÒNG <span id="current-round">1</span>
                 </div>
-                <div class="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full text-[10px] font-bold text-yellow-700 uppercase">
-                    💎 Điểm: <span id="score">0</span>
+                <div class="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-2xl text-sm font-black text-yellow-700 uppercase border-2 border-yellow-200">
+                    💎 ĐIỂM: <span id="score">0</span>
                 </div>
             </div>
             
-            <div class="progress-bar mb-4">
+            <div class="progress-bar mb-6 shadow-sm">
                 <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
             </div>
 
-            <div class="text-center flex-grow flex flex-col justify-center">
-                <div id="round-emoji" class="text-3xl mb-2">🍎</div>
-                <h2 id="question-text" class="text-4xl font-bold text-gray-800 mb-6 bg-white p-4 rounded-3xl border-2 border-dashed border-pink-200">1 + 1 = ?</h2>
-                <div id="options-container" class="grid grid-cols-2 gap-3">
+            <div class="text-center flex-grow flex flex-col justify-center gap-4">
+                <div id="round-emoji" class="text-5xl floating">🍎</div>
+                <h2 id="question-text" class="text-5xl font-black text-gray-800 bg-white p-8 rounded-[2.5rem] border-4 border-dashed border-pink-100 shadow-inner">1 + 1 = ?</h2>
+                <div id="options-container" class="grid grid-cols-2 gap-4">
                     <!-- Đáp án -->
                 </div>
             </div>
 
-            <div class="mt-4 flex justify-between items-center text-[10px] font-bold text-gray-400">
-                <span>CÂU <span id="question-num">1</span>/10</span>
-                <button onclick="finishGame()" class="text-red-400 hover:text-red-600 uppercase flex items-center gap-1">
-                    🚪 Thoát
+            <div class="mt-6 flex justify-between items-center">
+                <span class="text-xs font-black text-gray-400 uppercase tracking-widest">CÂU <span id="question-num">1</span>/10</span>
+                <button onclick="finishGame()" class="btn-finish">
+                    🏁 KẾT THÚC
                 </button>
             </div>
         </div>
 
         <!-- Màn hình kết quả -->
         <div id="result-screen" class="screen text-center hidden">
-            <div id="result-emoji" class="text-6xl mb-2">🎉</div>
-            <h2 id="result-title" class="text-2xl font-bold text-pink-600 mb-1">Xuất Sắc!</h2>
-            <div class="bg-yellow-50 py-4 rounded-3xl mb-6 border-4 border-yellow-200 shadow-inner">
-                <p class="text-xs text-yellow-600 font-bold uppercase mb-1">Cúp Vàng Của Bé</p>
-                <p id="final-score" class="text-6xl font-black text-yellow-700">0</p>
+            <div id="result-emoji" class="text-8xl mb-4 drop-shadow-2xl">🎉</div>
+            <h2 id="result-title" class="text-3xl font-black text-pink-600 mb-2">QUÁ TUYỆT VỜI!</h2>
+            <div class="bg-yellow-50 py-6 rounded-[2rem] mb-8 border-4 border-yellow-200 shadow-xl relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 10px 10px, gold 2px, transparent 0); background-size: 20px 20px;"></div>
+                <p class="text-sm text-yellow-600 font-black uppercase mb-2 tracking-widest">CÚP VÀNG CỦA BÉ</p>
+                <p id="final-score" class="text-7xl font-black text-yellow-700">0</p>
             </div>
-            <button id="next-btn" onclick="nextAction()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-2xl shadow-[0_6px_0_#2d9154] transition active:translate-y-1 active:shadow-none text-xl">
-                TIẾP TỤC 🌈
+            <button id="next-btn" onclick="nextAction()" class="w-full bg-green-500 hover:bg-green-600 text-white font-black py-6 rounded-3xl shadow-[0_10px_0_#2d9154] transition-all hover:-translate-y-1 active:translate-y-1 active:shadow-none text-2xl uppercase">
+                TIẾP TỤC LUÔN 🌈
             </button>
         </div>
     </div>
@@ -186,7 +219,6 @@
         let score = 0;
         let questions = [];
         const totalQuestionsPerRound = 10;
-        const totalRounds = 5;
 
         const roundEmojis = ['🍎', '🦒', '🎈', '🍰', '🦖'];
         const resultEmojis = ['🥉', '🥈', '🥇', '🏆', '👑'];
@@ -202,19 +234,19 @@
 
             if (type === 'correct') {
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(523, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.15);
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
             } else if (type === 'wrong') {
-                osc.type = 'square';
+                osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.2);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
             }
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.3);
+            osc.stop(audioCtx.currentTime + 0.4);
         }
 
         function showScreen(id) {
@@ -284,15 +316,15 @@
             container.innerHTML = '';
             data.options.forEach(opt => {
                 const b = document.createElement('button');
-                b.className = 'option-btn font-bold shadow-[0_4px_0_#FF7EB3] active:translate-y-1 active:shadow-none';
+                b.className = 'option-btn shadow-[0_8px_0_#FF7EB3] active:translate-y-1 active:shadow-none';
                 b.innerText = opt;
                 b.onclick = () => {
                     const all = document.querySelectorAll('.option-btn');
                     all.forEach(btn => btn.disabled = true);
                     if (opt === data.answer) {
-                        b.classList.add('correct'); playSound('correct'); score++;
+                        b.classList.add('correct'); playSound('correct'); score += 10;
                     } else {
-                        b.classList.add('incorrect'); playSound('wrong'); score = Math.max(0, score - 1);
+                        b.classList.add('incorrect'); playSound('wrong'); score = Math.max(0, score - 5);
                         all.forEach(btn => { if(parseInt(btn.innerText) === data.answer) btn.classList.add('correct'); });
                     }
                     document.getElementById('score').innerText = score;
@@ -312,26 +344,26 @@
             document.getElementById('result-emoji').innerText = resultEmojis[currentRound-1];
             const btn = document.getElementById('next-btn');
             if (currentRound < 5) {
-                document.getElementById('result-title').innerText = "Vòng " + currentRound + " Xong!";
-                btn.innerText = "SANG VÒNG " + (currentRound + 1) + " 🎁";
+                document.getElementById('result-title').innerText = "VÒNG " + currentRound + " HOÀN THÀNH!";
+                btn.innerText = "SANG VÒNG " + (currentRound + 1) + " LUÔN 🚀";
             } else {
-                document.getElementById('result-title').innerText = "BÉ LÀ THIÊN TÀI! 👑";
-                btn.innerText = "CHƠI LẠI TỪ ĐẦU 🍎";
+                document.getElementById('result-title').innerText = "BÉ LÀ THIÊN TÀI TOÁN HỌC! 👑";
+                btn.innerText = "CHƠI LẠI TỪ ĐẦU NHÉ 🍎";
             }
         }
 
         function finishGame() {
             showScreen('result-screen');
             document.getElementById('result-emoji').innerText = "🏁";
-            document.getElementById('result-title').innerText = "Tạm Nghỉ Nhé!";
+            document.getElementById('result-title').innerText = "TỔNG KẾT ĐIỂM";
             document.getElementById('final-score').innerText = score;
-            document.getElementById('next-btn').innerText = "CHƠI LẠI NÀO";
+            document.getElementById('next-btn').innerText = "QUAY LẠI TRANG CHỦ 🏠";
             currentRound = 5;
         }
 
         function nextAction() {
             if (currentRound < 5) { currentRound++; startRound(); }
-            else startGame();
+            else { showScreen('start-screen'); currentRound = 1; }
         }
     </script>
 </body>
