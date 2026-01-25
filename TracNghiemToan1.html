@@ -17,66 +17,72 @@
         body {
             font-family: 'Quicksand', sans-serif;
             background: var(--bg-gradient);
-            min-height: 100vh;
+            height: 100vh;
+            height: -webkit-fill-available; /* Fix cho trình duyệt di động */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             margin: 0;
-            padding: 5px;
+            padding: 10px;
             overflow: hidden;
         }
 
         #game-container {
-            width: 480px;
-            height: 300px;
-            position: relative;
+            width: 100%;
+            max-width: 450px;
+            /* Tự động co giãn nhưng không bao giờ tràn màn hình */
+            max-height: 95vh;
             background: rgba(255, 255, 255, 0.98);
-            border: 6px solid var(--secondary-pink);
-            border-radius: 2rem;
-            box-shadow: 0 15px 35px rgba(255, 71, 126, 0.3);
+            border: 4px solid var(--secondary-pink);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(255, 71, 126, 0.2);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .screen {
             width: 100%;
-            height: 100%;
-            padding: 12px 15px;
+            flex: 1;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             background-image: 
-                radial-gradient(circle at 1.5px 1.5px, var(--secondary-pink) 0.8px, transparent 0);
-            background-size: 24px 24px;
+                radial-gradient(circle at 1px 1px, var(--secondary-pink) 0.5px, transparent 0);
+            background-size: 20px 20px;
             background-color: white;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: opacity 0.3s ease;
+            overflow-y: auto; /* Cho phép cuộn nội dung nếu quá dài */
         }
 
-        .hidden {
-            display: none !important;
-            pointer-events: none;
-        }
+        .hidden { display: none !important; }
 
+        /* Nút tùy chọn */
         .option-btn {
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 3px solid var(--secondary-pink);
-            font-size: 1.4rem;
+            border: 2px solid var(--secondary-pink);
+            font-size: clamp(1.2rem, 6vw, 1.5rem);
             font-weight: 800;
-            padding: 0.3rem;
+            padding: 10px;
             border-radius: 1rem;
             background: white;
             color: var(--primary-pink);
             cursor: pointer;
+            box-shadow: 0 4px 0 var(--secondary-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
         }
 
         .option-btn:hover:not(:disabled) {
-            transform: scale(1.03);
             background-color: #FFF0F5;
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: none;
         }
 
         .correct {
@@ -95,22 +101,45 @@
         }
 
         .btn-finish {
-            font-size: 0.85rem;
+            font-size: 0.7rem;
             font-weight: 900;
             color: #FF4757;
             background: #FFE4E6;
-            padding: 3px 10px;
-            border-radius: 8px;
-            border: 2px solid #FF4757;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #FF4757;
             text-transform: uppercase;
-            transition: all 0.2s;
-            cursor: pointer;
+        }
+
+        #custom-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 1.5rem;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            border: 4px solid var(--primary-pink);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
         .progress-bar {
@@ -118,8 +147,8 @@
             background-color: #FFE4E1;
             border-radius: 4px;
             overflow: hidden;
-            border: 1px solid #FFB6C1;
-            margin: 5px 0;
+            margin: 8px 0;
+            flex-shrink: 0;
         }
 
         .progress-fill {
@@ -127,85 +156,99 @@
             background: linear-gradient(90deg, #FF7EB3, #FF477E, #FF7EB3);
             background-size: 200% 100%;
             animation: shimmer 2s linear infinite;
-            transition: width 0.5s ease;
+            transition: width 0.4s ease;
         }
 
-        .floating {
-            animation: floating 4s ease-in-out infinite;
-        }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .main-header {
-            font-size: 1.1rem;
+            font-size: clamp(1.2rem, 5vh, 1.8rem);
             font-weight: 900;
             color: var(--primary-pink);
-            margin-bottom: 5px;
-            text-shadow: 1px 1px white;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px white;
+            text-align: center;
+        }
+
+        /* Đảm bảo khung câu hỏi chiếm tối đa diện tích khả dụng */
+        .question-box {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 150px;
         }
     </style>
 </head>
 <body>
 
-    <h1 class="main-header select-none">✨ TOÁN LỚP 1 - HD 🎈</h1>
+    <h1 class="main-header select-none">✨ TOÁN LỚP 1 🎈</h1>
 
     <div id="game-container">
         <!-- Màn hình bắt đầu -->
         <div id="start-screen" class="screen text-center justify-center items-center">
-            <div class="text-6xl mb-1 floating drop-shadow-lg">🦁</div>
-            <h2 class="text-2xl font-extrabold text-pink-600 mb-0 tracking-tight">Bé Tập Tính Nhẩm</h2>
-            <p class="text-gray-500 text-xs mb-3 font-semibold">Vui học toán cùng Sư Tử!</p>
+            <div class="text-6xl mb-2">🦁</div>
+            <h2 class="text-2xl font-black text-pink-600 mb-1">Bé Tập Tính Nhẩm</h2>
+            <p class="text-gray-500 text-sm mb-6">Thử thách toán học cùng Sư Tử!</p>
             
-            <div class="flex flex-col gap-2 w-full max-w-[240px]">
-                <button onclick="startGame()" class="bg-pink-500 hover:bg-pink-600 text-white font-black py-4 rounded-2xl shadow-[0_5px_0_#d13d6a] transition-all active:translate-y-1 active:shadow-none text-xl cursor-pointer">
+            <div class="w-full max-w-[200px] flex flex-col gap-3">
+                <button onclick="startGame()" class="bg-pink-500 hover:bg-pink-600 text-white font-black py-4 rounded-2xl shadow-[0_6px_0_#d13d6a] transition-all active:translate-y-1 active:shadow-none text-xl cursor-pointer">
                     BẮT ĐẦU 🚀
+                </button>
+                
+                <button onclick="showExitMessage()" class="bg-gray-100 hover:bg-gray-200 text-gray-500 font-black py-2 rounded-xl border-2 border-gray-300 text-sm cursor-pointer transition-colors">
+                    THOÁT 🚪
                 </button>
             </div>
         </div>
 
         <!-- Màn hình chơi game -->
         <div id="quiz-screen" class="screen hidden">
-            <div class="flex justify-between items-center">
-                <div class="bg-pink-100 px-2 py-0.5 rounded-lg text-[9px] font-black text-pink-600 border border-pink-200 uppercase">
-                    ⭐ VÒNG <span id="current-round">1</span>
-                </div>
-                <div class="bg-yellow-100 px-2 py-0.5 rounded-lg text-[9px] font-black text-yellow-700 border border-yellow-200 uppercase">
-                    💎 ĐIỂM: <span id="score-display">0</span>
-                </div>
+            <div class="flex justify-between items-center text-[10px] font-black uppercase flex-shrink-0">
+                <div class="text-pink-600 bg-pink-50 px-2 py-1 rounded-md">⭐ VÒNG <span id="current-round">1</span></div>
+                <div class="text-yellow-700 bg-yellow-50 px-2 py-1 rounded-md">💎 ĐIỂM: <span id="score-display">0</span></div>
             </div>
             
-            <div class="progress-bar shadow-sm">
+            <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
             </div>
 
-            <div class="text-center flex flex-col justify-center gap-1">
-                <div id="round-emoji" class="text-2xl">🍎</div>
-                <h2 id="question-text" class="text-3xl font-black text-gray-800 bg-white py-2 rounded-xl border-2 border-dashed border-pink-100 shadow-inner">...</h2>
-                <div id="options-container" class="grid grid-cols-2 gap-2 px-6"></div>
+            <div class="question-box">
+                <h2 id="question-text" class="text-5xl font-black text-gray-800 bg-pink-50 py-6 rounded-2xl border-2 border-dashed border-pink-200 shadow-inner mb-6 text-center">...</h2>
+                <div id="options-container" class="grid grid-cols-2 gap-3 mb-2"></div>
             </div>
 
-            <div class="flex justify-between items-center mt-1">
-                <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">CÂU <span id="question-num">1</span>/10</span>
-                <button onclick="finishGame()" class="btn-finish">
-                    🏁 KẾT THÚC
-                </button>
+            <div class="flex justify-between items-center pt-2 border-t border-gray-100 flex-shrink-0">
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">CÂU <span id="question-num">1</span>/10</span>
+                <button onclick="finishGame()" class="btn-finish">KẾT THÚC</button>
             </div>
         </div>
 
         <!-- Màn hình kết quả -->
         <div id="result-screen" class="screen text-center hidden justify-center items-center">
-            <div id="result-emoji" class="text-5xl mb-1 drop-shadow-xl">🎉</div>
-            <h2 id="result-title" class="text-lg font-black text-pink-600 mb-1 uppercase">Kết Quả</h2>
-            <div class="bg-yellow-50 py-2 px-10 rounded-2xl mb-3 border-2 border-yellow-200 shadow-md">
-                <p class="text-[9px] text-yellow-600 font-black uppercase tracking-widest">ĐIỂM SỐ</p>
-                <p id="final-score" class="text-5xl font-black text-yellow-700">0</p>
+            <h2 id="result-title" class="text-xl font-black text-pink-600 mb-2 uppercase">TUYỆT VỜI!</h2>
+            <div class="bg-yellow-50 py-4 px-10 rounded-3xl mb-6 border-2 border-yellow-200 w-full max-w-[250px]">
+                <p class="text-[10px] text-yellow-600 font-bold uppercase mb-1">BẠN ĐÃ ĐẠT ĐƯỢC</p>
+                <p id="final-score" class="text-6xl font-black text-yellow-700 leading-none">0</p>
+                <p class="text-xs text-yellow-600 font-bold mt-2">ĐIỂM</p>
             </div>
-            <button id="next-btn" onclick="nextAction()" class="w-full max-w-[240px] bg-green-500 hover:bg-green-600 text-white font-black py-3 rounded-2xl shadow-[0_5px_0_#2d9154] transition-all active:translate-y-1 active:shadow-none text-lg uppercase cursor-pointer">
+            <button id="next-btn" onclick="nextAction()" class="w-full max-w-[200px] bg-green-500 hover:bg-green-600 text-white font-black py-4 rounded-2xl shadow-[0_6px_0_#2d9154] text-lg uppercase cursor-pointer">
                 TIẾP TỤC 🌈
             </button>
+        </div>
+
+        <!-- Modal thoát tùy chỉnh -->
+        <div id="custom-modal" class="hidden">
+            <div class="modal-content">
+                <p class="text-lg font-bold text-gray-700 mb-6">Bé có chắc chắn muốn thoát không?</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="confirmExit()" class="bg-red-500 text-white px-5 py-2 rounded-xl font-bold flex-1 shadow-[0_3px_0_#b91c1c]">Thoát</button>
+                    <button onclick="closeModal()" class="bg-gray-200 text-gray-700 px-5 py-2 rounded-xl font-bold flex-1 border-b-4 border-gray-300">Ở lại</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -217,9 +260,6 @@
         const totalQuestionsPerRound = 10;
         let audioCtx = null;
 
-        const roundEmojis = ['🍎', '🦒', '🎈', '🍰', '🦖'];
-        const resultEmojis = ['🥉', '🥈', '🥇', '🏆', '👑'];
-
         function showScreen(id) {
             const screens = ['start-screen', 'quiz-screen', 'result-screen'];
             screens.forEach(s => {
@@ -229,30 +269,42 @@
             });
         }
 
+        function showExitMessage() {
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function confirmExit() {
+            const modalText = document.querySelector('.modal-content p');
+            modalText.innerText = "Tạm biệt bé nhé! 👋";
+            document.querySelector('.modal-content .flex').classList.add('hidden');
+            setTimeout(() => {
+                closeModal();
+                if (window.history.length > 1) window.history.back();
+            }, 1500);
+        }
+
         function playSound(type) {
             try {
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
-                
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
+                osc.connect(gain); gain.connect(audioCtx.destination);
                 if (type === 'correct') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.15);
-                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(523, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1046, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 } else {
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.2);
-                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 }
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.3);
-            } catch(e) { console.log("Audio play failed"); }
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            } catch(e) {}
         }
 
         function generateOptions(correct) {
@@ -260,7 +312,7 @@
             while(s.size < 4) {
                 let w = correct + (Math.floor(Math.random() * 5) - 2);
                 if (w >= 0 && w !== correct) s.add(w);
-                else if (w < 0) s.add(correct + s.size);
+                else s.add(correct + s.size);
             }
             return Array.from(s).sort(() => Math.random() - 0.5);
         }
@@ -268,13 +320,11 @@
         function generateQuestions(round) {
             const qs = [];
             for (let i = 0; i < totalQuestionsPerRound; i++) {
-                let a, b, op, ans;
-                if (round === 1) { 
-                    op = Math.random() > 0.5 ? '+' : '-';
+                let a, b, op = Math.random() > 0.5 ? '+' : '-', ans;
+                if (round === 1) {
                     if (op === '+') { a = Math.floor(Math.random() * 6); b = Math.floor(Math.random() * (11 - a)); ans = a + b; }
                     else { a = Math.floor(Math.random() * 11); b = Math.floor(Math.random() * (a + 1)); ans = a - b; }
                 } else {
-                    op = Math.random() > 0.5 ? '+' : '-';
                     a = Math.floor(Math.random() * 11) + 5;
                     b = op === '+' ? Math.floor(Math.random() * (21 - a)) : Math.floor(Math.random() * a);
                     ans = op === '+' ? a + b : a - b;
@@ -284,60 +334,38 @@
             return qs;
         }
 
-        function startGame() {
-            score = 0; 
-            currentRound = 1; 
-            startRound();
-        }
+        function startGame() { score = 0; currentRound = 1; startRound(); }
 
         function startRound() {
             currentQuestionIdx = 0;
             questions = generateQuestions(currentRound);
             document.getElementById('current-round').innerText = currentRound;
             document.getElementById('score-display').innerText = score;
-            document.getElementById('round-emoji').innerText = roundEmojis[currentRound-1] || '🍎';
             showScreen('quiz-screen');
             loadQuestion();
         }
 
         function loadQuestion() {
-            if (currentQuestionIdx >= questions.length) {
-                showRoundResult();
-                return;
-            }
+            if (currentQuestionIdx >= questions.length) { showRoundResult(); return; }
             const data = questions[currentQuestionIdx];
             document.getElementById('question-text').innerText = data.q;
             document.getElementById('question-num').innerText = currentQuestionIdx + 1;
-            document.getElementById('progress-fill').style.width = `${(currentQuestionIdx / 10) * 100}%`;
-            
+            document.getElementById('progress-fill').style.width = `${((currentQuestionIdx) / 10) * 100}%`;
             const container = document.getElementById('options-container');
             container.innerHTML = '';
-            
             data.options.forEach(opt => {
                 const b = document.createElement('button');
-                b.className = 'option-btn shadow-[0_4px_0_#FF7EB3] active:translate-y-0.5 active:shadow-none';
+                b.className = 'option-btn';
                 b.innerText = opt;
                 b.onclick = () => {
                     const all = container.querySelectorAll('.option-btn');
                     all.forEach(btn => btn.disabled = true);
-                    
-                    if (opt === data.answer) {
-                        b.classList.add('correct'); 
-                        playSound('correct'); 
-                        score += 10;
-                    } else {
-                        b.classList.add('incorrect'); 
-                        playSound('wrong'); 
-                        all.forEach(btn => { 
-                            if(parseInt(btn.innerText) === data.answer) btn.classList.add('correct'); 
-                        });
+                    if (opt === data.answer) { b.classList.add('correct'); playSound('correct'); score += 10; }
+                    else { b.classList.add('incorrect'); playSound('wrong'); 
+                        all.forEach(btn => { if(parseInt(btn.innerText) === data.answer) btn.classList.add('correct'); });
                     }
-                    
                     document.getElementById('score-display').innerText = score;
-                    setTimeout(() => {
-                        currentQuestionIdx++;
-                        loadQuestion();
-                    }, 800);
+                    setTimeout(() => { currentQuestionIdx++; loadQuestion(); }, 700);
                 };
                 container.appendChild(b);
             });
@@ -345,14 +373,14 @@
 
         function showRoundResult() {
             showScreen('result-screen');
+            document.getElementById('progress-fill').style.width = `100%`;
             document.getElementById('final-score').innerText = score;
-            document.getElementById('result-emoji').innerText = resultEmojis[currentRound-1] || '🎉';
             const btn = document.getElementById('next-btn');
             if (currentRound < 5) {
-                document.getElementById('result-title').innerText = "VÒNG " + currentRound + " XONG!";
-                btn.innerText = "SANG VÒNG " + (currentRound + 1) + " 🚀";
+                document.getElementById('result-title').innerText = "HOÀN THÀNH VÒNG " + currentRound;
+                btn.innerText = "VÒNG TIẾP THEO 🚀";
             } else {
-                document.getElementById('result-title').innerText = "THIÊN TÀI! 👑";
+                document.getElementById('result-title').innerText = "THẬT PHI THƯỜNG! 👑";
                 btn.innerText = "CHƠI LẠI TỪ ĐẦU 🍎";
             }
         }
@@ -365,13 +393,9 @@
         }
 
         function nextAction() {
-            if (currentRound < 5 && document.getElementById('next-btn').innerText.includes("VÒNG")) { 
-                currentRound++; 
-                startRound(); 
-            } else { 
-                showScreen('start-screen'); 
-                currentRound = 1; 
-            }
+            const btnText = document.getElementById('next-btn').innerText;
+            if (currentRound < 5 && btnText.includes("TIẾP THEO")) { currentRound++; startRound(); }
+            else showScreen('start-screen');
         }
     </script>
 </body>
