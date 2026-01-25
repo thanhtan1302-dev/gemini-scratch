@@ -8,24 +8,17 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
         
-        :root {
-            --vh: 1vh;
-        }
-
         body {
             font-family: 'Quicksand', sans-serif;
             background: #FFDEE9;
             background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
-            height: 100vh;
-            height: calc(var(--vh, 1vh) * 100);
+            margin: 0;
+            padding: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 0;
-            padding: 10px;
+            height: 100vh;
             overflow: hidden;
-            position: relative;
         }
 
         /* Hiệu ứng bóng bay nền */
@@ -44,35 +37,32 @@
             100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        .main-title {
-            font-size: clamp(1rem, 4vh, 1.5rem);
-            font-weight: 800;
-            color: #ff4757;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            text-shadow: 2px 2px 0px #ffffff;
-            z-index: 10;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .game-card {
+        /* Khung hình cố định 480x360 */
+        .game-viewport {
+            width: 480px;
+            height: 360px;
             background: rgba(255, 255, 255, 0.95);
-            border: clamp(4px, 1vh, 6px) solid #fffa65;
+            border: 6px solid #fffa65;
             border-radius: 2rem;
-            box-shadow: 0 10px 0px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 450px;
-            /* Tự động tính toán chiều cao để vừa khít màn hình */
-            height: auto;
-            max-height: calc(var(--vh, 1vh) * 80); 
-            padding: clamp(1rem, 3vh, 1.5rem);
-            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
             display: flex;
             flex-direction: column;
+            padding: 15px;
+            text-align: center;
             z-index: 10;
             overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .main-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ff4757;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 0px #ffffff;
+            flex-shrink: 0;
         }
 
         .btn-answer {
@@ -80,25 +70,18 @@
             border: 3px solid #70a1ff;
             background: #ffffff;
             border-radius: 1rem;
-            font-size: clamp(0.9rem, 2.5vh, 1.1rem);
+            font-size: 0.95rem;
             font-weight: 700;
             color: #2f3542;
-            padding: 0.5rem;
-            min-height: clamp(45px, 8vh, 60px);
-            box-shadow: 0 4px 0px #747d8c;
+            padding: 5px;
+            height: 45px;
+            box-shadow: 0 3px 0px #747d8c;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .btn-answer:hover:not(:disabled) {
-            transform: translateY(-2px);
-            background: #eccc68;
-            border-color: #ffa502;
-            box-shadow: 0 6px 0px #ff7f50;
-        }
-
-        .btn-answer:active:not(:disabled) {
+        .btn-answer:active {
             transform: translateY(2px);
             box-shadow: none;
         }
@@ -107,23 +90,24 @@
             background-color: #2ed573 !important;
             color: white !important;
             border-color: #ffffff !important;
-            box-shadow: 0 4px 0px #1e90ff !important;
+            box-shadow: 0 3px 0px #1e90ff !important;
         }
 
         .wrong {
             background-color: #ff4757 !important;
             color: white !important;
             border-color: #ffffff !important;
-            box-shadow: 0 4px 0px #c0392b !important;
+            box-shadow: 0 3px 0px #c0392b !important;
         }
 
         .progress-bar {
-            height: 10px;
+            height: 8px;
             background-color: #f1f2f6;
             border-radius: 10px;
             border: 1px solid #ced6e0;
             overflow: hidden;
             flex-shrink: 0;
+            width: 100%;
         }
 
         .progress-fill {
@@ -135,41 +119,43 @@
         .level-badge {
             background: #5352ed;
             color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 2rem;
+            padding: 2px 8px;
+            border-radius: 1rem;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
 
         #question-image {
-            font-size: clamp(2.5rem, 10vh, 4rem);
-            margin-bottom: 0.5rem;
+            font-size: 3.5rem;
+            line-height: 1;
+            margin: 5px 0;
             flex-shrink: 0;
         }
 
         .btn-stop {
             color: #ff4757;
             font-weight: 900;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            padding: 4px 15px;
-            border-radius: 10px;
-            border: 2px solid transparent;
-            margin-top: 10px;
+            padding: 2px 10px;
+            border-radius: 8px;
+            border: 1px solid #ff4757;
+            margin-top: 5px;
+            cursor: pointer;
         }
 
         .result-score-circle {
-            width: clamp(80px, 20vh, 120px);
-            height: clamp(80px, 20vh, 120px);
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: white;
-            border: 6px solid #ffa502;
+            border: 5px solid #ffa502;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 2.5rem;
+            margin: 10px auto;
+            font-size: 2.2rem;
             font-weight: 900;
             color: #ff4757;
         }
@@ -177,35 +163,35 @@
 </head>
 <body>
 
-    <h1 class="main-title">🌟 TIẾNG VIỆT LỚP 1 🌟</h1>
+    <div class="game-viewport" id="game-container">
+        <h1 class="main-title">🌟 TIẾNG VIỆT LỚP 1 🌟</h1>
 
-    <div id="game-container" class="game-card">
         <!-- Màn hình bắt đầu -->
         <div id="start-screen" class="flex flex-col h-full justify-center items-center">
-            <div class="text-6xl mb-4 animate-bounce">🎒</div>
-            <h2 class="text-xl font-bold text-blue-600 mb-2">Sẵn sàng chưa bé?</h2>
-            <p class="text-gray-500 mb-6 text-sm">Vượt qua thử thách để nhận quà nhé!</p>
-            <button onclick="startGame()" class="w-full max-w-[200px] bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-3 px-8 rounded-full text-lg shadow-[0_5px_0px_#d35400] active:translate-y-1 active:shadow-none">
+            <div class="text-5xl mb-3 animate-bounce">🎒</div>
+            <h2 class="text-lg font-bold text-blue-600">Sẵn sàng chưa bé?</h2>
+            <p class="text-gray-500 mb-5 text-xs">Vượt qua thử thách để nhận quà nhé!</p>
+            <button onclick="startGame()" class="w-48 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-2 px-6 rounded-full text-lg shadow-[0_4px_0px_#d35400] active:translate-y-1 active:shadow-none">
                 CHƠI NGAY
             </button>
-            <button onclick="exitGame()" class="mt-4 text-gray-400 text-sm font-bold">THOÁT</button>
+            <button onclick="exitGame()" class="mt-3 text-gray-400 text-xs font-bold uppercase">Thoát</button>
         </div>
 
         <!-- Màn hình chơi game -->
-        <div id="quiz-screen" class="hidden h-full flex flex-col overflow-hidden">
+        <div id="quiz-screen" class="hidden h-full flex flex-col">
             <div class="mb-2 flex-shrink-0">
                 <div class="flex justify-between items-center mb-1">
                     <span class="level-badge" id="level-display">Vòng 1</span>
-                    <span class="font-bold text-xs text-pink-500">⭐ <span id="score-display">0</span></span>
+                    <span class="font-bold text-xs text-pink-500">⭐ Điểm: <span id="score-display">0</span></span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
                 </div>
             </div>
 
-            <div class="flex-grow flex flex-col justify-center overflow-hidden">
+            <div class="flex-grow flex flex-col justify-center">
                 <div id="question-image"></div>
-                <h2 id="question-text" class="text-base font-bold text-gray-800 px-2 mb-3 leading-tight"></h2>
+                <h2 id="question-text" class="text-sm font-bold text-gray-800 px-2 mb-2 leading-tight h-10 flex items-center justify-center"></h2>
                 <div id="answers-grid" class="grid grid-cols-2 gap-2 px-1"></div>
             </div>
 
@@ -215,30 +201,23 @@
         </div>
 
         <!-- Màn hình kết quả -->
-        <div id="result-screen" class="hidden flex flex-col h-full justify-center items-center py-2">
-            <div class="text-5xl mb-2">🏆</div>
-            <h2 class="text-lg font-bold text-gray-800 mb-2 uppercase">Kết Quả</h2>
+        <div id="result-screen" class="hidden flex flex-col h-full justify-center items-center">
+            <div class="text-4xl mb-1">🏆</div>
+            <h2 class="text-base font-bold text-gray-800 uppercase">Kết Quả</h2>
             <div class="result-score-circle" id="final-score">0</div>
-            <p id="result-message" class="text-sm font-bold text-blue-500 mb-4 px-2"></p>
-            <button onclick="location.reload()" class="w-full max-w-[180px] bg-blue-500 text-white font-bold py-2.5 px-6 rounded-full shadow-[0_4px_0px_#2980b9] text-base active:translate-y-1 active:shadow-none">
+            <p id="result-message" class="text-xs font-bold text-blue-500 mb-4 px-2"></p>
+            <button onclick="location.reload()" class="w-40 bg-blue-500 text-white font-bold py-2 px-6 rounded-full shadow-[0_4px_0px_#2980b9] text-sm active:translate-y-1 active:shadow-none">
                 CHƠI LẠI
             </button>
         </div>
     </div>
 
     <script>
-        // Cập nhật giá trị --vh để xử lý lỗi chiều cao trên trình duyệt di động
-        function setVH() {
-            let vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        }
-        setVH();
-        window.addEventListener('resize', setVH);
-
-        for (let i = 0; i < 12; i++) {
+        // Hiệu ứng bóng bay
+        for (let i = 0; i < 10; i++) {
             const b = document.createElement('div');
             b.className = 'bubble';
-            const size = Math.random() * 40 + 20 + 'px';
+            const size = Math.random() * 30 + 15 + 'px';
             b.style.width = size;
             b.style.height = size;
             b.style.left = Math.random() * 100 + 'vw';
@@ -328,7 +307,8 @@
                 score++; b.classList.add('correct'); playTone(523.25, 'sine', 0.15);
             } else {
                 score = Math.max(0, score - 1); b.classList.add('wrong');
-                document.querySelectorAll('.btn-answer')[q.correct].classList.add('correct');
+                const btns = document.querySelectorAll('.btn-answer');
+                if (btns[q.correct]) btns[q.correct].classList.add('correct');
                 playTone(220, 'triangle', 0.2);
             }
             updateScore();
@@ -348,7 +328,7 @@
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
-            let msg = score >= 8 ? "Bé là thiên tài Tiếng Việt! 🥇" : "Bé làm tốt lắm, cố gắng nhé! 🌟";
+            let msg = score >= 8 ? "Bé là thiên tài Tiếng Việt! 🥇" : "Bé làm rất tốt, cố gắng nhé! 🌟";
             document.getElementById('result-message').innerText = msg;
         }
     </script>
