@@ -20,15 +20,16 @@
             background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
         }
 
+        /* CẬP NHẬT KÍCH THƯỚC: Rộng 480px, Cao 360px */
         .app-viewport { 
             width: 480px; 
-            height: 480px; 
+            height: 360px; 
             overflow: hidden;
             position: relative;
             background: #ffffff;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            border: 6px solid #FF85A1;
-            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 5px solid #FF85A1;
+            border-radius: 25px;
             display: flex;
             flex-direction: column;
         }
@@ -36,10 +37,10 @@
         .chat-container { 
             flex: 1; 
             overflow-y: auto; 
-            padding: 15px; 
+            padding: 12px; 
             background: #FFF9E3;
             background-image: radial-gradient(#FFD1D1 0.5px, transparent 0.5px);
-            background-size: 20px 20px;
+            background-size: 15px 15px;
         }
 
         .header-bg {
@@ -49,7 +50,7 @@
 
         .bubble-ai {
             background: white;
-            border-radius: 18px 18px 18px 4px;
+            border-radius: 15px 15px 15px 4px;
             border: 2px solid #FFB7B2;
             position: relative;
         }
@@ -58,23 +59,23 @@
             background: #4facfe;
             background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
             color: white;
-            border-radius: 18px 18px 4px 18px;
+            border-radius: 15px 15px 4px 15px;
         }
 
         .avatar {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             background: #FFB7B2;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .dot {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: #FF85A1;
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out;
@@ -88,9 +89,9 @@
         }
 
         .suggestions-container {
-            padding: 8px 12px;
+            padding: 6px 10px;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             overflow-x: auto;
             background: white;
             white-space: nowrap;
@@ -103,9 +104,9 @@
             background: #fff1f2;
             color: #e11d48;
             border: 1px solid #fecdd3;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -122,16 +123,33 @@
         }
 
         .speak-btn {
-            font-size: 14px;
+            font-size: 12px;
             color: #FF85A1;
             cursor: pointer;
-            margin-left: 8px;
+            margin-left: 6px;
             vertical-align: middle;
         }
 
         .speak-btn.playing {
             color: #4ade80;
             animation: pulse-green 1s infinite;
+        }
+
+        .exit-btn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            color: white;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .exit-btn:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            transform: scale(1.05);
         }
 
         @keyframes pulse-red {
@@ -150,35 +168,41 @@
 <body>
 
     <div class="app-viewport">
-        <nav class="p-3 header-bg flex justify-center items-center z-50 shadow-md">
-            <h1 class="text-white font-extrabold text-lg flex items-center gap-2">
-                <span>🚀</span> KHÁM PHÁ CÙNG BÉ
+        <!-- Header -->
+        <nav class="p-2 header-bg flex justify-between items-center z-50 shadow-sm">
+            <div class="w-16"></div>
+            <h1 class="text-white font-extrabold text-base flex items-center gap-2">
+                <span>🚀</span> KHÁM PHÁ
             </h1>
+            <button onclick="closeApp()" class="exit-btn">THOÁT</button>
         </nav>
 
-        <div id="chat-messages" class="chat-container space-y-4">
+        <!-- Chat Area -->
+        <div id="chat-messages" class="chat-container space-y-3">
             <div class="flex items-end gap-2">
                 <div class="avatar shadow-sm">👩‍🏫</div>
-                <div class="bubble-ai p-3 shadow-sm max-w-[80%] text-sm">
+                <div class="bubble-ai p-2 shadow-sm max-w-[85%] text-xs">
                     Chào con yêu! 🌈 Cô giáo rất vui được gặp con. Hôm nay con muốn học gì cùng cô nào? 🍎🍓
                     <i class="fas fa-volume-up speak-btn" onclick="speakWithGemini(this, 'Chào con yêu! Cô giáo rất vui được gặp con. Hôm nay con muốn học gì cùng cô nào?')"></i>
                 </div>
             </div>
         </div>
 
+        <!-- Gợi ý nhanh -->
         <div id="suggestions-bar" class="suggestions-container"></div>
 
-        <div class="p-3 bg-white border-t-2 border-pink-100">
+        <!-- Input Area -->
+        <div class="p-2 bg-white border-t-2 border-pink-100">
             <div class="flex gap-2 items-center">
-                <button id="mic-btn" class="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center transition-all hover:bg-pink-200 focus:outline-none">
-                    <i class="fas fa-microphone"></i>
+                <button id="mic-btn" class="w-8 h-8 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center transition-all hover:bg-pink-200 focus:outline-none">
+                    <i class="fas fa-microphone text-xs"></i>
                 </button>
 
-                <input type="text" id="user-input" placeholder="Viết hoặc nói với Cô nhé..." 
-                    class="flex-1 p-3 text-sm border-2 border-pink-200 rounded-2xl focus:outline-none focus:border-pink-400 bg-pink-50/30">
+                <input type="text" id="user-input" placeholder="Nói với Cô nhé..." 
+                    class="flex-1 p-2 text-xs border-2 border-pink-200 rounded-xl focus:outline-none focus:border-pink-400 bg-pink-50/30">
                 
-                <button id="send-btn" onclick="handleSend()" class="bg-pink-500 text-white w-10 h-10 rounded-full hover:bg-pink-600 shadow-lg transition flex items-center justify-center">
-                    <i class="fas fa-paper-plane"></i>
+                <button id="send-btn" onclick="handleSend()" class="bg-pink-500 text-white w-8 h-8 rounded-full hover:bg-pink-600 shadow-md transition flex items-center justify-center">
+                    <i class="fas fa-paper-plane text-xs"></i>
                 </button>
             </div>
         </div>
@@ -197,7 +221,12 @@
         const micBtn = document.getElementById('mic-btn');
         const suggestionsBar = document.getElementById('suggestions-bar');
 
-        const initialSuggestions = ["Học toán cộng", "Kể chuyện cổ tích", "Tập đọc vần", "Khen con đi"];
+        const initialSuggestions = ["Toán lớp 1", "Kể chuyện", "Học vần", "Khen bé"];
+
+        function closeApp() {
+            window.parent.postMessage("close iframe", "*");
+            console.log("Thoát ứng dụng: close iframe");
+        }
 
         function pcmToWav(pcmData, sampleRate) {
             const buffer = new ArrayBuffer(44 + pcmData.length * 2);
@@ -231,7 +260,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Đọc bằng giọng Tiếng Việt vi-VN cực kỳ ngọt ngào, truyền cảm cho bé lớp 1: ${cleanText}` }] }],
+                        contents: [{ parts: [{ text: `Đọc bằng giọng Tiếng Việt vi-VN cực kỳ ngọt ngào cho bé lớp 1: ${cleanText}` }] }],
                         generationConfig: {
                             responseModalities: ["AUDIO"],
                             speechConfig: {
@@ -239,8 +268,7 @@
                                     prebuiltVoiceConfig: { voiceName: "Leda" }
                                 }
                             }
-                        },
-                        model: "gemini-2.5-flash-preview-tts"
+                        }
                     })
                 });
 
@@ -306,8 +334,8 @@
 
             const typingDiv = document.createElement('div');
             typingDiv.id = 'typing-indicator';
-            typingDiv.className = 'flex items-end gap-2 mb-4';
-            typingDiv.innerHTML = `<div class="avatar">👩‍🏫</div><div class="bubble-ai p-3 shadow-sm flex gap-1"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+            typingDiv.className = 'flex items-end gap-2 mb-3';
+            typingDiv.innerHTML = `<div class="avatar">👩‍🏫</div><div class="bubble-ai p-2 shadow-sm flex gap-1"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
             messagesContainer.appendChild(typingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -317,8 +345,6 @@
                 
                 const aiMsgElement = addMessage(result.answer, 'ai');
                 const btn = aiMsgElement.querySelector('.speak-btn');
-                
-                // TỰ ĐỘNG GỌI HÀM ĐỌC SAU KHI CÓ CÂU TRẢ LỜI
                 speakWithGemini(btn, result.answer); 
                 
                 if (result.suggestions) updateSuggestions(result.suggestions);
@@ -331,7 +357,7 @@
         }
 
         async function callGeminiWithSuggestions(prompt) {
-            const systemPrompt = `Bạn là cô giáo dạy lớp 1. Trả lời ngọt ngào, xưng 'Cô', gọi 'con ơi', 'bé yêu'. Trả lời dưới 30 từ. Gợi ý 3 câu tiếp theo ngắn. PHẢN HỒI JSON: {"answer": "...", "suggestions": ["...", "...", "..."]}`;
+            const systemPrompt = `Bạn là cô giáo lớp 1. Trả lời ngọt ngào (< 30 từ). Gợi ý 3 câu ngắn tiếp theo. PHẢN HỒI JSON: {"answer": "...", "suggestions": ["...", "...", "..."]}`;
             const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${getK()}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -347,16 +373,16 @@
 
         function addMessage(text, sender) {
             const div = document.createElement('div');
-            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-4 items-end gap-2`;
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-3 items-end gap-2`;
             if (sender === 'ai') {
                 div.innerHTML = `
                     <div class="avatar shadow-sm">👩‍🏫</div>
-                    <div class="bubble-ai p-3 shadow-sm max-w-[80%] text-sm">
+                    <div class="bubble-ai p-2 shadow-sm max-w-[85%] text-xs">
                         ${text}
                         <i class="fas fa-volume-up speak-btn" onclick="speakWithGemini(this, '${text.replace(/'/g, "\\'")}')"></i>
                     </div>`;
             } else {
-                div.innerHTML = `<div class="bubble-user p-3 shadow-sm max-w-[80%] text-sm font-medium">${text}</div>`;
+                div.innerHTML = `<div class="bubble-user p-2 shadow-sm max-w-[80%] text-xs font-medium">${text}</div>`;
             }
             messagesContainer.appendChild(div);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
