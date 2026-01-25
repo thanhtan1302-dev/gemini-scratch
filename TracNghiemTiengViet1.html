@@ -18,6 +18,7 @@
             align-items: center;
             justify-content: center;
             margin: 0;
+            padding: 10px;
             overflow: hidden;
             position: relative;
         }
@@ -38,37 +39,37 @@
         }
 
         .main-title {
-            font-size: 1.6rem;
+            font-size: clamp(1.2rem, 5vw, 1.6rem);
             font-weight: 800;
             color: #ff4757;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
             text-shadow: 2px 2px 0px #ffffff;
             z-index: 10;
+            text-align: center;
         }
 
         .game-card {
             background: rgba(255, 255, 255, 0.95);
-            border: 6px solid #fffa65;
+            border: clamp(4px, 1vw, 6px) solid #fffa65;
             border-radius: 2rem;
             box-shadow: 0 15px 0px rgba(0,0,0,0.05);
-            /* Cấu hình kích thước chính xác theo yêu cầu */
-            width: 480px;
-            height: 360px;
-            padding: 1.25rem;
+            width: 100%;
+            max-width: 480px;
+            height: auto;
+            min-height: 380px;
+            max-height: 90vh;
+            padding: 1.5rem;
             text-align: center;
             position: relative;
             display: flex;
             flex-direction: column;
-            overflow-x: auto;
             overflow-y: auto;
             z-index: 10;
         }
 
-        /* Tùy chỉnh thanh cuộn */
         .game-card::-webkit-scrollbar {
             width: 6px;
-            height: 6px;
         }
         .game-card::-webkit-scrollbar-track {
             background: #f1f1f1;
@@ -84,34 +85,42 @@
             border: 3px solid #70a1ff;
             background: #ffffff;
             border-radius: 1rem;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            font-weight: 700;
             color: #2f3542;
-            min-height: 44px;
+            min-height: 50px;
             padding: 0.5rem;
+            box-shadow: 0 4px 0px #747d8c;
         }
 
         .btn-answer:hover:not(:disabled) {
             transform: translateY(-2px);
             background: #eccc68;
             border-color: #ffa502;
+            box-shadow: 0 6px 0px #ff7f50;
+        }
+
+        .btn-answer:active:not(:disabled) {
+            transform: translateY(2px);
+            box-shadow: none;
         }
 
         .correct {
             background-color: #2ed573 !important;
             color: white !important;
             border-color: #ffffff !important;
-            box-shadow: 0 4px 0px #1e90ff;
+            box-shadow: 0 4px 0px #1e90ff !important;
         }
 
         .wrong {
             background-color: #ff4757 !important;
             color: white !important;
             border-color: #ffffff !important;
-            box-shadow: 0 4px 0px #c0392b;
+            box-shadow: 0 4px 0px #c0392b !important;
         }
 
         .progress-bar {
-            height: 10px;
+            height: 12px;
             background-color: #f1f2f6;
             border-radius: 10px;
             border: 1px solid #ced6e0;
@@ -128,32 +137,59 @@
         .level-badge {
             background: #5352ed;
             color: white;
-            padding: 0.15rem 0.6rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 2rem;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             box-shadow: 0 2px 0px #3742fa;
         }
 
         #question-image {
-            font-size: 3.5rem;
+            font-size: clamp(3rem, 12vw, 4rem);
             filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.1));
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
             flex-shrink: 0;
         }
 
-        #quiz-screen {
-            min-height: 100%;
+        .btn-stop {
+            color: #ff4757;
+            font-weight: 900;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.2s;
+            padding: 6px 20px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+        }
+
+        .btn-stop:hover {
+            background-color: #fff5f5;
+            border-color: #ff4757;
+            transform: scale(1.05);
+        }
+        
+        .result-score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            border: 8px solid #ffa502;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ff4757;
+            box-shadow: 0 10px 20px rgba(255, 165, 2, 0.2);
         }
     </style>
 </head>
 <body>
 
     <script>
-        // Tạo bóng bay nền
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 15; i++) {
             const b = document.createElement('div');
             b.className = 'bubble';
             const size = Math.random() * 50 + 20 + 'px';
@@ -171,48 +207,61 @@
     <div id="game-container" class="game-card">
         <!-- Màn hình bắt đầu -->
         <div id="start-screen" class="my-auto">
-            <div class="mb-3">
-                <div class="text-6xl animate-bounce">🎒</div>
+            <div class="mb-4">
+                <div class="text-7xl animate-bounce">🎒</div>
             </div>
-            <h2 class="text-xl font-bold text-blue-500 mb-1">Sẵn sàng chưa bé?</h2>
-            <p class="text-gray-600 mb-5 text-xs">Vượt qua 5 vòng để nhận huy chương nhé!</p>
-            <button onclick="startGame()" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-2.5 px-8 rounded-full text-lg shadow-[0_4px_0px_#d35400] transition-all active:translate-y-1 active:shadow-none">
-                CHƠI NGAY
-            </button>
+            <h2 class="text-2xl font-bold text-blue-600 mb-2">Sẵn sàng chưa bé?</h2>
+            <p class="text-gray-500 mb-8 text-sm">Vượt qua thử thách để nhận huy chương nhé!</p>
+            
+            <div class="flex flex-col gap-4 items-center">
+                <button onclick="startGame()" class="w-full max-w-[220px] bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-3 px-8 rounded-full text-xl shadow-[0_5px_0px_#d35400] transition-all active:translate-y-1 active:shadow-none">
+                    CHƠI NGAY
+                </button>
+                
+                <button onclick="exitGame()" class="w-full max-w-[220px] bg-white text-gray-500 font-bold py-2 px-8 rounded-full text-sm border-2 border-gray-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all">
+                    THOÁT
+                </button>
+            </div>
         </div>
 
         <!-- Màn hình chơi game -->
-        <div id="quiz-screen" class="hidden">
-            <div class="mb-3 sticky top-0 bg-white/90 backdrop-blur-sm pb-1 pt-0.5 z-20">
-                <div class="flex justify-between items-center mb-1">
+        <div id="quiz-screen" class="hidden h-full flex flex-col">
+            <div class="mb-4 sticky top-0 bg-white/90 backdrop-blur-sm pb-2 pt-1 z-20">
+                <div class="flex justify-between items-center mb-2">
                     <span class="level-badge" id="level-display">Vòng 1</span>
-                    <span class="font-bold text-xs text-pink-500">⭐ Điểm: <span id="score-display">0</span></span>
+                    <span class="font-bold text-sm text-pink-500">⭐ Điểm: <span id="score-display">0</span></span>
                 </div>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
                 </div>
             </div>
 
-            <div class="flex-grow flex flex-col justify-center">
+            <div class="flex-grow flex flex-col justify-center py-2">
                 <div id="question-image" class="animate-pulse"></div>
-                <h2 id="question-text" class="text-base font-bold text-gray-800 px-2 mb-3"></h2>
-                <div id="answers-grid" class="grid grid-cols-2 gap-2 px-1 mb-2"></div>
+                <h2 id="question-text" class="text-lg font-bold text-gray-800 px-4 mb-6 leading-tight"></h2>
+                <div id="answers-grid" class="grid grid-cols-2 gap-3 px-2 mb-4"></div>
             </div>
 
-            <div class="mt-auto pt-2 border-t border-dashed border-gray-100">
-                <button onclick="endGame()" class="text-[10px] font-bold text-gray-300 hover:text-red-400 uppercase tracking-widest">Dừng cuộc chơi</button>
+            <div class="mt-auto pt-4 border-t border-dashed border-gray-100">
+                <button onclick="endGame()" class="btn-stop">DỪNG</button>
             </div>
         </div>
 
         <!-- Màn hình kết quả -->
-        <div id="result-screen" class="hidden my-auto">
-            <div class="text-5xl mb-2">🏆</div>
-            <h2 class="text-xl font-bold text-gray-800 mb-1">Kết Quả Của Bé</h2>
-            <div class="text-4xl font-black text-orange-500 mb-2" id="final-score">0</div>
-            <p id="result-message" class="text-sm font-bold text-blue-500 mb-5"></p>
-            <button onclick="location.reload()" class="bg-blue-500 text-white font-bold py-2 px-8 rounded-full shadow-[0_3px_0px_#2980b9] text-base active:translate-y-1 active:shadow-none">
-                CHƠI LẠI
-            </button>
+        <div id="result-screen" class="hidden my-auto py-4">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">KẾT QUẢ CỦA BÉ</h2>
+            
+            <div class="result-score-circle" id="final-score">0</div>
+            
+            <p id="result-message" class="text-lg font-bold text-blue-500 mb-8 px-4"></p>
+            
+            <div class="flex flex-col gap-3 items-center">
+                <button onclick="location.reload()" class="w-full max-w-[200px] bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-[0_4px_0px_#2980b9] text-lg active:translate-y-1 active:shadow-none">
+                    CHƠI LẠI
+                </button>
+                <button onclick="exitGame()" class="text-gray-400 font-bold text-sm hover:text-red-400">Thoát ứng dụng</button>
+            </div>
         </div>
     </div>
 
@@ -229,6 +278,15 @@
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function exitGame() {
+            try {
+                window.parent.postMessage('close-iframe', '*');
+                console.log("Yêu cầu đóng trò chơi.");
+            } catch (e) {
+                console.error("Lỗi đóng iframe:", e);
+            }
         }
 
         const rawQuestions = [
@@ -325,7 +383,7 @@
             grid.innerHTML = '';
             q.options.forEach((opt, i) => {
                 const b = document.createElement('button');
-                b.className = 'btn-answer font-bold shadow-[0_3px_0px_#747d8c] active:translate-y-1 active:shadow-none';
+                b.className = 'btn-answer active:translate-y-1 active:shadow-none';
                 b.innerText = opt;
                 b.onclick = () => check(i, b);
                 grid.appendChild(b);
@@ -338,11 +396,11 @@
             canAnswer = false;
             const q = gameQuestions[currentLevel][currentQuestionIndex];
             if (idx === q.correct) {
-                score++; b.classList.add('correct'); playTone(523.25, 'sine', 0.2);
+                score++; b.classList.add('correct'); playTone(523.25, 'sine', 0.15);
             } else {
                 score = Math.max(0, score - 1); b.classList.add('wrong');
                 document.querySelectorAll('.btn-answer')[q.correct].classList.add('correct');
-                playTone(220, 'triangle', 0.3);
+                playTone(220, 'triangle', 0.2);
             }
             updateScore();
             setTimeout(() => {
@@ -352,7 +410,7 @@
                     if (currentLevel >= 5) { endGame(); return; }
                 }
                 loadQuestion();
-            }, 1000);
+            }, 800);
         }
 
         function updateScore() { document.getElementById('score-display').innerText = score; }
@@ -361,7 +419,15 @@
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
-            document.getElementById('result-message').innerText = score >= 40 ? "Bé giỏi quá! 🥇" : "Cố lên bé nhé! 📚";
+            
+            let msg = "";
+            if (score >= 45) msg = "Bé là thiên tài Tiếng Việt! 🥇💎";
+            else if (score >= 35) msg = "Bé giỏi quá, tiếp tục phát huy nhé! 🌟✨";
+            else if (score >= 20) msg = "Bé làm tốt lắm, cố gắng thêm chút nữa! 💪🍎";
+            else msg = "Bé hãy ôn tập thêm để đạt điểm cao hơn nhé! 📚🎈";
+            
+            document.getElementById('result-message').innerText = msg;
+            playTone(440, 'sine', 0.5);
         }
     </script>
 </body>
