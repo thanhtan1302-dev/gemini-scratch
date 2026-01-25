@@ -270,6 +270,11 @@
         }
 
         function showExitMessage() {
+            // Đặt lại văn bản modal trong trường hợp trước đó đã hiển thị lời chào tạm biệt
+            const modalText = document.querySelector('.modal-content p');
+            const buttonContainer = document.querySelector('.modal-content .flex');
+            modalText.innerText = "Bé có chắc chắn muốn thoát không?";
+            buttonContainer.classList.remove('hidden');
             document.getElementById('custom-modal').classList.remove('hidden');
         }
 
@@ -279,12 +284,15 @@
 
         function confirmExit() {
             const modalText = document.querySelector('.modal-content p');
-            modalText.innerText = "Tạm biệt bé nhé! 👋";
-            document.querySelector('.modal-content .flex').classList.add('hidden');
+            const buttonContainer = document.querySelector('.modal-content .flex');
+            
+            modalText.innerText = "Hẹn gặp lại bé sau nhé! 👋";
+            buttonContainer.classList.add('hidden');
+            
             setTimeout(() => {
                 closeModal();
-                if (window.history.length > 1) window.history.back();
-            }, 1500);
+                showScreen('start-screen'); // Quay về màn hình bắt đầu
+            }, 1200);
         }
 
         function playSound(type) {
