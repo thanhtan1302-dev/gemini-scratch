@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bé Học Vần AN - Ngẫu Nhiên & Tốc Độ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF9C4;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .card {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .btn-speak {
+            background-color: #FF7043;
+            color: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            box-shadow: 0 4px #D84315;
+            transition: all 0.1s;
+        }
+        .btn-speak:active {
+            box-shadow: 0 0;
+            transform: translateY(2px);
+        }
+        .section { display: none; }
+        .active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .star { color: #FFD600; font-size: 1.5rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .audio-loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="p-4 flex items-center justify-center min-h-screen">
+
+    <!-- Giao diện chính -->
+    <div id="main-container" class="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-[10px] border-yellow-400">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-400 to-blue-500 p-5 text-center">
+            <h1 class="text-3xl font-bold text-white drop-shadow-md">BÉ HỌC VẦN AN</h1>
+            <div class="flex justify-center mt-2 space-x-2">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+            </div>
+        </div>
+
+        <!-- Nội dung -->
+        <div class="p-6" id="app-content">
+            
+            <!-- Trang 1: Giới thiệu -->
+            <div id="step-1" class="section active text-center">
+                <h2 class="text-2xl text-pink-500 font-bold mb-4">1. Làm quen vần mới</h2>
+                <div class="bg-yellow-50 rounded-3xl p-10 mb-6 border-4 border-dashed border-yellow-300">
+                    <span class="text-9xl font-black text-blue-600 tracking-tighter">an</span>
+                    <button id="btn-intro" onclick="speakText('vần an. a nờ an')" class="btn-speak text-xl">🔊</button>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-2xl mb-6 text-xl">
+                    <p class="text-gray-700 font-medium">Chữ <b class="text-red-500">a</b> đứng trước</p>
+                    <p class="text-gray-700 font-medium">Chữ <b class="text-blue-500">n</b> đứng sau</p>
+                </div>
+                <button onclick="showStep(2)" class="w-full bg-green-500 text-white px-8 py-4 rounded-2xl font-bold text-xl shadow-[0_6px_0_rgb(22,163,74)] active:shadow-none active:translate-y-[4px]">Tiếp tục nào! ➜</button>
+            </div>
+
+            <!-- Trang 2: Ghép âm (Ngẫu nhiên) -->
+            <div id="step-2" class="section text-center">
+                <h2 class="text-2xl text-purple-500 font-bold mb-6">2. Bé tập ghép chữ</h2>
+                <div id="ghep-chu-container" class="space-y-4">
+                    <!-- Dữ liệu sẽ được chèn ngẫu nhiên bởi JS -->
+                </div>
+                <div class="flex space-x-3 mt-8">
+                    <button onclick="showStep(1)" class="bg-gray-200 text-gray-600 px-6 py-4 rounded-2xl font-bold">Quay lại</button>
+                    <button onclick="showStep(3)" class="flex-1 bg-green-500 text-white px-8 py-4 rounded-2xl font-bold text-xl shadow-[0_6px_0_rgb(22,163,74)] active:shadow-none active:translate-y-[4px]">Ví dụ ➜</button>
+                </div>
+            </div>
+
+            <!-- Trang 3: Ví dụ -->
+            <div id="step-3" class="section text-center">
+                <h2 class="text-2xl text-red-500 font-bold mb-6">3. Từ hay quanh bé</h2>
+                <div id="vi-du-container" class="grid grid-cols-2 gap-4">
+                    <!-- Dữ liệu ví dụ chèn ở đây -->
+                </div>
+                <button onclick="showStep(4)" class="mt-8 bg-green-500 text-white px-8 py-4 rounded-2xl font-bold text-xl shadow-[0_6px_0_rgb(22,163,74)] active:shadow-none active:translate-y-[4px] w-full">Trò chơi! 🎮</button>
+            </div>
+
+            <!-- Trang 4: Trò chơi -->
+            <div id="step-4" class="section text-center">
+                <h2 class="text-2xl text-blue-600 font-bold mb-6">4. Thử tài của bé</h2>
+                <p class="mb-6 text-xl font-bold text-gray-700 bg-blue-50 py-3 rounded-full">Tiếng nào có vần <span class="text-red-500 underline">an</span>?</p>
+                <div id="quiz-container" class="space-y-4">
+                    <!-- Đáp án chèn ngẫu nhiên ở đây -->
+                </div>
+                <div id="feedback" class="mt-6 h-10 font-bold text-xl"></div>
+                <button onclick="restartApp()" class="mt-4 text-blue-500 font-bold hover:underline">Học lại với thử thách mới ↻</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "";
+        let audioCache = {}; // Lưu trữ âm thanh để phát lại nhanh hơn
+
+        const ghepChuList = [
+            { text: "b + an = ban", speak: "bờ an ban", color: "orange" },
+            { text: "l + an = lan", speak: "lờ an lan", color: "blue" },
+            { text: "d + an + ` = dàn", speak: "giờ an gian huyền dàn", color: "pink" },
+            { text: "m + an = man", speak: "mờ an man", color: "green" },
+            { text: "đ + an = đan", speak: "đờ an đan", color: "purple" }
+        ];
+
+        const viDuList = [
+            { icon: "🪑", title: "Cái bàn", speak: "Cái bàn. Bé ngồi vào bàn học.", color: "blue" },
+            { icon: "🏷️", title: "Nhãn vở", speak: "Nhãn vở. Em dán nhãn vào quyển tập.", color: "green" },
+            { icon: "🌿", title: "Dàn mướp", speak: "Dàn mướp. Dàn mướp nở hoa vàng.", color: "yellow" },
+            { icon: "🪳", title: "Con gián", speak: "Con gián. Con gián bò trên tường.", color: "red" }
+        ];
+
+        const quizOptions = [
+            { text: "Con cá", correct: false },
+            { text: "Nhãn vở", correct: true },
+            { text: "Quả khế", correct: false },
+            { text: "Bông hoa", correct: false },
+            { text: "Cái bàn", correct: true },
+            { text: "Con mèo", correct: false }
+        ];
+
+        // Hàm xáo trộn mảng
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        async function speakText(text) {
+            // Kiểm tra cache để phát ngay lập tức
+            if (audioCache[text]) {
+                playAudio(audioCache[text]);
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: text }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Leda" } } }
+                        }
+                    })
+                });
+
+                const result = await response.json();
+                const audioData = result.candidates[0].content.parts[0].inlineData.data;
+                const mimeType = result.candidates[0].content.parts[0].inlineData.mimeType;
+                const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)?.[1] || 24000);
+
+                const wavBuffer = createWavFile(base64ToBuffer(audioData), sampleRate);
+                const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+                const url = URL.createObjectURL(blob);
+                
+                audioCache[text] = url; // Lưu vào cache
+                playAudio(url);
+            } catch (error) {
+                console.error("TTS Error:", error);
+            }
+        }
+
+        function playAudio(url) {
+            const audio = new Audio(url);
+            audio.play();
+        }
+
+        function base64ToBuffer(base64) {
+            const binary = atob(base64);
+            const buffer = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) buffer[i] = binary.charCodeAt(i);
+            return buffer.buffer;
+        }
+
+        function createWavFile(pcmBuffer, sampleRate) {
+            const header = new ArrayBuffer(44);
+            const view = new DataView(header);
+            const writeString = (view, offset, str) => {
+                for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+            };
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcmBuffer.byteLength, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcmBuffer.byteLength, true);
+            const wav = new Uint8Array(44 + pcmBuffer.byteLength);
+            wav.set(new Uint8Array(header), 0);
+            wav.set(new Uint8Array(pcmBuffer), 44);
+            return wav.buffer;
+        }
+
+        function renderRandomContent() {
+            // 1. Ngẫu nhiên ghép chữ (lấy 3 cái)
+            const ghepContainer = document.getElementById('ghep-chu-container');
+            ghepContainer.innerHTML = '';
+            shuffle([...ghepChuList]).slice(0, 3).forEach(item => {
+                const div = document.createElement('div');
+                div.className = `bg-${item.color}-50 p-5 rounded-2xl flex items-center justify-between border-2 border-${item.color}-200 shadow-sm`;
+                div.innerHTML = `<span class="text-3xl font-bold text-${item.color}-600">${item.text}</span>
+                                 <button onclick="speakText('${item.speak}')" class="btn-speak">🔊</button>`;
+                ghepContainer.appendChild(div);
+            });
+
+            // 2. Ngẫu nhiên ví dụ
+            const viDuContainer = document.getElementById('vi-du-container');
+            viDuContainer.innerHTML = '';
+            shuffle([...viDuList]).forEach(item => {
+                const div = document.createElement('div');
+                div.className = `card bg-${item.color}-100 p-4 rounded-3xl border-2 border-${item.color}-200`;
+                div.onclick = () => speakText(item.speak);
+                div.innerHTML = `<div class="text-5xl mb-2">${item.icon}</div><div class="font-bold text-${item.color}-800">${item.title}</div>`;
+                viDuContainer.appendChild(div);
+            });
+
+            // 3. Ngẫu nhiên Trò chơi (1 đúng, 2 sai)
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = '';
+            const correctOnes = quizOptions.filter(o => o.correct);
+            const incorrectOnes = quizOptions.filter(o => !o.correct);
+            const finalOptions = shuffle([
+                shuffle(correctOnes)[0],
+                ...shuffle(incorrectOnes).slice(0, 2)
+            ]);
+
+            finalOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full py-5 bg-white rounded-2xl text-2xl font-bold border-4 border-gray-100 shadow-sm transition-all active:scale-95";
+                btn.innerText = opt.text;
+                btn.onclick = () => checkAnswer(btn, opt.correct);
+                quizContainer.appendChild(btn);
+            });
+        }
+
+        function showStep(n) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + n).classList.add('active');
+            
+            const titles = [
+                "Chào các con, hôm nay chúng mình học vần an",
+                "Bé hãy tập ghép chữ cùng cô nhé",
+                "Đây là các ví dụ về vần an",
+                "Đố bé, tiếng nào có chứa vần an?"
+            ];
+            speakText(titles[n-1]);
+        }
+
+        function checkAnswer(btn, isCorrect) {
+            const feedback = document.getElementById('feedback');
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('border-green-400', 'bg-green-100', 'border-red-400', 'bg-red-100');
+            });
+
+            if(isCorrect) {
+                btn.classList.add('border-green-400', 'bg-green-100');
+                feedback.innerText = "Giỏi quá! Đúng rồi! 🎉";
+                feedback.className = "mt-6 h-10 font-bold text-xl text-green-600";
+                speakText("Giỏi quá, đúng rồi, bé rất thông minh");
+            } else {
+                btn.classList.add('border-red-400', 'bg-red-100');
+                feedback.innerText = "Tiếc quá, thử lại nhé! ❌";
+                feedback.className = "mt-6 h-10 font-bold text-xl text-red-500";
+                speakText("Tiếc quá, bé hãy thử lại nhé");
+            }
+        }
+
+        function restartApp() {
+            renderRandomContent();
+            showStep(1);
+        }
+
+        window.onload = () => {
+            renderRandomContent();
+            setTimeout(() => speakText("Chào các con, hôm nay chúng mình học vần an"), 1000);
+        };
+    </script>
+</body>
+</html>
