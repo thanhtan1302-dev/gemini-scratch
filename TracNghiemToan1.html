@@ -270,7 +270,6 @@
         }
 
         function showExitMessage() {
-            // Đặt lại văn bản modal trong trường hợp trước đó đã hiển thị lời chào tạm biệt
             const modalText = document.querySelector('.modal-content p');
             const buttonContainer = document.querySelector('.modal-content .flex');
             modalText.innerText = "Bé có chắc chắn muốn thoát không?";
@@ -291,8 +290,18 @@
             
             setTimeout(() => {
                 closeModal();
-                showScreen('start-screen'); // Quay về màn hình bắt đầu
-            }, 1200);
+                // Thực hiện đóng iframe
+                try {
+                    // Gửi thông điệp đóng tới parent window
+                    window.parent.postMessage({ type: 'close_iframe' }, '*');
+                    
+                    // Nếu không có parent xử lý, thực hiện chuyển hướng hoặc quay lại màn hình start
+                    showScreen('start-screen');
+                } catch (e) {
+                    console.log("Không thể đóng iframe:", e);
+                    showScreen('start-screen');
+                }
+            }, 1000);
         }
 
         function playSound(type) {
