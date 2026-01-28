@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEM Lớp 1: Tính Cộng và Trừ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #app-viewport {
+            width: 480px;
+            height: 360px;
+            background-color: #fcf9f2;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 4px border-white;
+            display: flex;
+            flex-direction: column;
+        }
+        .page-content {
+            display: none;
+            height: 100%;
+            padding: 10px 15px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .page-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .bubble {
+            position: relative;
+            background: #fff;
+            border-radius: 1rem;
+            padding: 0.5rem 0.75rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: 12px;
+        }
+        .bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: #fff transparent;
+            transform: translateX(-50%);
+        }
+        .number-line {
+            display: flex;
+            background-color: #22c55e;
+            padding: 8px 4px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .number-line-item {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+        }
+        .number-line-item:last-child { border: none; }
+        
+        .answer-hidden {
+            display: none;
+        }
+        .answer-visible {
+            display: block;
+            animation: bounceIn 0.5s ease;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        .stick {
+            width: 4px;
+            height: 40px;
+            border-radius: 2px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .craft-card {
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border: 2px solid #f1f5f9;
+        }
+        .hint-badge {
+            background-color: #c5e0a1;
+            color: #4a6d23;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+        .slider-bar {
+            width: 14px;
+            height: 60px;
+            background: #fbbf24;
+            border: 2px solid #d97706;
+            border-radius: 3px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        .heart-icon {
+            position: absolute;
+            top: -20px;
+            font-size: 18px;
+            animation: heartBeat 1.5s infinite;
+        }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .step-badge {
+            background-color: #f26522;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .math-box {
+            background: white;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .teacher-icon {
+            cursor: pointer;
+            transition: transform 0.2s;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        .teacher-icon:hover {
+            transform: scale(1.1);
+        }
+        .teacher-icon.speaking {
+            animation: teacherWobble 0.5s infinite ease-in-out;
+        }
+        @keyframes teacherWobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .mini-number-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 4px;
+            font-family: monospace;
+            font-size: 9px;
+            font-weight: bold;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            height: 24px;
+            align-items: center;
+        }
+
+        .arrow-jump {
+            position: absolute;
+            color: #ef4444;
+            font-size: 20px;
+            font-weight: bold;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+        
+        .arrow-jump-back {
+            position: absolute;
+            color: #3b82f6;
+            font-size: 20px;
+            font-weight: bold;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(-1);
+            pointer-events: none;
+        }
+
+        /* Trang 8 Styles */
+        .material-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-top: 5px;
+        }
+        .material-item {
+            background: white;
+            border: 1.5px solid #f1f5f9;
+            border-radius: 10px;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            height: 65px;
+        }
+        .material-icon {
+            font-size: 22px;
+            margin-bottom: 2px;
+        }
+        .material-label {
+            font-size: 8px;
+            font-weight: bold;
+            color: #475569;
+            line-height: 1;
+        }
+
+        /* Trang 10 & 11 Styles */
+        .ruler-container {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px 10px;
+            width: 100%;
+            position: relative;
+        }
+        .ruler-scale {
+            display: flex;
+            justify-content: space-between;
+            border-top: 2px solid #475569;
+            padding-top: 5px;
+            position: relative;
+        }
+        .scale-mark {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #1e293b;
+            width: 20px;
+        }
+        .scale-mark::before {
+            content: "";
+            width: 2px;
+            height: 8px;
+            background: #475569;
+            position: absolute;
+            top: -7px;
+        }
+        .math-symbol-hint {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+        }
+        .glue-area {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px dashed #3b82f6;
+            height: 100%;
+            width: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        /* Styles for new Page 13 */
+        .assembly-container {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .sliding-action {
+            animation: slideLeftRight 3s infinite ease-in-out;
+        }
+        @keyframes slideLeftRight {
+            0%, 100% { transform: translateX(-40px); }
+            50% { transform: translateX(40px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-viewport">
+        <!-- Header -->
+        <header class="flex justify-between items-center px-4 py-2 bg-white/50 border-b border-white">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-sky-500 rounded-full flex items-center justify-center text-white text-[8px] font-bold text-center leading-tight border-2 border-white">
+                    STEM<br>1
+                </div>
+                <div id="page-indicator" class="text-sky-600 font-bold text-[10px] bg-sky-50 px-2 py-0.5 rounded-full">1/15</div>
+            </div>
+            <div id="teacher-btn" class="teacher-icon text-3xl" title="Nhấn để nghe cô giáo giảng bài">👩‍🏫</div>
+        </header>
+
+        <!-- Main Content Space -->
+        <div class="flex-1 relative overflow-hidden">
+            <!-- TRANG 1 - 11 (Giữ nguyên) -->
+            <section id="page-1" class="page-content active justify-center items-center text-center">
+                <h1 class="text-2xl font-black text-[#0054a6] mb-4">BÀI: <span class="text-[#f26522]">TÍNH CỘNG,</span><br><span>TÍNH TRỪ</span></h1>
+                <div class="flex gap-2 mb-4">
+                    <div class="bg-red-500 text-white text-lg font-bold px-3 py-1 rounded-lg shadow transform -rotate-3">2 + 4</div>
+                    <div class="bg-sky-500 text-white text-lg font-bold px-3 py-1 rounded-lg shadow transform rotate-3">9 - 6</div>
+                </div>
+                <div class="text-7xl relative">👧<div class="absolute -top-4 -right-4 bg-yellow-400 text-white text-sm font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-white">?</div></div>
+                <span class="hidden tts-text">Chào mừng các em đến với bài học: Tính cộng, tính trừ. Chúng ta sẽ cùng nhau khám phá các phép tính thú vị nhé!</span>
+            </section>
+            <section id="page-2" class="page-content"><h2 class="text-center text-sky-700 font-black text-sm mb-2">QUAN SÁT TRANH</h2><div class="flex flex-col items-center gap-2"><p class="text-sm font-bold text-slate-700">Hai bạn đang làm gì?</p><button onclick="revealAnswer(2)" class="bg-orange-500 text-white text-[10px] font-bold px-4 py-1 rounded-full shadow-md">Xem trả lời</button><div id="text-answer-2" class="answer-hidden bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow">Hai bạn đang làm toán</div><div class="bg-white border-2 border-orange-100 rounded-2xl p-4 flex gap-6 items-end mt-1"><div class="flex flex-col items-center"><span class="text-[8px] bg-green-100 px-1 rounded">5+2=7</span><span class="text-4xl">👧</span></div><div class="flex flex-col items-center"><span class="text-[8px] bg-sky-100 px-1 rounded">4+3=7</span><span class="text-4xl">👦</span></div></div></div><span class="hidden tts-text">Các em hãy quan sát tranh. Đố các em biết hai bạn nhỏ đang làm gì nào?</span></section>
+            <section id="page-3" class="page-content items-center"><h2 class="text-sky-700 font-black text-sm mb-2">QUAN SÁT TRANH</h2><div class="bg-white p-3 rounded-xl border mb-3 w-full flex flex-col items-center shadow-sm"><span class="text-[10px] bg-green-600 text-white px-3 py-1 rounded-full mb-3 font-bold">5 + 2 = 7</span><div class="flex gap-4 items-end"><div class="text-5xl">👧</div><div class="flex gap-1 mb-2"><div class="stick bg-yellow-400"></div><div class="stick bg-yellow-400"></div><div class="stick bg-yellow-400"></div><div class="stick bg-yellow-400"></div><div class="stick bg-yellow-400"></div><div class="w-2"></div><div class="stick bg-orange-400"></div><div class="stick bg-orange-400"></div></div></div></div><button onclick="revealAnswer(3)" class="bg-orange-500 text-white text-[10px] font-bold px-6 py-1.5 rounded-full shadow-md">Xem trả lời</button><div id="text-answer-3" class="answer-hidden bg-orange-400 text-white p-3 rounded-2xl text-xs font-bold w-4/5 mt-3 text-center">Bạn sử dụng que tính để tính</div><span class="hidden tts-text">Bạn gái đang dùng que tính để tìm kết quả.</span></section>
+            <section id="page-4" class="page-content items-center"><h2 class="text-sky-700 font-black text-sm mb-2">QUAN SÁT TRANH</h2><div class="bg-white p-4 rounded-xl border mb-4 w-full flex flex-col items-center shadow-sm"><div class="text-6xl mb-2">👦</div><div class="text-3xl tracking-widest">🖐️ ✌️</div></div><button onclick="revealAnswer(4)" class="bg-orange-500 text-white text-[10px] font-bold px-6 py-1.5 rounded-full shadow-md">Xem trả lời</button><div id="text-answer-4" class="answer-hidden bg-yellow-400 text-red-700 p-3 rounded-2xl text-xs font-bold w-4/5 mt-3 text-center">Bạn sử dụng ngón tay để tính</div><span class="hidden tts-text">Bạn nam đang đếm trên các ngón tay.</span></section>
+            <section id="page-5" class="page-content"><h2 class="text-center text-sky-700 font-black text-sm mb-4">THỰC HIỆP PHÉP CỘNG</h2><div class="flex flex-col items-center gap-2"><div class="text-4xl font-black mb-2"><span class="text-orange-400">1</span> + <span class="text-sky-400">4</span> = <span class="text-red-600">5</span></div><div class="w-full px-4 mt-6"><div class="number-line relative"><div class="number-line-item">0</div><div class="number-line-item bg-sky-700 rounded-lg">1</div><div class="number-line-item">2 <span class="arrow-jump">⤴️</span></div><div class="number-line-item">3 <span class="arrow-jump">⤴️</span></div><div class="number-line-item">4 <span class="arrow-jump">⤴️</span></div><div class="number-line-item bg-red-600 rounded-full">5 <span class="arrow-jump">⤴️</span></div><div class="number-line-item">6</div></div></div></div><span class="hidden tts-text">Một cộng bốn bằng năm.</span></section>
+            <section id="page-6" class="page-content"><h2 class="text-center text-sky-700 font-black text-sm mb-4">THỰC HIỆN PHÉP TRỪ</h2><div class="flex flex-col items-center gap-4"><div class="text-4xl font-black mb-2"><span class="text-sky-600">9</span> - <span class="text-orange-500">4</span> = <span class="text-red-600">5</span></div><div class="w-full px-4 mt-6"><div class="number-line bg-purple-700 relative"><div class="number-line-item">4</div><div class="number-line-item bg-red-600 rounded-full">5 <span class="arrow-jump-back">⤴️</span></div><div class="number-line-item">6 <span class="arrow-jump-back">⤴️</span></div><div class="number-line-item">7 <span class="arrow-jump-back">⤴️</span></div><div class="number-line-item">8 <span class="arrow-jump-back">⤴️</span></div><div class="number-line-item bg-sky-700 rounded-lg">9</div><div class="number-line-item">10</div></div></div></div><span class="hidden tts-text">Chín trừ bốn bằng năm.</span></section>
+            <section id="page-7" class="page-content"><h2 class="text-center text-sky-700 font-black text-lg mb-2 uppercase">Nhiệm vụ</h2><div class="bg-sky-50 border-2 border-sky-200 rounded-xl p-3 mb-2 shadow-inner"><ul class="text-[14px] space-y-2 font-bold text-slate-800"><li class="flex items-center gap-2"><span class="text-sky-500 text-lg">📏</span><span>Băng giấy ghi số từ 0 đến 10.</span></li><li class="flex items-center gap-2"><span class="text-sky-500 text-lg">🎚️</span><span>Có thanh trượt dọc băng giấy.</span></li></ul></div><div class="flex items-center gap-3 justify-center mt-auto"><div class="text-5xl">🤖</div><div class="bubble font-bold text-[11px] bg-[#7fa5a5] text-white p-2 max-w-[200px]">"Chúng mình cùng làm dụng cụ tính nhé!"</div></div><span class="hidden tts-text">Nhiệm vụ là làm dụng cụ tính toán có thanh trượt.</span></section>
+            <section id="page-8" class="page-content"><h2 class="text-center text-sky-800 font-black text-sm mb-1 uppercase">Vật liệu & Dụng cụ</h2><p class="text-[10px] text-center text-slate-500 mb-2">Em hãy chuẩn bị những đồ dùng sau đây nhé:</p><div class="material-grid"><div class="material-item"><span class="material-icon">📄</span><span class="material-label">Giấy màu</span></div><div class="material-item"><span class="material-icon">✏️</span><span class="material-label">Bút chì</span></div><div class="material-item"><span class="material-icon">🖍️</span><span class="material-label">Bút màu</span></div><div class="material-item"><span class="material-icon">📏</span><span class="material-label">Thước kẻ</span></div><div class="material-item"><span class="material-icon">🥢</span><span class="material-label">1 Ống hút</span></div><div class="material-item"><span class="material-icon">🪵</span><span class="material-label">1 Que kem</span></div><div class="material-item"><span class="material-icon">✂️</span><span class="material-label">Kéo</span></div><div class="material-item"><span class="material-icon">🧴</span><span class="material-label">Keo dán</span></div></div><div class="mt-4 p-2 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-3"><span class="text-2xl">💡</span><p class="text-[9px] font-bold text-yellow-800 leading-tight">Lưu ý: Em nên nhờ người lớn hỗ trợ khi sử dụng kéo để đảm bảo an toàn nhé!</p></div><span class="hidden tts-text">Chuẩn bị vật liệu.</span></section>
+            <section id="page-9" class="page-content"><h2 class="text-center text-sky-900 font-black text-sm mb-2 uppercase">Làm dụng cụ tính toán</h2><div class="grid grid-cols-2 gap-3 flex-1 items-start"><div class="craft-card"><span class="text-[16px]">🍦🌈🧁</span><div class="h-8 border-2 border-yellow-300 rounded bg-yellow-50 flex items-center justify-around px-1"><span class="text-[8px] font-bold">0 1 2... 10</span></div></div><div class="craft-card"><span class="text-[16px]">☀️🦋🐥</span><div class="h-8 border-2 border-sky-300 rounded bg-sky-50 flex items-center justify-center"><span class="text-red-500 text-[10px]">➕ 🍭 ➖</span></div></div></div><span class="hidden tts-text">Trang trí dụng cụ.</span></section>
+
+            <section id="page-10" class="page-content">
+                <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 1</h2>
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="hint-badge shrink-0">1</div>
+                    <p class="text-[11px] font-bold text-slate-700 leading-tight">
+                        Viết số theo thứ tự từ 0 đến 10, viết dấu +, - và mũi tên.
+                    </p>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center gap-10">
+                    <div class="ruler-container shadow-sm">
+                        <div class="ruler-scale">
+                            <div class="scale-mark"><span>0</span></div>
+                            <div class="scale-mark"><span>1</span></div>
+                            <div class="scale-mark"><span>2</span></div>
+                            <div class="scale-mark"><span>3</span></div>
+                            <div class="scale-mark"><span>4</span></div>
+                            <div class="scale-mark"><span>5</span></div>
+                            <div class="scale-mark"><span>6</span></div>
+                            <div class="scale-mark"><span>7</span></div>
+                            <div class="scale-mark"><span>8</span></div>
+                            <div class="scale-mark"><span>9</span></div>
+                            <div class="scale-mark"><span>10</span></div>
+                        </div>
+                        <div class="math-symbol-hint text-red-600" style="bottom: -22px; left: 10px;">
+                            <span class="text-xs">➕</span><span class="text-lg">➡</span>
+                        </div>
+                        <div class="math-symbol-hint text-blue-600" style="bottom: -22px; right: 10px;">
+                            <span class="text-xs">➖</span><span class="text-lg">⬅</span>
+                        </div>
+                    </div>
+                </div>
+                <span class="hidden tts-text">Bước 1: Em hãy viết các số theo thứ tự từ không đến mười lên băng giấy. Sau đó, viết dấu cộng và mũi tên sang phải ở dưới số không, dấu trừ và mũi tên sang trái ở dưới số mười nhé.</span>
+            </section>
+
+            <section id="page-11" class="page-content">
+                <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 2</h2>
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="hint-badge shrink-0">2</div>
+                    <p class="text-[11px] font-bold text-slate-700 leading-tight">
+                        Dán hai mép băng giấy lên tờ giấy.
+                    </p>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <div class="w-full bg-white border-2 border-slate-200 rounded-xl p-4 shadow-md relative h-40 flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-4 bg-slate-50 border border-slate-300 rounded"></div>
+                        <div class="relative w-4/5 h-12 bg-yellow-50 border-y-2 border-yellow-300 flex items-center">
+                            <div class="glue-area">DÁN</div>
+                            <div class="flex-1 flex justify-around items-center px-2">
+                                <span class="text-[8px] font-black opacity-30">0</span>
+                                <span class="text-[8px] font-black opacity-30">1</span>
+                                <span class="text-[8px] font-black opacity-30">2</span>
+                                <span class="text-[8px] font-black opacity-30">...</span>
+                                <span class="text-[8px] font-black opacity-30">10</span>
+                            </div>
+                            <div class="glue-area">DÁN</div>
+                        </div>
+                        <div class="absolute bottom-2 right-4 text-3xl">🧴</div>
+                    </div>
+                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-2">
+                         <span class="text-blue-500">✨</span>
+                         <p class="text-[10px] text-blue-900 font-bold leading-tight">
+                            Lưu ý: Chỉ bôi keo vào hai đầu mép giấy (phần gạch chéo) để thanh trượt có thể di chuyển ở giữa nhé!
+                         </p>
+                    </div>
+                </div>
+                <span class="hidden tts-text">Bước hai: Em hãy dán hai mép của băng giấy lên tờ giấy nền. Nhớ là chỉ bôi keo vào hai đầu thôi để chúng mình còn luồn thanh trượt vào giữa được nhé.</span>
+            </section>
+
+            <!-- TRANG 12 (Cập nhật) -->
+            <section id="page-12" class="page-content">
+                <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 3</h2>
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="hint-badge shrink-0">3</div>
+                    <p class="text-[11px] font-bold text-slate-700 leading-tight">Làm thanh trượt.</p>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <div class="bg-white border-2 border-slate-200 rounded-xl p-6 shadow-md w-full max-w-[300px] flex flex-col items-center gap-8">
+                        <div class="flex items-center gap-4">
+                            <div class="flex flex-col items-center relative">
+                                <span class="heart-icon text-red-500">❤️</span>
+                                <div class="slider-bar"></div>
+                            </div>
+                            <div class="text-slate-400 text-2xl">➕</div>
+                            <div class="flex flex-col items-center">
+                                <span class="text-2xl">🥢</span>
+                                <span class="text-[10px] font-bold text-slate-500">Ống hút</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-3 bg-red-50 border border-red-100 rounded-lg">
+                        <p class="text-[10px] text-red-800 font-bold text-center">Chuẩn bị một thanh dài có dán hình trái tim ở trên nhé!</p>
+                    </div>
+                </div>
+                <span class="hidden tts-text">Bước ba: Làm thanh trượt. Các em hãy làm một thanh dài và dán hình trái tim thật xinh xắn lên phía trên nhé.</span>
+            </section>
+
+            <!-- TRANG 13 (CẬP NHẬT MỚI THEO YÊU CẦU) -->
+            <section id="page-13" class="page-content">
+                <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 4</h2>
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="hint-badge shrink-0">4</div>
+                    <p class="text-[11px] font-bold text-slate-700 leading-tight">
+                        Luồng thanh trượt dưới băng giấy và trang trí hoàn thiện.
+                    </p>
+                </div>
+
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <!-- Minh họa lắp ráp -->
+                    <div class="w-full bg-white border-2 border-sky-100 rounded-xl p-4 shadow-sm relative overflow-hidden flex flex-col items-center">
+                        <div class="assembly-container">
+                            <!-- Băng giấy số -->
+                            <div class="w-4/5 h-10 bg-yellow-50 border-y-2 border-yellow-300 flex items-center justify-around px-2 z-20">
+                                <span class="text-[8px] font-black">0</span>
+                                <span class="text-[8px] font-black">1</span>
+                                <span class="text-[8px] font-black">2</span>
+                                <span class="text-[8px] font-black">...</span>
+                                <span class="text-[8px] font-black">10</span>
+                            </div>
+                            <!-- Thanh trượt đang luồng bên dưới -->
+                            <div class="absolute z-10 sliding-action flex flex-col items-center">
+                                <span class="text-red-500 text-xl" style="margin-bottom: -15px;">❤️</span>
+                                <div class="w-3 h-24 bg-orange-400 border-2 border-orange-600 rounded"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Icon trang trí -->
+                        <div class="flex gap-4 mt-2">
+                            <span class="text-2xl">🎨</span>
+                            <span class="text-2xl">⭐</span>
+                            <span class="text-2xl">🍀</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+                        <span class="text-xl">✨</span>
+                        <p class="text-[10px] text-green-900 font-bold leading-tight">
+                            Em hãy luồng thanh trượt vào giữa băng giấy và tờ giấy nền, sau đó vẽ thêm hình trang trí cho dụng cụ thêm đẹp nhé!
+                        </p>
+                    </div>
+                </div>
+
+                <span class="hidden tts-text">Bước bốn: Luồng thanh trượt dưới băng giấy và trang trí hoàn thiện. Bây giờ, em hãy khéo léo luồng thanh trượt vào khe hở giữa băng giấy và tờ giấy nền. Cuối cùng, hãy dùng bút màu vẽ thêm ngôi sao hoặc bông hoa để dụng cụ của mình thật đẹp mắt nhé!</span>
+            </section>
+
+            <!-- TRANG 14 - 15 (Giữ nguyên) -->
+            <section id="page-14" class="page-content"><h2 class="text-center text-[#0054a6] font-black text-sm mb-3 uppercase">Sử dụng</h2><div class="flex-1 flex flex-col gap-4"><div class="bg-white border-2 border-orange-200 rounded-xl p-3 shadow-sm text-xs font-bold">Cộng: Trượt sang PHẢI ➡</div><div class="bg-white border-2 border-blue-200 rounded-xl p-3 shadow-sm text-xs font-bold">Trừ: Trượt sang TRÁI ⬅</div></div><span class="hidden tts-text">Hướng dẫn sử dụng.</span></section>
+            <section id="page-15" class="page-content"><h2 class="text-center text-[#f26522] font-black text-sm mb-4 uppercase">Luyện tập</h2><div class="flex flex-col items-center gap-2"><div class="math-box text-lg font-black">4 + 2 = ?</div><div class="math-box text-lg font-black">8 - 3 = ?</div></div><span class="hidden tts-text">Luyện tập tính toán.</span></section>
+        </div>
+
+        <!-- Navigation -->
+        <footer class="p-3 bg-white/80 border-t flex justify-between items-center">
+            <button id="btn-prev" onclick="changePage(-1)" class="px-3 py-1.5 bg-sky-100 text-sky-600 text-xs font-bold rounded-lg">Trước</button>
+            <div class="flex gap-1" id="dots-container"></div>
+            <button id="btn-next" onclick="changePage(1)" class="px-3 py-1.5 bg-sky-600 text-white text-xs font-bold rounded-lg shadow">Tiếp</button>
+        </footer>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 15;
+        const apiKey = ""; 
+
+        function init() {
+            const container = document.getElementById('dots-container');
+            container.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const dot = document.createElement('div');
+                dot.id = `dot-${i}`;
+                dot.className = `w-1 h-1 rounded-full ${i === 1 ? 'bg-sky-500 w-2' : 'bg-slate-300'} transition-all`;
+                container.appendChild(dot);
+            }
+            updateButtons();
+            document.getElementById('teacher-btn').addEventListener('click', speakCurrentPage);
+        }
+
+        async function speakCurrentPage() {
+            const currentSection = document.getElementById(`page-${currentPage}`);
+            const ttsElement = currentSection.querySelector('.tts-text');
+            if (!ttsElement) return;
+            const textToSpeak = ttsElement.innerText;
+            const teacherBtn = document.getElementById('teacher-btn');
+            if (teacherBtn.classList.contains('speaking')) return;
+            teacherBtn.classList.add('speaking');
+            try {
+                await speakText(textToSpeak);
+            } finally {
+                teacherBtn.classList.remove('speaking');
+            }
+        }
+
+        async function speakText(text, retries = 5) {
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: {
+                                voiceName: "Leda"
+                            }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+            for (let i = 0; i <= retries; i++) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('TTS request failed');
+                    const result = await response.json();
+                    const audioData = result.candidates[0].content.parts[0].inlineData.data;
+                    const mimeType = result.candidates[0].content.parts[0].inlineData.mimeType;
+                    const sampleRate = parseInt(mimeType.split('rate=')[1]) || 24000;
+                    playAudio(audioData, sampleRate);
+                    return;
+                } catch (error) {
+                    if (i === retries) return;
+                    await new Promise(res => setTimeout(res, Math.pow(2, i) * 1000));
+                }
+            }
+        }
+
+        function playAudio(base64Data, sampleRate) {
+            const binaryString = atob(base64Data);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
+            const wavBuffer = createWavHeader(bytes.buffer, sampleRate);
+            const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.play();
+        }
+
+        function createWavHeader(pcmBuffer, sampleRate) {
+            const header = new ArrayBuffer(44);
+            const view = new DataView(header);
+            const writeString = (offset, string) => { for (let i = 0; i < string.length; i++) { view.setUint8(offset + i, string.charCodeAt(i)); } };
+            writeString(0, 'RIFF'); view.setUint32(4, 36 + pcmBuffer.byteLength, true); writeString(8, 'WAVE'); writeString(12, 'fmt ');
+            view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true); writeString(36, 'data');
+            view.setUint32(40, pcmBuffer.byteLength, true);
+            const finalBuffer = new Uint8Array(header.byteLength + pcmBuffer.byteLength);
+            finalBuffer.set(new Uint8Array(header), 0); finalBuffer.set(new Uint8Array(pcmBuffer), header.byteLength);
+            return finalBuffer.buffer;
+        }
+
+        function revealAnswer(pageId) {
+            const answer = document.getElementById(`text-answer-${pageId}`);
+            if (answer) {
+                answer.classList.remove('answer-hidden');
+                answer.classList.add('answer-visible');
+            }
+        }
+
+        function changePage(delta) {
+            const next = currentPage + delta;
+            if (next >= 1 && next <= totalPages) {
+                document.getElementById(`page-${currentPage}`).classList.remove('active');
+                document.getElementById(`dot-${currentPage}`).className = 'w-1 h-1 rounded-full bg-slate-300 transition-all';
+                currentPage = next;
+                document.getElementById(`page-${currentPage}`).classList.add('active');
+                document.getElementById(`dot-${currentPage}`).className = 'w-1 h-1 rounded-full bg-sky-500 w-2 transition-all';
+                document.getElementById('page-indicator').innerText = `${currentPage}/${totalPages}`;
+                updateButtons();
+            }
+        }
+
+        function updateButtons() {
+            const btnPrev = document.getElementById('btn-prev');
+            btnPrev.disabled = (currentPage === 1);
+            btnPrev.className = currentPage === 1 ? "px-3 py-1.5 bg-slate-100 text-slate-400 text-xs font-bold rounded-lg" : "px-3 py-1.5 bg-sky-100 text-sky-600 text-xs font-bold rounded-lg";
+            const btnNext = document.getElementById('btn-next');
+            btnNext.innerText = (currentPage === totalPages) ? "Xong" : "Tiếp";
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>
