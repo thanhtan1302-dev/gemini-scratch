@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học STEM: Đèn Hiệu & Biển Báo Giao Thông</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f0f9ff;
+            overflow-x: hidden;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+        .traffic-light-bulb {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 10px auto;
+            background-color: #333;
+            border: 3px solid #111;
+        }
+        .light-red.active { background-color: #ff0000; box-shadow: 0 0 20px #ff0000; }
+        .light-yellow.active { background-color: #ffcc00; box-shadow: 0 0 20px #ffcc00; }
+        .light-green.active { background-color: #00ff00; box-shadow: 0 0 20px #00ff00; }
+        
+        .pedestrian-light {
+            width: 60px;
+            height: 100px;
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .ped-man { font-size: 30px; text-align: center; line-height: 40px; }
+        .ped-red.active { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
+        .ped-green.active { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
+        
+        .btn-game {
+            transition: transform 0.1s;
+        }
+        .btn-game:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="text-center mb-8">
+        <div class="inline-block bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-2 tracking-widest uppercase">
+            Môn Học: STEM 1
+        </div>
+        <h1 class="text-3xl md:text-4xl font-bold text-blue-900 mb-2">ĐÈN HIỆU VÀ BIỂN BÁO GIAO THÔNG</h1>
+        <p class="text-blue-600 italic">"Chúng mình cùng học cách tham gia giao thông an toàn nhé!"</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-4xl mx-auto mb-8 bg-white rounded-2xl p-2 shadow-md flex gap-2">
+        <button onclick="switchTab('learn')" id="tab-learn" class="flex-1 py-3 px-4 rounded-xl font-bold transition-all bg-blue-500 text-white">1. KHÁM PHÁ</button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="flex-1 py-3 px-4 rounded-xl font-bold transition-all text-gray-500 hover:bg-blue-100">2. THỰC HÀNH</button>
+        <button onclick="switchTab('simulation')" id="tab-simulation" class="flex-1 py-3 px-4 rounded-xl font-bold transition-all text-gray-500 hover:bg-blue-100">3. MÔ PHỎNG</button>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-5xl mx-auto">
+
+        <!-- TAB 1: LEARN -->
+        <section id="content-learn" class="block">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Đèn tín hiệu phương tiện -->
+                <div class="bg-white p-6 rounded-3xl shadow-lg border-t-8 border-yellow-400">
+                    <h2 class="text-xl font-bold text-center mb-6">Đèn Hiệu Cho Xe</h2>
+                    <div class="flex items-center justify-around">
+                        <div class="bg-black p-4 rounded-3xl inline-block shadow-2xl">
+                            <div class="traffic-light-bulb light-red active" id="learn-red"></div>
+                            <div class="traffic-light-bulb light-yellow" id="learn-yellow"></div>
+                            <div class="traffic-light-bulb light-green" id="learn-green"></div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="p-3 rounded-lg bg-red-50 border-l-4 border-red-500">
+                                <b class="text-red-600">Đèn Đỏ:</b> Dừng lại ngay!
+                            </div>
+                            <div class="p-3 rounded-lg bg-yellow-50 border-l-4 border-yellow-500">
+                                <b class="text-yellow-600">Đèn Vàng:</b> Đi chậm, chuẩn bị dừng!
+                            </div>
+                            <div class="p-3 rounded-lg bg-green-50 border-l-4 border-green-500">
+                                <b class="text-green-600">Đèn Xanh:</b> Được phép đi!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Đèn người đi bộ -->
+                <div class="bg-white p-6 rounded-3xl shadow-lg border-t-8 border-green-400">
+                    <h2 class="text-xl font-bold text-center mb-6">Đèn Cho Người Đi Bộ</h2>
+                    <div class="flex items-center justify-around">
+                        <div class="bg-black p-4 rounded-2xl inline-block shadow-2xl">
+                            <div class="pedestrian-light mb-2 flex flex-col justify-around">
+                                <div class="ped-man ped-red active" id="learn-ped-red">🧍</div>
+                                <div class="ped-man ped-green" id="learn-ped-green">🚶</div>
+                            </div>
+                        </div>
+                        <div class="space-y-4 max-w-[200px]">
+                            <p class="text-sm font-semibold text-red-600">🔴 Hình người đứng: Dừng lại trên vỉa hè.</p>
+                            <p class="text-sm font-semibold text-green-600">🟢 Hình người bước đi: Được phép sang đường qua vạch kẻ.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biển báo giao thông -->
+                <div class="md:col-span-2 bg-white p-6 rounded-3xl shadow-lg border-t-8 border-blue-400">
+                    <h2 class="text-xl font-bold text-center mb-6">Biển Báo Giao Thông Thường Gặp</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 border rounded-2xl card-hover bg-blue-50">
+                            <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto flex items-center justify-center text-white text-2xl mb-2 shadow-lg">🚶</div>
+                            <p class="text-xs font-bold uppercase">Đường cho người đi bộ</p>
+                            <p class="text-[10px] mt-1 text-gray-600">Hình tròn, nền xanh</p>
+                        </div>
+                        <div class="text-center p-4 border rounded-2xl card-hover bg-red-50">
+                            <div class="w-16 h-16 bg-white border-4 border-red-500 rounded-full mx-auto flex items-center justify-center text-red-500 text-2xl mb-2 shadow-lg relative">
+                                🚶 <div class="absolute w-full h-1 bg-red-500 rotate-45"></div>
+                            </div>
+                            <p class="text-xs font-bold uppercase text-red-600">Cấm người đi bộ</p>
+                            <p class="text-[10px] mt-1 text-gray-600">Viền đỏ, gạch chéo</p>
+                        </div>
+                        <div class="text-center p-4 border rounded-2xl card-hover bg-yellow-50">
+                            <div class="w-16 h-16 border-b-[64px] border-b-yellow-400 border-l-[32px] border-l-transparent border-r-[32px] border-r-transparent mx-auto relative mb-2">
+                                <span class="absolute top-8 left-[-10px] text-xs font-bold">🚶🚶</span>
+                            </div>
+                            <p class="text-xs font-bold uppercase">Trẻ em đi ngang</p>
+                            <p class="text-[10px] mt-1 text-gray-600">Hình tam giác, nền vàng</p>
+                        </div>
+                        <div class="text-center p-4 border rounded-2xl card-hover bg-blue-50">
+                            <div class="w-16 h-16 bg-blue-500 border-2 border-white mx-auto flex items-center justify-center text-white text-2xl mb-2 shadow-md relative overflow-hidden">
+                                🏙️ <div class="absolute w-full h-1 bg-red-500 rotate-[135deg]"></div>
+                            </div>
+                            <p class="text-xs font-bold uppercase">Hết khu đông dân cư</p>
+                            <p class="text-[10px] mt-1 text-gray-600">Hình vuông, gạch đỏ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: QUIZ -->
+        <section id="content-quiz" class="hidden">
+            <div class="bg-white p-8 rounded-3xl shadow-xl max-w-2xl mx-auto text-center">
+                <div id="quiz-container">
+                    <h2 id="quiz-question" class="text-2xl font-bold text-blue-800 mb-8">Khi đèn tín hiệu màu ĐỎ bật sáng, em phải làm gì?</h2>
+                    <div class="grid gap-4" id="quiz-options">
+                        <button onclick="checkAnswer(true)" class="btn-game py-4 bg-red-100 border-2 border-red-500 rounded-2xl text-xl font-bold text-red-700 hover:bg-red-500 hover:text-white">Dừng Lại!</button>
+                        <button onclick="checkAnswer(false)" class="btn-game py-4 bg-green-100 border-2 border-green-500 rounded-2xl text-xl font-bold text-green-700 hover:bg-green-500 hover:text-white">Đi Tiếp!</button>
+                    </div>
+                </div>
+                
+                <!-- Feedback Modal (Simple) -->
+                <div id="feedback" class="hidden mt-8 p-4 rounded-2xl font-bold text-white"></div>
+                <button id="next-btn" onclick="nextQuiz()" class="hidden mt-6 px-8 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg">Câu hỏi tiếp theo →</button>
+            </div>
+        </section>
+
+        <!-- TAB 3: SIMULATION -->
+        <section id="content-simulation" class="hidden">
+            <div class="bg-white p-6 rounded-3xl shadow-xl">
+                <h2 class="text-2xl font-bold text-center mb-4">Mô Phỏng: Giúp Bạn Nhỏ Sang Đường</h2>
+                
+                <div class="relative h-[300px] bg-gray-200 rounded-2xl border-4 border-gray-400 overflow-hidden mb-6">
+                    <!-- Road -->
+                    <div class="absolute inset-0 flex flex-col justify-center">
+                        <div class="h-40 bg-gray-600 relative">
+                            <!-- Crosswalk -->
+                            <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-32 flex justify-between px-2">
+                                <div class="h-full w-4 bg-white"></div>
+                                <div class="h-full w-4 bg-white"></div>
+                                <div class="h-full w-4 bg-white"></div>
+                                <div class="h-full w-4 bg-white"></div>
+                            </div>
+                            <!-- Center Line -->
+                            <div class="absolute top-1/2 left-0 right-0 h-1 border-t-2 border-dashed border-yellow-300"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Characters -->
+                    <div id="sim-pedestrian" class="absolute bottom-4 left-4 text-4xl transition-all duration-1000">👧👦</div>
+                    <div id="sim-car" class="absolute top-1/4 right-4 text-4xl transition-all duration-500">🚗</div>
+                    
+                    <!-- Traffic Lights in Sim -->
+                    <div class="absolute top-4 right-1/4 bg-black p-2 rounded-lg flex flex-col gap-1">
+                        <div id="sim-light-red" class="w-4 h-4 rounded-full bg-red-900"></div>
+                        <div id="sim-light-green" class="w-4 h-4 rounded-full bg-green-900"></div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p id="sim-status" class="mb-4 font-bold text-gray-700">Đèn đỏ đang bật. Các bạn nhỏ phải đợi!</p>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="setSimLight('red')" class="px-6 py-2 bg-red-600 text-white rounded-xl font-bold shadow-md">Bật Đèn Đỏ</button>
+                        <button onclick="setSimLight('green')" class="px-6 py-2 bg-green-600 text-white rounded-xl font-bold shadow-md">Bật Đèn Xanh</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Message Box -->
+    <div id="msg-box" class="fixed bottom-4 right-4 max-w-xs bg-yellow-100 border-2 border-yellow-400 p-4 rounded-2xl shadow-xl hidden animate-bounce">
+        <p id="msg-text" class="text-sm font-bold text-yellow-800"></p>
+    </div>
+
+    <script>
+        // State Management
+        let currentQuizIndex = 0;
+        const quizData = [
+            {
+                q: "Khi đèn tín hiệu màu ĐỎ bật sáng, em phải làm gì?",
+                options: ["Dừng lại!", "Đi tiếp!"],
+                correct: 0,
+                hint: "Đèn đỏ báo hiệu: Dừng lại!"
+            },
+            {
+                q: "Biển báo hình Tam Giác, nền Vàng có ý nghĩa gì?",
+                options: ["Cấm đi", "Cảnh báo nguy hiểm"],
+                correct: 1,
+                hint: "Hình tam giác là biển báo chỉ dẫn/cảnh báo."
+            },
+            {
+                q: "Đèn cho người đi bộ hình người bước đi màu Xanh nghĩa là?",
+                options: ["Đứng đợi", "Được qua đường"],
+                correct: 1,
+                hint: "Màu xanh là được phép di chuyển."
+            }
+        ];
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            
+            document.querySelectorAll('nav button, .max-w-4xl button').forEach(b => {
+                b.classList.remove('bg-blue-500', 'text-white');
+                b.classList.add('text-gray-500');
+            });
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.remove('text-gray-500');
+            activeBtn.classList.add('bg-blue-500', 'text-white');
+
+            if(tabName === 'learn') startLightCycle();
+            else stopLightCycle();
+        }
+
+        // Auto Cycle for Learn Tab
+        let cycleInterval;
+        function startLightCycle() {
+            let step = 0;
+            const lights = ['red', 'yellow', 'green'];
+            cycleInterval = setInterval(() => {
+                document.querySelectorAll('.traffic-light-bulb').forEach(l => l.classList.remove('active'));
+                document.getElementById(`learn-${lights[step]}`).classList.add('active');
+                
+                // Pedestrian light logic
+                const pedRed = document.getElementById('learn-ped-red');
+                const pedGreen = document.getElementById('learn-ped-green');
+                if(lights[step] === 'red') {
+                    pedRed.classList.remove('active');
+                    pedGreen.classList.add('active');
+                } else {
+                    pedRed.classList.add('active');
+                    pedGreen.classList.remove('active');
+                }
+                
+                step = (step + 1) % 3;
+            }, 2000);
+        }
+
+        function stopLightCycle() {
+            clearInterval(cycleInterval);
+        }
+
+        // Quiz Logic
+        function checkAnswer(isCorrect) {
+            const feedback = document.getElementById('feedback');
+            const nextBtn = document.getElementById('next-btn');
+            feedback.classList.remove('hidden', 'bg-red-500', 'bg-green-500');
+            
+            if(isCorrect) {
+                feedback.textContent = "Chính xác! Giỏi quá! 🎉";
+                feedback.classList.add('bg-green-500');
+            } else {
+                feedback.textContent = "Chưa đúng rồi, hãy thử lại nhé! 🧐";
+                feedback.classList.add('bg-red-500');
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuiz() {
+            currentQuizIndex = (currentQuizIndex + 1) % quizData.length;
+            const data = quizData[currentQuizIndex];
+            document.getElementById('quiz-question').textContent = data.q;
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            
+            data.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-game py-4 rounded-2xl text-xl font-bold border-2 transition-all ${idx === 0 ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`;
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(idx === data.correct);
+                optionsDiv.appendChild(btn);
+            });
+            
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        // Simulation Logic
+        function setSimLight(color) {
+            const redBulb = document.getElementById('sim-light-red');
+            const greenBulb = document.getElementById('sim-light-green');
+            const status = document.getElementById('sim-status');
+            const ped = document.getElementById('sim-pedestrian');
+            const car = document.getElementById('sim-car');
+
+            if(color === 'green') {
+                redBulb.style.backgroundColor = '#421';
+                greenBulb.style.backgroundColor = '#0f0';
+                status.textContent = "Đèn Xanh! Các bạn nhỏ có thể sang đường an toàn.";
+                status.className = "mb-4 font-bold text-green-600";
+                
+                // Pedestrian moves
+                ped.style.left = '45%';
+                // Car stops
+                car.style.right = '70%';
+                
+                showMessage("Đúng rồi! Khi đèn xanh, người đi bộ được đi.");
+            } else {
+                redBulb.style.backgroundColor = '#f00';
+                greenBulb.style.backgroundColor = '#041';
+                status.textContent = "Đèn Đỏ! Các bạn nhỏ hãy dừng lại đợi xe nhé.";
+                status.className = "mb-4 font-bold text-red-600";
+                
+                // Pedestrian returns
+                ped.style.left = '10%';
+                // Car moves
+                car.style.right = '10%';
+            }
+        }
+
+        function showMessage(text) {
+            const box = document.getElementById('msg-box');
+            const txt = document.getElementById('msg-text');
+            txt.textContent = text;
+            box.classList.remove('hidden');
+            setTimeout(() => box.classList.add('hidden'), 3000);
+        }
+
+        // Init
+        window.onload = () => {
+            startLightCycle();
+            setSimLight('red');
+        };
+    </script>
+</body>
+</html>
