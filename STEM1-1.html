@@ -172,44 +172,7 @@
             75% { transform: rotate(5deg); }
         }
 
-        .mini-number-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 4px;
-            font-family: monospace;
-            font-size: 9px;
-            font-weight: bold;
-            color: #64748b;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc;
-            height: 24px;
-            align-items: center;
-        }
-
-        .arrow-jump {
-            position: absolute;
-            color: #ef4444;
-            font-size: 20px;
-            font-weight: bold;
-            top: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            pointer-events: none;
-        }
-        
-        .arrow-jump-back {
-            position: absolute;
-            color: #3b82f6;
-            font-size: 20px;
-            font-weight: bold;
-            top: -22px;
-            left: 50%;
-            transform: translateX(-50%) scaleX(-1);
-            pointer-events: none;
-        }
-
-        /* Trang 8 Styles */
+        /* Material grid */
         .material-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -240,7 +203,7 @@
             line-height: 1;
         }
 
-        /* Trang 10 & 11 Styles */
+        /* Ruler/Glue Styles */
         .ruler-container {
             background: #fff;
             border: 2px solid #e2e8f0;
@@ -295,7 +258,6 @@
             font-weight: bold;
         }
 
-        /* Styles for new Page 13 */
         .assembly-container {
             position: relative;
             width: 100%;
@@ -311,6 +273,28 @@
             0%, 100% { transform: translateX(-40px); }
             50% { transform: translateX(40px); }
         }
+
+        .exit-btn {
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid #fee2e2;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .exit-btn:hover {
+            background-color: #dc2626;
+            transform: scale(1.05);
+        }
+        .exit-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -324,12 +308,18 @@
                 </div>
                 <div id="page-indicator" class="text-sky-600 font-bold text-[10px] bg-sky-50 px-2 py-0.5 rounded-full">1/15</div>
             </div>
-            <div id="teacher-btn" class="teacher-icon text-3xl" title="Nhấn để nghe cô giáo giảng bài">👩‍🏫</div>
+            
+            <div class="flex items-center gap-2">
+                <div id="teacher-btn" class="teacher-icon text-3xl" title="Nhấn để nghe cô giáo giảng bài">👩‍🏫</div>
+                <button onclick="exitApp()" class="exit-btn shadow-sm" title="Thoát ứng dụng">
+                    <span>✖</span>
+                    <span>THOÁT</span>
+                </button>
+            </div>
         </header>
 
         <!-- Main Content Space -->
         <div class="flex-1 relative overflow-hidden">
-            <!-- TRANG 1 - 11 (Giữ nguyên) -->
             <section id="page-1" class="page-content active justify-center items-center text-center">
                 <h1 class="text-2xl font-black text-[#0054a6] mb-4">BÀI: <span class="text-[#f26522]">TÍNH CỘNG,</span><br><span>TÍNH TRỪ</span></h1>
                 <div class="flex gap-2 mb-4">
@@ -352,9 +342,7 @@
                 <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 1</h2>
                 <div class="flex items-start gap-3 mb-4">
                     <div class="hint-badge shrink-0">1</div>
-                    <p class="text-[11px] font-bold text-slate-700 leading-tight">
-                        Viết số theo thứ tự từ 0 đến 10, viết dấu +, - và mũi tên.
-                    </p>
+                    <p class="text-[11px] font-bold text-slate-700 leading-tight">Viết số theo thứ tự từ 0 đến 10, viết dấu +, - và mũi tên.</p>
                 </div>
                 <div class="flex-1 flex flex-col items-center justify-center gap-10">
                     <div class="ruler-container shadow-sm">
@@ -371,12 +359,8 @@
                             <div class="scale-mark"><span>9</span></div>
                             <div class="scale-mark"><span>10</span></div>
                         </div>
-                        <div class="math-symbol-hint text-red-600" style="bottom: -22px; left: 10px;">
-                            <span class="text-xs">➕</span><span class="text-lg">➡</span>
-                        </div>
-                        <div class="math-symbol-hint text-blue-600" style="bottom: -22px; right: 10px;">
-                            <span class="text-xs">➖</span><span class="text-lg">⬅</span>
-                        </div>
+                        <div class="math-symbol-hint text-red-600" style="bottom: -22px; left: 10px;"><span class="text-xs">➕</span><span class="text-lg">➡</span></div>
+                        <div class="math-symbol-hint text-blue-600" style="bottom: -22px; right: 10px;"><span class="text-xs">➖</span><span class="text-lg">⬅</span></div>
                     </div>
                 </div>
                 <span class="hidden tts-text">Bước 1: Em hãy viết các số theo thứ tự từ không đến mười lên băng giấy. Sau đó, viết dấu cộng và mũi tên sang phải ở dưới số không, dấu trừ và mũi tên sang trái ở dưới số mười nhé.</span>
@@ -386,9 +370,7 @@
                 <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 2</h2>
                 <div class="flex items-start gap-3 mb-4">
                     <div class="hint-badge shrink-0">2</div>
-                    <p class="text-[11px] font-bold text-slate-700 leading-tight">
-                        Dán hai mép băng giấy lên tờ giấy.
-                    </p>
+                    <p class="text-[11px] font-bold text-slate-700 leading-tight">Dán hai mép băng giấy lên tờ giấy.</p>
                 </div>
                 <div class="flex-1 flex flex-col items-center justify-center">
                     <div class="w-full bg-white border-2 border-slate-200 rounded-xl p-4 shadow-md relative h-40 flex items-center justify-center overflow-hidden">
@@ -406,17 +388,10 @@
                         </div>
                         <div class="absolute bottom-2 right-4 text-3xl">🧴</div>
                     </div>
-                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-2">
-                         <span class="text-blue-500">✨</span>
-                         <p class="text-[10px] text-blue-900 font-bold leading-tight">
-                            Lưu ý: Chỉ bôi keo vào hai đầu mép giấy (phần gạch chéo) để thanh trượt có thể di chuyển ở giữa nhé!
-                         </p>
-                    </div>
                 </div>
-                <span class="hidden tts-text">Bước hai: Em hãy dán hai mép của băng giấy lên tờ giấy nền. Nhớ là chỉ bôi keo vào hai đầu thôi để chúng mình còn luồn thanh trượt vào giữa được nhé.</span>
+                <span class="hidden tts-text">Bước hai: Em hãy dán hai mép của băng giấy lên tờ giấy nền. Nhớ là chỉ bôi keo vào hai đầu thôi nhé.</span>
             </section>
 
-            <!-- TRANG 12 (Cập nhật) -->
             <section id="page-12" class="page-content">
                 <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 3</h2>
                 <div class="flex items-start gap-3 mb-4">
@@ -437,62 +412,32 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mt-6 p-3 bg-red-50 border border-red-100 rounded-lg">
-                        <p class="text-[10px] text-red-800 font-bold text-center">Chuẩn bị một thanh dài có dán hình trái tim ở trên nhé!</p>
-                    </div>
                 </div>
                 <span class="hidden tts-text">Bước ba: Làm thanh trượt. Các em hãy làm một thanh dài và dán hình trái tim thật xinh xắn lên phía trên nhé.</span>
             </section>
 
-            <!-- TRANG 13 (CẬP NHẬT MỚI THEO YÊU CẦU) -->
             <section id="page-13" class="page-content">
                 <h2 class="text-center text-sky-900 font-black text-sm mb-3 uppercase">Bước 4</h2>
                 <div class="flex items-start gap-3 mb-4">
                     <div class="hint-badge shrink-0">4</div>
-                    <p class="text-[11px] font-bold text-slate-700 leading-tight">
-                        Luồng thanh trượt dưới băng giấy và trang trí hoàn thiện.
-                    </p>
+                    <p class="text-[11px] font-bold text-slate-700 leading-tight">Luồng thanh trượt dưới băng giấy và trang trí hoàn thiện.</p>
                 </div>
-
                 <div class="flex-1 flex flex-col items-center justify-center">
-                    <!-- Minh họa lắp ráp -->
-                    <div class="w-full bg-white border-2 border-sky-100 rounded-xl p-4 shadow-sm relative overflow-hidden flex flex-col items-center">
-                        <div class="assembly-container">
-                            <!-- Băng giấy số -->
-                            <div class="w-4/5 h-10 bg-yellow-50 border-y-2 border-yellow-300 flex items-center justify-around px-2 z-20">
-                                <span class="text-[8px] font-black">0</span>
-                                <span class="text-[8px] font-black">1</span>
-                                <span class="text-[8px] font-black">2</span>
-                                <span class="text-[8px] font-black">...</span>
-                                <span class="text-[8px] font-black">10</span>
-                            </div>
-                            <!-- Thanh trượt đang luồng bên dưới -->
-                            <div class="absolute z-10 sliding-action flex flex-col items-center">
-                                <span class="text-red-500 text-xl" style="margin-bottom: -15px;">❤️</span>
-                                <div class="w-3 h-24 bg-orange-400 border-2 border-orange-600 rounded"></div>
-                            </div>
+                    <div class="assembly-container">
+                        <div class="w-4/5 h-10 bg-yellow-50 border-y-2 border-yellow-300 flex items-center justify-around px-2 z-20">
+                            <span class="text-[8px] font-black">0</span>
+                            <span class="text-[8px] font-black">1</span>
+                            <span class="text-[8px] font-black">10</span>
                         </div>
-                        
-                        <!-- Icon trang trí -->
-                        <div class="flex gap-4 mt-2">
-                            <span class="text-2xl">🎨</span>
-                            <span class="text-2xl">⭐</span>
-                            <span class="text-2xl">🍀</span>
+                        <div class="absolute z-10 sliding-action flex flex-col items-center">
+                            <span class="text-red-500 text-xl" style="margin-bottom: -15px;">❤️</span>
+                            <div class="w-3 h-24 bg-orange-400 border-2 border-orange-600 rounded"></div>
                         </div>
-                    </div>
-
-                    <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
-                        <span class="text-xl">✨</span>
-                        <p class="text-[10px] text-green-900 font-bold leading-tight">
-                            Em hãy luồng thanh trượt vào giữa băng giấy và tờ giấy nền, sau đó vẽ thêm hình trang trí cho dụng cụ thêm đẹp nhé!
-                        </p>
                     </div>
                 </div>
-
-                <span class="hidden tts-text">Bước bốn: Luồng thanh trượt dưới băng giấy và trang trí hoàn thiện. Bây giờ, em hãy khéo léo luồng thanh trượt vào khe hở giữa băng giấy và tờ giấy nền. Cuối cùng, hãy dùng bút màu vẽ thêm ngôi sao hoặc bông hoa để dụng cụ của mình thật đẹp mắt nhé!</span>
+                <span class="hidden tts-text">Bước bốn: Luồng thanh trượt dưới băng giấy và trang trí hoàn thiện. Em hãy luồng thanh trượt và vẽ thêm trang trí nhé!</span>
             </section>
 
-            <!-- TRANG 14 - 15 (Giữ nguyên) -->
             <section id="page-14" class="page-content"><h2 class="text-center text-[#0054a6] font-black text-sm mb-3 uppercase">Sử dụng</h2><div class="flex-1 flex flex-col gap-4"><div class="bg-white border-2 border-orange-200 rounded-xl p-3 shadow-sm text-xs font-bold">Cộng: Trượt sang PHẢI ➡</div><div class="bg-white border-2 border-blue-200 rounded-xl p-3 shadow-sm text-xs font-bold">Trừ: Trượt sang TRÁI ⬅</div></div><span class="hidden tts-text">Hướng dẫn sử dụng.</span></section>
             <section id="page-15" class="page-content"><h2 class="text-center text-[#f26522] font-black text-sm mb-4 uppercase">Luyện tập</h2><div class="flex flex-col items-center gap-2"><div class="math-box text-lg font-black">4 + 2 = ?</div><div class="math-box text-lg font-black">8 - 3 = ?</div></div><span class="hidden tts-text">Luyện tập tính toán.</span></section>
         </div>
@@ -521,6 +466,11 @@
             }
             updateButtons();
             document.getElementById('teacher-btn').addEventListener('click', speakCurrentPage);
+        }
+
+        function exitApp() {
+            // Gửi message close_iframe lên parent window
+            window.parent.postMessage("close_iframe", "*");
         }
 
         async function speakCurrentPage() {
