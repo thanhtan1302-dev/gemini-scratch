@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEM Lớp 1: Bầu Trời Ngày và Đêm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f0f9ff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #app {
+            width: 100%;
+            max-width: 850px;
+            height: 90vh;
+            max-height: 650px;
+            background: white;
+            position: relative;
+            border-radius: 32px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .slide {
+            display: none;
+            height: 100%;
+            width: 100%;
+            padding: 3rem;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .gradient-day {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+        }
+        .gradient-night {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%);
+        }
+        .btn-nav-main {
+            transition: all 0.3s;
+            cursor: pointer;
+            user-select: none;
+        }
+        .btn-nav-main:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        
+        .side-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 40;
+            border-radius: 0 20px 20px 0;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+        .side-nav:hover {
+            background: rgba(255, 255, 255, 0.6);
+            width: 70px;
+        }
+        .side-nav-right {
+            right: 0;
+            border-radius: 20px 0 0 20px;
+        }
+        .side-nav svg {
+            width: 30px;
+            height: 30px;
+            stroke: #1e293b;
+        }
+        .side-nav.disabled {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Control Buttons Style */
+        .control-btn {
+            position: absolute;
+            top: 25px;
+            z-index: 100;
+            background: white;
+            height: 55px;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+        }
+        
+        #speakerBtn {
+            right: 25px;
+            width: 55px;
+        }
+        
+        #exitBtn {
+            left: 25px;
+            padding: 0 20px;
+            color: #ef4444;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        #exitBtn:hover {
+            background: #fee2e2;
+        }
+
+        #speakerBtn.reading {
+            background: #fef08a;
+            animation: speaker-pulse 1.2s infinite;
+        }
+        @keyframes speaker-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.5); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- Progress Bar -->
+        <div class="absolute top-0 left-0 h-2.5 bg-yellow-400 z-50 transition-all duration-700" id="progress-bar"></div>
+
+        <!-- Exit Button -->
+        <div id="exitBtn" class="control-btn" title="Thoát bài học">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span>THOÁT</span>
+        </div>
+
+        <!-- Speaker Button -->
+        <div id="speakerBtn" class="control-btn" title="Nghe cô đọc">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </div>
+
+        <!-- Side Navigation Buttons -->
+        <div id="sidePrev" class="side-nav side-nav-left disabled">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </div>
+        <div id="sideNext" class="side-nav side-nav-right">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+        <!-- Slides Container -->
+        <div class="flex-1 w-full relative h-full">
+            
+            <!-- Trang 1: Giới thiệu -->
+            <div class="slide active items-center justify-center text-center" data-text="Chào mừng bé đến với bài học Bầu Trời Ngày và Đêm. Hôm nay chúng mình sẽ cùng làm nhà khoa học nhí để khám phá bí mật của bầu trời nhé!">
+                <span class="text-3xl font-bold text-blue-500 mb-2">Chào mừng bé đến với bài học</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-orange-500 mb-6 uppercase tracking-tight">Bầu Trời Ngày và Đêm</h1>
+                <div class="text-[100px] leading-none mb-8 animate-bounce">🌞🌙</div>
+                <p class="text-xl text-gray-600 max-w-md">Hôm nay chúng mình sẽ cùng làm nhà khoa học nhí để khám phá bí mật của bầu trời nhé!</p>
+            </div>
+
+            <!-- Trang 2: Sự khác nhau -->
+            <div class="slide" data-text="So sánh Ngày và Đêm. Ban Ngày trời sáng, nắng ấm, chúng mình đi học và vui chơi. Ban Đêm trời tối, mát mẻ, vạn vật nghỉ ngơi và đi ngủ.">
+                <h2 class="text-3xl font-bold text-center mb-8 text-purple-700">So sánh Ngày và Đêm</h2>
+                <div class="grid grid-cols-2 gap-8 flex-1">
+                    <div class="gradient-day rounded-[40px] p-8 text-white text-center shadow-xl border-4 border-white/20">
+                        <div class="text-8xl mb-4">🌞</div>
+                        <h3 class="text-3xl font-bold mb-3">Ban Ngày</h3>
+                        <p class="text-xl opacity-90 italic">Trời sáng, nắng ấm, chúng mình đi học và vui chơi.</p>
+                    </div>
+                    <div class="gradient-night rounded-[40px] p-8 text-white text-center shadow-xl border-4 border-white/20">
+                        <div class="text-8xl mb-4">🌙</div>
+                        <h3 class="text-3xl font-bold mb-3">Ban Đêm</h3>
+                        <p class="text-xl opacity-90 italic">Trời tối, mát mẻ, vạn vật nghỉ ngơi và đi ngủ.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trang 3: Đặc điểm Ban Ngày - Mặt trời -->
+            <div class="slide gradient-day text-white" data-text="Bầu trời Ban Ngày. Ông Mặt Trời. Mặt Trời giống như một quả bóng lửa khổng lồ, tỏa ánh sáng chói chang giúp cây cối xanh tươi và chúng mình nhìn rõ mọi vật!">
+                <h2 class="text-3xl font-bold mb-10 border-b-4 border-white/30 pb-4">Bầu trời Ban Ngày</h2>
+                <div class="flex flex-col md:flex-row items-center gap-10 mt-4">
+                    <div class="bg-white/20 p-10 rounded-full animate-pulse shadow-2xl">
+                        <span class="text-[120px]">☀️</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-4xl font-bold mb-6 text-yellow-200">Ông Mặt Trời</h3>
+                        <p class="text-2xl leading-relaxed font-medium">Mặt Trời giống như một quả bóng lửa khổng lồ, tỏa ánh sáng chói chang giúp cây cối xanh tươi và chúng mình nhìn rõ mọi vật!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trang 4: Đặc điểm Ban Ngày - Mây -->
+            <div class="slide bg-blue-50" data-text="Cùng nhìn lên mây nhé! Mây trắng xốp như bông gòn trên bầu trời xanh. Những chú chim hót líu lo và bay lượn trong nắng sớm.">
+                <h2 class="text-3xl font-bold mb-10 text-blue-800">Cùng nhìn lên mây nhé!</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="bg-white p-8 rounded-[32px] shadow-lg border-b-8 border-blue-200">
+                        <div class="text-7xl mb-4">☁️</div>
+                        <h4 class="text-2xl font-bold text-blue-600 mb-2">Đám mây trắng</h4>
+                        <p class="text-xl text-gray-600">Mây trôi bồng bềnh như những miếng bông gòn trên bầu trời xanh.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-[32px] shadow-lg border-b-8 border-blue-200">
+                        <div class="text-7xl mb-4">🐦</div>
+                        <h4 class="text-2xl font-bold text-blue-600 mb-2">Bạn Chim</h4>
+                        <p class="text-xl text-gray-600">Những chú chim hót líu lo và bay lượn trong nắng sớm.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trang 5: Đặc điểm Ban Đêm - Mặt Trăng -->
+            <div class="slide gradient-night text-white" data-text="Bầu trời Ban Đêm. Chị Hằng hay còn gọi là Mặt Trăng. Khi Mặt Trời đi ngủ, Chị Hằng sẽ xuất hiện. Có lúc chị tròn như đĩa, có lúc chị khuyết như chiếc thuyền nhỏ đấy!">
+                <h2 class="text-3xl font-bold mb-10 border-b-4 border-white/20 pb-4 text-yellow-100">Bầu trời Ban Đêm</h2>
+                <div class="flex flex-col md:flex-row items-center gap-10 mt-4">
+                    <div class="bg-white/10 p-10 rounded-full shadow-2xl border border-white/20">
+                        <span class="text-[120px]">🌙</span>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-4xl font-bold mb-6 text-yellow-300">Chị Hằng (Mặt Trăng)</h3>
+                        <p class="text-2xl leading-relaxed font-medium">Khi Mặt Trời đi ngủ, Chị Hằng sẽ xuất hiện. Có lúc chị tròn như đĩa, có lúc chị khuyết như chiếc thuyền nhỏ đấy!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trang 6: Đặc điểm Ban Đêm - Sao -->
+            <div class="slide bg-slate-900 text-white items-center" data-text="Những Ngôi Sao Nhỏ. Bé có biết không? Sao lấp lánh giống như những viên kim cương trên bầu trời! Đêm về vạn vật nghỉ ngơi, bé hãy ngủ ngon nhé!">
+                <h2 class="text-3xl font-bold mb-6 text-yellow-300">Những Ngôi Sao Nhỏ</h2>
+                <p class="text-2xl text-center mb-12 text-blue-200 max-w-lg">Bé có biết không? Sao lấp lánh giống như những viên kim cương trên bầu trời!</p>
+                <div class="flex space-x-16">
+                    <div class="text-7xl animate-pulse">⭐</div>
+                    <div class="text-8xl animate-bounce" style="animation-duration: 2s">✨</div>
+                    <div class="text-7xl animate-pulse" style="animation-delay: 1s">🌟</div>
+                </div>
+                <div class="mt-14 bg-white/10 p-8 rounded-3xl border border-white/20 w-full text-center">
+                    <p class="text-2xl italic font-medium">"Đêm về vạn vật nghỉ ngơi, bé hãy ngủ ngon nhé!"</p>
+                </div>
+            </div>
+
+            <!-- Trang 7: Hoạt động STEM - Chuẩn bị -->
+            <div class="slide bg-emerald-50 text-emerald-900" data-text="Góc Sáng Tạo. Nguyên liệu cần có: một đĩa giấy tròn, màu vẽ và cọ, giấy màu và kéo, sticker hình ngôi sao. Bé hãy chuẩn bị đầy đủ trên bàn nhé!">
+                <div class="text-center mb-8">
+                    <span class="bg-emerald-200 text-emerald-700 px-6 py-1.5 rounded-full font-bold uppercase text-base">Thực hành</span>
+                    <h2 class="text-4xl font-bold mt-4">Góc Sáng Tạo STEM</h2>
+                </div>
+                <div class="bg-white p-8 rounded-[40px] shadow-md border border-emerald-100 flex-1">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center">
+                        <span class="text-3xl mr-3">🎒</span> Nguyên liệu cần có:
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-medium">⚪ 1 đĩa giấy tròn</div>
+                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-medium">🎨 Màu vẽ & cọ</div>
+                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-medium">✂️ Giấy màu & kéo</div>
+                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-medium">✨ Sticker sao</div>
+                    </div>
+                    <p class="mt-10 text-lg text-emerald-600 text-center font-bold animate-bounce">Bé hãy chuẩn bị đầy đủ trên bàn nhé!</p>
+                </div>
+            </div>
+
+            <!-- Trang 8: Hoạt động STEM - Cách làm -->
+            <div class="slide" data-text="Bốn bước Tạo Mô Hình. Bước 1: Kẻ một đường thẳng chia đôi đĩa giấy. Bước 2: Tô một nửa màu xanh cho ban ngày và một nửa màu tối cho ban đêm. Bước 3: Dán Mặt Trời vào nửa xanh, dán Trăng Sao vào nửa tối. Bước 4: Trang trí thêm nhà cửa và cây cối xung quanh.">
+                <h2 class="text-3xl font-bold text-orange-600 mb-8 text-center">4 Bước Tạo Mô Hình</h2>
+                <div class="space-y-4 flex-1">
+                    <div class="flex items-center p-4 bg-blue-50 rounded-3xl border-l-[12px] border-blue-400 shadow-sm">
+                        <b class="bg-blue-400 text-white w-10 h-10 rounded-full flex items-center justify-center mr-5 text-xl">1</b>
+                        <p class="flex-1 text-xl font-medium">Kẻ một đường thẳng chia đôi đĩa giấy.</p>
+                    </div>
+                    <div class="flex items-center p-4 bg-indigo-50 rounded-3xl border-l-[12px] border-indigo-400 shadow-sm">
+                        <b class="bg-indigo-400 text-white w-10 h-10 rounded-full flex items-center justify-center mr-5 text-xl">2</b>
+                        <p class="flex-1 text-xl font-medium">Tô 1 nửa màu xanh (Ngày) và 1 nửa màu tối (Đêm).</p>
+                    </div>
+                    <div class="flex items-center p-4 bg-yellow-50 rounded-3xl border-l-[12px] border-yellow-400 shadow-sm">
+                        <b class="bg-yellow-400 text-white w-10 h-10 rounded-full flex items-center justify-center mr-5 text-xl">3</b>
+                        <p class="flex-1 text-xl font-medium">Dán Mặt Trời vào nửa xanh, dán Trăng Sao vào nửa tối.</p>
+                    </div>
+                    <div class="flex items-center p-4 bg-pink-50 rounded-3xl border-l-[12px] border-pink-400 shadow-sm">
+                        <b class="bg-pink-400 text-white w-10 h-10 rounded-full flex items-center justify-center mr-5 text-xl">4</b>
+                        <p class="flex-1 text-xl font-medium">Trang trí thêm nhà cửa và cây cối xung quanh.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trang 9: Trắc nghiệm -->
+            <div class="slide items-center" data-text="Thử thách nhà khoa học nhí. Bé hãy trả lời các câu hỏi sau để xem mình đã hiểu bài chưa nhé!">
+                <h2 class="text-3xl font-bold text-indigo-700 mb-10">Thử thách nhà khoa học nhí</h2>
+                <div id="quiz-container" class="w-full max-w-lg">
+                    <div class="bg-indigo-50 p-8 rounded-[40px] border-4 border-indigo-100 mb-8 shadow-inner">
+                        <p id="question-text" class="text-2xl font-bold text-indigo-900 text-center"></p>
+                    </div>
+                    <div id="options-container" class="grid grid-cols-1 gap-5"></div>
+                </div>
+                <div id="quiz-feedback" class="mt-8 font-bold text-2xl hidden"></div>
+            </div>
+
+            <!-- Trang 10: Kết thúc -->
+            <div class="slide items-center justify-center text-center bg-yellow-50" data-text="Tuyệt Vời! Bé đã hoàn thành xuất sắc bài học! Hẹn gặp lại bé ở bài học sau nhé!">
+                <div class="bg-white p-16 rounded-[60px] shadow-2xl border-8 border-yellow-200 max-w-lg">
+                    <div class="text-[120px] mb-8">🎓</div>
+                    <h2 class="text-5xl font-black text-red-500 mb-4">Tuyệt Vời!</h2>
+                    <p class="text-2xl text-blue-800 mb-10 font-bold">Bé đã hoàn thành xuất sắc bài học!</p>
+                    <button onclick="location.reload()" class="btn-nav-main bg-orange-500 text-white px-12 py-5 rounded-full font-bold text-2xl shadow-xl hover:bg-orange-600 active:scale-95 transition-all">Làm lại bài học</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="bg-gray-50 border-t-2 border-gray-100 p-5 flex justify-between items-center z-50">
+            <button id="prevBtn" class="btn-nav-main bg-white border-2 border-gray-200 text-gray-600 px-8 py-3 rounded-2xl font-bold text-lg hover:bg-gray-100 disabled:opacity-30">Quay lại</button>
+            <div class="flex flex-col items-center">
+                <span class="text-gray-400 font-black text-xl tracking-widest" id="page-indicator">1 / 10</span>
+            </div>
+            <button id="nextBtn" class="btn-nav-main bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold text-lg shadow-xl shadow-blue-100 hover:bg-blue-700">Tiếp theo</button>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = "";
+        let currentSlide = 0;
+        const totalSlides = 10;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const sidePrev = document.getElementById('sidePrev');
+        const sideNext = document.getElementById('sideNext');
+        const pageIndicator = document.getElementById('page-indicator');
+        const speakerBtn = document.getElementById('speakerBtn');
+        const exitBtn = document.getElementById('exitBtn');
+        let currentAudio = null;
+
+        // Exit function
+        exitBtn.addEventListener('click', () => {
+            // "close iframe" command as per instruction
+            window.parent.postMessage('close iframe', '*');
+            // Fallback for standalone
+            if(window.opener) { window.close(); }
+        });
+
+        // Function to handle TTS
+        async function speakContent(text) {
+            if (!text) return;
+            
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
+            speakerBtn.classList.add('reading');
+
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: {
+                                voiceName: "Leda"
+                            }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            const maxRetries = 5;
+            let attempt = 0;
+
+            while (attempt < maxRetries) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error('API Error');
+
+                    const result = await response.json();
+                    const audioData = result.candidates[0].content.parts[0].inlineData.data;
+                    const mimeType = result.candidates[0].content.parts[0].inlineData.mimeType;
+                    
+                    const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)?.[1] || "24000");
+                    const wavBuffer = pcmToWav(audioData, sampleRate);
+                    const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+                    const url = URL.createObjectURL(blob);
+
+                    currentAudio = new Audio(url);
+                    currentAudio.onended = () => speakerBtn.classList.remove('reading');
+                    currentAudio.play();
+                    return;
+
+                } catch (error) {
+                    attempt++;
+                    const delay = Math.pow(2, attempt) * 500;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    if (attempt === maxRetries) {
+                        speakerBtn.classList.remove('reading');
+                        console.error("TTS failed after retries");
+                    }
+                }
+            }
+        }
+
+        function pcmToWav(base64Pcm, sampleRate) {
+            const pcmData = Uint8Array.from(atob(base64Pcm), c => c.charCodeAt(0));
+            const buffer = new ArrayBuffer(44 + pcmData.length);
+            const view = new DataView(buffer);
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) { view.setUint8(offset + i, string.charCodeAt(i)); }
+            };
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + pcmData.length, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(36, 'data');
+            view.setUint32(40, pcmData.length, true);
+            for (let i = 0; i < pcmData.length; i++) { view.setUint8(44 + i, pcmData[i]); }
+            return buffer;
+        }
+
+        speakerBtn.addEventListener('click', () => {
+            const activeSlide = document.querySelector('.slide.active');
+            const textToRead = activeSlide.getAttribute('data-text');
+            speakContent(textToRead);
+        });
+
+        function updateSlide() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                speakerBtn.classList.remove('reading');
+            }
+
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) slide.classList.add('active');
+            });
+            
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+            pageIndicator.innerText = `${currentSlide + 1} / ${totalSlides}`;
+
+            prevBtn.disabled = currentSlide === 0;
+            if (currentSlide === totalSlides - 1) {
+                nextBtn.style.visibility = 'hidden';
+            } else {
+                nextBtn.style.visibility = 'visible';
+                nextBtn.innerText = currentSlide === 8 ? "Hoàn thành" : "Tiếp theo";
+            }
+
+            sidePrev.classList.toggle('disabled', currentSlide === 0);
+            sideNext.classList.toggle('disabled', currentSlide === totalSlides - 1);
+
+            if (currentSlide === 8) { loadQuestion(); }
+        }
+
+        const navigateNext = () => { if (currentSlide < totalSlides - 1) { currentSlide++; updateSlide(); } };
+        const navigatePrev = () => { if (currentSlide > 0) { currentSlide--; updateSlide(); } };
+
+        prevBtn.addEventListener('click', navigatePrev);
+        nextBtn.addEventListener('click', navigateNext);
+        sidePrev.addEventListener('click', navigatePrev);
+        sideNext.addEventListener('click', navigateNext);
+
+        const quizData = [
+            { q: "Ban đêm thường có gì trên trời?", a: ["Ông Mặt Trời rực rỡ", "Mặt Trăng và các vì sao"], correct: 1 },
+            { q: "Tại sao ban ngày chúng ta nhìn rõ mọi vật?", a: ["Vì có ánh nắng Mặt Trời", "Vì có đèn đường"], correct: 0 },
+            { q: "Trong mô hình STEM, bé tô màu gì cho ban đêm?", a: ["Màu vàng nhạt", "Màu đen hoặc xanh đậm"], correct: 1 }
+        ];
+
+        let currentQuestion = 0;
+        function loadQuestion() {
+            const container = document.getElementById('quiz-container');
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.add('hidden');
+            if (currentQuestion >= quizData.length) {
+                container.innerHTML = `<div class="text-center p-10 bg-green-50 rounded-[40px] border-4 border-green-200"><div class="text-8xl mb-6">🌟</div><h3 class="text-3xl font-bold text-green-700">Bé thật là giỏi!</h3><p class="text-green-600 mt-4 text-xl">Nhấn "Tiếp theo" để nhận phần thưởng nhé!</p></div>`;
+                return;
+            }
+            const data = quizData[currentQuestion];
+            document.getElementById('question-text').innerText = data.q;
+            const optionsDiv = document.getElementById('options-container');
+            optionsDiv.innerHTML = '';
+            data.a.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full bg-white border-4 border-indigo-50 p-6 rounded-3xl hover:border-indigo-400 font-bold text-2xl text-indigo-900 transition-all shadow-md active:scale-95";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(idx);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(idx) {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+            if (idx === quizData[currentQuestion].correct) {
+                feedback.innerHTML = "🎉 Đúng rồi! Bé siêu quá!";
+                feedback.className = "mt-8 font-bold text-3xl text-green-600 block animate-bounce text-center";
+                speakContent("Đúng rồi! Bé siêu quá!");
+                setTimeout(() => { currentQuestion++; loadQuestion(); }, 2000);
+            } else {
+                feedback.innerHTML = "❌ Bé thử lại một lần nữa nhé!";
+                feedback.className = "mt-8 font-bold text-2xl text-red-500 block text-center";
+                speakContent("Bé thử lại một lần nữa nhé!");
+            }
+        }
+        updateSlide();
+    </script>
+</body>
+</html>
