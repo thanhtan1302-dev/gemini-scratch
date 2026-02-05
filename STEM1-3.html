@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #f0f9ff;
+            background-color: #e0f2fe;
             margin: 0;
             display: flex;
             align-items: center;
@@ -18,14 +18,13 @@
             overflow: hidden;
         }
         #app {
-            width: 100%;
-            max-width: 850px;
-            height: 90vh;
-            max-height: 650px;
+            /* Cố định kích thước theo yêu cầu */
+            width: 480px;
+            height: 360px;
             background: white;
             position: relative;
-            border-radius: 32px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -34,18 +33,18 @@
             display: none;
             height: 100%;
             width: 100%;
-            padding: 3rem;
+            padding: 1.5rem;
             box-sizing: border-box;
             overflow-y: auto;
         }
         .slide.active {
             display: flex;
             flex-direction: column;
-            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeIn 0.4s ease-out;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .gradient-day {
             background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
@@ -54,262 +53,209 @@
             background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%);
         }
         .btn-nav-main {
-            transition: all 0.3s;
+            transition: all 0.2s;
             cursor: pointer;
             user-select: none;
         }
         .btn-nav-main:hover:not(:disabled) {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
+            transform: scale(1.05);
         }
         
-        .side-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 60px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 40;
-            border-radius: 0 20px 20px 0;
-            border: 1px solid rgba(255,255,255,0.4);
-        }
-        .side-nav:hover {
-            background: rgba(255, 255, 255, 0.6);
-            width: 70px;
-        }
-        .side-nav-right {
-            right: 0;
-            border-radius: 20px 0 0 20px;
-        }
-        .side-nav svg {
-            width: 30px;
-            height: 30px;
-            stroke: #1e293b;
-        }
-        .side-nav.disabled {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Exit Button Style */
+        /* Exit Button Style - Moved to TOP RIGHT */
         .exit-btn {
             position: absolute;
-            top: 25px;
-            left: 25px;
+            top: 12px;
+            right: 12px;
             z-index: 100;
             background: white;
-            height: 55px;
-            padding: 0 20px;
-            border-radius: 28px;
+            height: 36px;
+            padding: 0 12px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-weight: bold;
             color: #ef4444;
-            gap: 8px;
+            gap: 4px;
+            font-size: 12px;
             border: 1px solid #fee2e2;
+            transition: all 0.2s;
         }
-        
         .exit-btn:hover {
-            transform: scale(1.1);
             background: #fee2e2;
+            transform: scale(1.05);
         }
+
+        /* Thắt chặt khoảng cách cho màn hình nhỏ */
+        h1 { font-size: 1.5rem !important; line-height: 1.2 !important; }
+        h2 { font-size: 1.25rem !important; line-height: 1.2 !important; }
+        p { font-size: 0.95rem !important; line-height: 1.4 !important; }
     </style>
 </head>
 <body>
 
     <div id="app">
         <!-- Progress Bar -->
-        <div class="absolute top-0 left-0 h-2.5 bg-yellow-400 z-50 transition-all duration-700" id="progress-bar"></div>
+        <div class="absolute top-0 left-0 h-1.5 bg-yellow-400 z-50 transition-all duration-500" id="progress-bar"></div>
 
-        <!-- Exit Button -->
-        <div id="exitBtn" class="exit-btn" title="Thoát bài học">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <!-- Exit Button (Now at Top Right) -->
+        <div id="exitBtn" class="exit-btn" title="Thoát">
             <span>THOÁT</span>
-        </div>
-
-        <!-- Side Navigation Buttons -->
-        <div id="sidePrev" class="side-nav side-nav-left disabled">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </div>
-        <div id="sideNext" class="side-nav side-nav-right">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         </div>
 
         <!-- Slides Container -->
         <div class="flex-1 w-full relative h-full">
             
-            <!-- Trang 1: Giới thiệu -->
+            <!-- Trang 1 -->
             <div class="slide active items-center justify-center text-center">
-                <span class="text-3xl font-bold text-blue-500 mb-2">Chào mừng bé đến với bài học</span>
-                <h1 class="text-4xl md:text-5xl font-extrabold text-orange-500 mb-6 uppercase tracking-tight">Bầu Trời Ngày và Đêm</h1>
-                <div class="text-[100px] leading-none mb-8 animate-bounce">🌞🌙</div>
-                <p class="text-xl text-gray-600 max-w-md font-medium">Hôm nay chúng mình sẽ cùng làm nhà khoa học nhí để khám phá bí mật của bầu trời nhé!</p>
+                <span class="text-blue-500 font-bold text-sm mb-1">Chào mừng bé đến với bài học</span>
+                <h1 class="font-extrabold text-orange-500 mb-3 uppercase">Bầu Trời Ngày và Đêm</h1>
+                <div class="text-6xl mb-4 animate-bounce">🌞🌙</div>
+                <p class="text-gray-600 px-4">Chúng mình cùng khám phá bí mật của bầu trời nhé!</p>
             </div>
 
-            <!-- Trang 2: Sự khác nhau -->
+            <!-- Trang 2 -->
             <div class="slide">
-                <h2 class="text-3xl font-bold text-center mb-8 text-purple-700">So sánh Ngày và Đêm</h2>
-                <div class="grid grid-cols-2 gap-8 flex-1">
-                    <div class="gradient-day rounded-[40px] p-8 text-white text-center shadow-xl border-4 border-white/20">
-                        <div class="text-8xl mb-4">🌞</div>
-                        <h3 class="text-3xl font-bold mb-3">Ban Ngày</h3>
-                        <p class="text-xl opacity-95 font-medium italic">Trời sáng, nắng ấm, chúng mình đi học và vui chơi.</p>
+                <h2 class="font-bold text-center mb-4 text-purple-700">So sánh Ngày và Đêm</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="gradient-day rounded-2xl p-4 text-white text-center shadow-md">
+                        <div class="text-4xl mb-2">🌞</div>
+                        <h3 class="font-bold text-sm mb-1">Ban Ngày</h3>
+                        <p class="text-[11px] leading-tight italic">Trời sáng, nắng ấm, chúng mình đi học.</p>
                     </div>
-                    <div class="gradient-night rounded-[40px] p-8 text-white text-center shadow-xl border-4 border-white/20">
-                        <div class="text-8xl mb-4">🌙</div>
-                        <h3 class="text-3xl font-bold mb-3">Ban Đêm</h3>
-                        <p class="text-xl opacity-95 font-medium italic">Trời tối, mát mẻ, vạn vật nghỉ ngơi và đi ngủ.</p>
+                    <div class="gradient-night rounded-2xl p-4 text-white text-center shadow-md">
+                        <div class="text-4xl mb-2">🌙</div>
+                        <h3 class="font-bold text-sm mb-1">Ban Đêm</h3>
+                        <p class="text-[11px] leading-tight italic">Trời tối, mát mẻ, vạn vật đi ngủ.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Trang 3: Đặc điểm Ban Ngày - Mặt trời -->
+            <!-- Trang 3 -->
             <div class="slide gradient-day text-white">
-                <h2 class="text-3xl font-bold mb-10 border-b-4 border-white/30 pb-4">Bầu trời Ban Ngày</h2>
-                <div class="flex flex-col md:flex-row items-center gap-10 mt-4">
-                    <div class="bg-white/20 p-10 rounded-full animate-pulse shadow-2xl">
-                        <span class="text-[120px]">☀️</span>
+                <h2 class="font-bold mb-4 border-b-2 border-white/30 pb-2">Bầu trời Ban Ngày</h2>
+                <div class="flex items-center gap-4 mt-2">
+                    <div class="bg-white/20 p-4 rounded-full">
+                        <span class="text-5xl">☀️</span>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-4xl font-bold mb-6 text-yellow-200">Ông Mặt Trời</h3>
-                        <p class="text-2xl leading-relaxed font-bold">Mặt Trời giống như một quả bóng lửa khổng lồ, tỏa ánh sáng chói chang giúp cây cối xanh tươi!</p>
+                        <h3 class="text-lg font-bold text-yellow-200">Ông Mặt Trời</h3>
+                        <p class="text-sm font-bold">Là quả bóng lửa khổng lồ, tỏa ánh sáng giúp cây xanh tươi!</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Trang 4: Đặc điểm Ban Ngày - Mây -->
+            <!-- Trang 4 -->
             <div class="slide bg-blue-50">
-                <h2 class="text-3xl font-bold mb-10 text-blue-800">Cùng nhìn lên mây nhé!</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="bg-white p-8 rounded-[32px] shadow-lg border-b-8 border-blue-200">
-                        <div class="text-7xl mb-4">☁️</div>
-                        <h4 class="text-2xl font-bold text-blue-600 mb-2">Đám mây trắng</h4>
-                        <p class="text-xl text-gray-600 font-medium">Mây trôi bồng bềnh như những miếng bông gòn trên bầu trời xanh.</p>
+                <h2 class="font-bold mb-4 text-blue-800">Cùng nhìn lên mây!</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white p-3 rounded-xl shadow-sm border-b-4 border-blue-200">
+                        <div class="text-3xl mb-1">☁️</div>
+                        <p class="text-[11px] text-gray-600 font-bold">Mây trắng bồng bềnh như bông gòn.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-[32px] shadow-lg border-b-8 border-blue-200">
-                        <div class="text-7xl mb-4">🐦</div>
-                        <h4 class="text-2xl font-bold text-blue-600 mb-2">Bạn Chim</h4>
-                        <p class="text-xl text-gray-600 font-medium">Những chú chim hót líu lo và bay lượn trong nắng sớm rực rỡ.</p>
+                    <div class="bg-white p-3 rounded-xl shadow-sm border-b-4 border-blue-200">
+                        <div class="text-3xl mb-1">🐦</div>
+                        <p class="text-[11px] text-gray-600 font-bold">Chim hót líu lo trong nắng sớm.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Trang 5: Đặc điểm Ban Đêm - Mặt Trăng -->
+            <!-- Trang 5 -->
             <div class="slide gradient-night text-white">
-                <h2 class="text-3xl font-bold mb-10 border-b-4 border-white/20 pb-4 text-yellow-100">Bầu trời Ban Đêm</h2>
-                <div class="flex flex-col md:flex-row items-center gap-10 mt-4">
-                    <div class="bg-white/10 p-10 rounded-full shadow-2xl border border-white/20">
-                        <span class="text-[120px]">🌙</span>
+                <h2 class="font-bold mb-4 border-b-2 border-white/20 pb-2 text-yellow-100">Bầu trời Ban Đêm</h2>
+                <div class="flex items-center gap-4 mt-2">
+                    <div class="bg-white/10 p-4 rounded-full border border-white/20">
+                        <span class="text-5xl">🌙</span>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-4xl font-bold mb-6 text-yellow-300">Chị Hằng (Mặt Trăng)</h3>
-                        <p class="text-2xl leading-relaxed font-bold">Khi Mặt Trời đi ngủ, Chị Hằng sẽ xuất hiện. Có lúc chị tròn xoe, có lúc chị khuyết như chiếc thuyền.</p>
+                        <h3 class="text-lg font-bold text-yellow-300">Mặt Trăng</h3>
+                        <p class="text-sm font-bold">Có lúc chị tròn xoe, có lúc chị khuyết như chiếc thuyền nhỏ.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Trang 6: Đặc điểm Ban Đêm - Sao -->
-            <div class="slide bg-slate-900 text-white items-center">
-                <h2 class="text-3xl font-bold mb-6 text-yellow-300">Những Ngôi Sao Nhỏ</h2>
-                <p class="text-2xl text-center mb-12 text-blue-200 max-w-lg font-bold">Bé có biết không? Sao lấp lánh giống như những viên kim cương trên thảm cỏ đen!</p>
-                <div class="flex space-x-16">
-                    <div class="text-7xl animate-pulse">⭐</div>
-                    <div class="text-8xl animate-bounce" style="animation-duration: 2s">✨</div>
-                    <div class="text-7xl animate-pulse" style="animation-delay: 1s">🌟</div>
-                </div>
-                <div class="mt-14 bg-white/10 p-8 rounded-3xl border border-white/20 w-full text-center">
-                    <p class="text-2xl italic font-bold text-indigo-200">"Đêm về vạn vật nghỉ ngơi, bé hãy ngủ ngon nhé!"</p>
+            <!-- Trang 6 -->
+            <div class="slide bg-slate-900 text-white items-center justify-center text-center">
+                <h2 class="font-bold mb-3 text-yellow-300">Những Ngôi Sao Nhỏ</h2>
+                <p class="text-sm text-blue-200 mb-6 font-bold">Sao lấp lánh như kim cương!</p>
+                <div class="flex space-x-8">
+                    <div class="text-4xl animate-pulse">⭐</div>
+                    <div class="text-5xl animate-bounce">✨</div>
+                    <div class="text-4xl animate-pulse">🌟</div>
                 </div>
             </div>
 
-            <!-- Trang 7: Hoạt động STEM - Chuẩn bị -->
+            <!-- Trang 7 -->
             <div class="slide bg-emerald-50 text-emerald-900">
-                <div class="text-center mb-8">
-                    <span class="bg-emerald-200 text-emerald-700 px-6 py-1.5 rounded-full font-bold uppercase text-base shadow-sm">Thực hành</span>
-                    <h2 class="text-4xl font-bold mt-4">Góc Sáng Tạo STEM</h2>
-                </div>
-                <div class="bg-white p-8 rounded-[40px] shadow-md border border-emerald-100 flex-1">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center">
-                        <span class="text-3xl mr-3">🎒</span> Nguyên liệu cần chuẩn bị:
-                    </h3>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-bold text-slate-700">⚪ 1 đĩa giấy tròn</div>
-                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-bold text-slate-700">🎨 Màu vẽ & cọ</div>
-                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-bold text-slate-700">✂️ Giấy màu & kéo</div>
-                        <div class="flex items-center p-4 bg-slate-50 rounded-2xl text-xl font-bold text-slate-700">✨ Sticker sao</div>
+                <h2 class="font-bold text-center text-xl mb-4">Góc Sáng Tạo STEM</h2>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-emerald-100">
+                    <h3 class="text-sm font-bold mb-3 flex items-center">🎒 Nguyên liệu:</h3>
+                    <div class="grid grid-cols-2 gap-2 text-[11px] font-bold">
+                        <div class="p-2 bg-slate-50 rounded-lg">⚪ 1 đĩa giấy tròn</div>
+                        <div class="p-2 bg-slate-50 rounded-lg">🎨 Màu vẽ & cọ</div>
+                        <div class="p-2 bg-slate-50 rounded-lg">✂️ Giấy & kéo</div>
+                        <div class="p-2 bg-slate-50 rounded-lg">✨ Sticker sao</div>
                     </div>
-                    <p class="mt-10 text-xl text-emerald-600 text-center font-black animate-pulse">Bé đã sẵn sàng chưa nào?</p>
                 </div>
             </div>
 
-            <!-- Trang 8: Hoạt động STEM - Cách làm -->
+            <!-- Trang 8 -->
             <div class="slide">
-                <h2 class="text-3xl font-bold text-orange-600 mb-8 text-center">4 Bước Tạo Mô Hình</h2>
-                <div class="grid grid-cols-1 gap-4 flex-1">
-                    <div class="flex items-center p-5 bg-blue-50 rounded-3xl border-l-[12px] border-blue-400 shadow-sm">
-                        <b class="bg-blue-400 text-white min-w-[40px] h-10 rounded-full flex items-center justify-center mr-5 text-xl">1</b>
-                        <p class="flex-1 text-xl font-bold">Kẻ một đường thẳng chia đôi đĩa giấy.</p>
+                <h2 class="font-bold text-orange-600 mb-4 text-center">4 Bước Thực Hiện</h2>
+                <div class="space-y-2">
+                    <div class="flex items-center p-2 bg-blue-50 rounded-xl border-l-4 border-blue-400">
+                        <b class="bg-blue-400 text-white w-5 h-5 rounded-full flex items-center justify-center mr-3 text-[10px]">1</b>
+                        <p class="text-[11px] font-bold">Chia đôi đĩa giấy.</p>
                     </div>
-                    <div class="flex items-center p-5 bg-indigo-50 rounded-3xl border-l-[12px] border-indigo-400 shadow-sm">
-                        <b class="bg-indigo-400 text-white min-w-[40px] h-10 rounded-full flex items-center justify-center mr-5 text-xl">2</b>
-                        <p class="flex-1 text-xl font-bold">Tô 1 nửa màu xanh và 1 nửa màu tối.</p>
+                    <div class="flex items-center p-2 bg-indigo-50 rounded-xl border-l-4 border-indigo-400">
+                        <b class="bg-indigo-400 text-white w-5 h-5 rounded-full flex items-center justify-center mr-3 text-[10px]">2</b>
+                        <p class="text-[11px] font-bold">Tô màu xanh (Ngày) - màu tối (Đêm).</p>
                     </div>
-                    <div class="flex items-center p-5 bg-yellow-50 rounded-3xl border-l-[12px] border-yellow-400 shadow-sm">
-                        <b class="bg-yellow-400 text-white min-w-[40px] h-10 rounded-full flex items-center justify-center mr-5 text-xl">3</b>
-                        <p class="flex-1 text-xl font-bold">Dán Mặt Trời vào nửa xanh, Trăng Sao vào nửa tối.</p>
+                    <div class="flex items-center p-2 bg-yellow-50 rounded-xl border-l-4 border-yellow-400">
+                        <b class="bg-yellow-400 text-white w-5 h-5 rounded-full flex items-center justify-center mr-3 text-[10px]">3</b>
+                        <p class="text-[11px] font-bold">Dán Mặt Trời và Trăng Sao.</p>
                     </div>
-                    <div class="flex items-center p-5 bg-pink-50 rounded-3xl border-l-[12px] border-pink-400 shadow-sm">
-                        <b class="bg-pink-400 text-white min-w-[40px] h-10 rounded-full flex items-center justify-center mr-5 text-xl">4</b>
-                        <p class="flex-1 text-xl font-bold">Trang trí thêm nhà cửa và cây cối xung quanh.</p>
+                    <div class="flex items-center p-2 bg-pink-50 rounded-xl border-l-4 border-pink-400">
+                        <b class="bg-pink-400 text-white w-5 h-5 rounded-full flex items-center justify-center mr-3 text-[10px]">4</b>
+                        <p class="text-[11px] font-bold">Trang trí nhà cửa, cây cối.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Trang 9: Trắc nghiệm -->
+            <!-- Trang 9 -->
             <div class="slide items-center">
-                <h2 class="text-3xl font-bold text-indigo-700 mb-10">Thử thách nhà khoa học nhí</h2>
-                <div id="quiz-container" class="w-full max-w-lg">
-                    <div class="bg-indigo-50 p-8 rounded-[40px] border-4 border-indigo-100 mb-8 shadow-inner">
-                        <p id="question-text" class="text-2xl font-bold text-indigo-900 text-center"></p>
+                <h2 class="font-bold text-indigo-700 mb-4">Câu hỏi đố vui</h2>
+                <div id="quiz-container" class="w-full">
+                    <div class="bg-indigo-50 p-4 rounded-2xl border-2 border-indigo-100 mb-4">
+                        <p id="question-text" class="text-sm font-bold text-indigo-900 text-center"></p>
                     </div>
-                    <div id="options-container" class="grid grid-cols-1 gap-5"></div>
+                    <div id="options-container" class="grid grid-cols-1 gap-2"></div>
                 </div>
-                <div id="quiz-feedback" class="mt-8 font-bold text-2xl hidden"></div>
+                <div id="quiz-feedback" class="mt-2 font-bold text-sm hidden text-center"></div>
             </div>
 
-            <!-- Trang 10: Kết thúc -->
+            <!-- Trang 10 -->
             <div class="slide items-center justify-center text-center bg-yellow-50">
-                <div class="bg-white p-16 rounded-[60px] shadow-2xl border-8 border-yellow-200 max-w-lg">
-                    <div class="text-[120px] mb-8">🎓</div>
-                    <h2 class="text-5xl font-black text-red-500 mb-4 uppercase">Tuyệt Vời!</h2>
-                    <p class="text-2xl text-blue-800 mb-10 font-bold">Bé đã hoàn thành xuất sắc bài học hôm nay!</p>
-                    <button onclick="location.reload()" class="btn-nav-main bg-orange-500 text-white px-12 py-5 rounded-full font-bold text-2xl shadow-xl hover:bg-orange-600 active:scale-95 transition-all">Làm lại bài học</button>
+                <div class="bg-white p-6 rounded-[30px] shadow-lg border-4 border-yellow-200">
+                    <div class="text-5xl mb-3">🎓</div>
+                    <h2 class="text-2xl font-black text-red-500 mb-2">TUYỆT VỜI!</h2>
+                    <p class="text-sm text-blue-800 mb-6 font-bold">Bé đã hoàn thành bài học!</p>
+                    <button onclick="location.reload()" class="btn-nav-main bg-orange-500 text-white px-6 py-2 rounded-full font-bold text-sm shadow-md">Làm lại</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Footer Navigation -->
-        <div class="bg-gray-50 border-t-2 border-gray-100 p-6 flex justify-between items-center z-50">
-            <button id="prevBtn" class="btn-nav-main bg-white border-2 border-gray-200 text-gray-600 px-8 py-3 rounded-2xl font-bold text-lg hover:bg-gray-100 disabled:opacity-30 shadow-sm">Quay lại</button>
+        <!-- Footer Navigation - Slim -->
+        <div class="bg-gray-50 border-t border-gray-100 p-3 flex justify-between items-center z-50">
+            <button id="prevBtn" class="btn-nav-main bg-white border border-gray-200 text-gray-600 px-4 py-1.5 rounded-lg font-bold text-xs hover:bg-gray-100 disabled:opacity-30">Trước</button>
             <div class="flex flex-col items-center">
-                <span class="text-gray-500 font-black text-2xl tracking-widest" id="page-indicator">1 / 10</span>
-                <div class="w-24 h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden">
-                    <div id="mini-progress" class="h-full bg-blue-500 transition-all duration-300"></div>
-                </div>
+                <span class="text-gray-500 font-black text-sm" id="page-indicator">1 / 10</span>
             </div>
-            <button id="nextBtn" class="btn-nav-main bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold text-lg shadow-lg hover:bg-blue-700 shadow-blue-100">Tiếp theo</button>
+            <button id="nextBtn" class="btn-nav-main bg-blue-600 text-white px-4 py-1.5 rounded-lg font-bold text-xs shadow-md hover:bg-blue-700">Tiếp</button>
         </div>
     </div>
 
@@ -318,15 +264,11 @@
         const totalSlides = 10;
         const slides = document.querySelectorAll('.slide');
         const progressBar = document.getElementById('progress-bar');
-        const miniProgress = document.getElementById('mini-progress');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
-        const sidePrev = document.getElementById('sidePrev');
-        const sideNext = document.getElementById('sideNext');
         const pageIndicator = document.getElementById('page-indicator');
         const exitBtn = document.getElementById('exitBtn');
 
-        // Exit function
         exitBtn.addEventListener('click', () => {
             window.parent.postMessage('close iframe', '*');
             if(window.opener) { window.close(); }
@@ -340,22 +282,16 @@
             
             const progress = ((currentSlide + 1) / totalSlides) * 100;
             progressBar.style.width = `${progress}%`;
-            miniProgress.style.width = `${progress}%`;
             pageIndicator.innerText = `${currentSlide + 1} / ${totalSlides}`;
 
-            // Button visibility/states
             prevBtn.disabled = currentSlide === 0;
             if (currentSlide === totalSlides - 1) {
                 nextBtn.style.visibility = 'hidden';
             } else {
                 nextBtn.style.visibility = 'visible';
-                nextBtn.innerText = currentSlide === 8 ? "Xong" : "Tiếp theo";
+                nextBtn.innerText = currentSlide === 8 ? "Xong" : "Tiếp";
             }
 
-            sidePrev.classList.toggle('disabled', currentSlide === 0);
-            sideNext.classList.toggle('disabled', currentSlide === totalSlides - 1);
-
-            // Load Quiz if on slide 9
             if (currentSlide === 8) { loadQuestion(); }
         }
 
@@ -364,14 +300,11 @@
 
         prevBtn.addEventListener('click', navigatePrev);
         nextBtn.addEventListener('click', navigateNext);
-        sidePrev.addEventListener('click', navigatePrev);
-        sideNext.addEventListener('click', navigateNext);
 
-        // Quiz Data
         const quizData = [
-            { q: "Ban đêm thường có gì trên bầu trời?", a: ["Ông Mặt Trời rực rỡ", "Mặt Trăng và các vì sao"], correct: 1 },
-            { q: "Tại sao ban ngày chúng ta nhìn rõ mọi vật?", a: ["Vì có ánh nắng Mặt Trời", "Vì có đèn pin"], correct: 0 },
-            { q: "Trong mô hình STEM, ban đêm tô màu gì?", a: ["Màu vàng nhạt", "Màu đen hoặc xanh đậm"], correct: 1 }
+            { q: "Ban đêm thường có gì?", a: ["Mặt Trời", "Mặt Trăng & Sao"], correct: 1 },
+            { q: "Tại sao ban ngày trời sáng?", a: ["Có Mặt Trời", "Có đèn pin"], correct: 0 },
+            { q: "Mây trông giống gì?", a: ["Bông gòn", "Cái kẹo"], correct: 0 }
         ];
 
         let currentQuestion = 0;
@@ -381,7 +314,7 @@
             feedback.classList.add('hidden');
             
             if (currentQuestion >= quizData.length) {
-                container.innerHTML = `<div class="text-center p-10 bg-green-50 rounded-[40px] border-4 border-green-200"><div class="text-8xl mb-6">🌟</div><h3 class="text-3xl font-bold text-green-700 uppercase">Xuất sắc!</h3><p class="text-green-600 mt-4 text-xl font-bold">Bé đã trả lời đúng hết rồi đấy!</p></div>`;
+                container.innerHTML = `<div class="text-center p-4 bg-green-50 rounded-2xl border-2 border-green-200"><h3 class="text-lg font-bold text-green-700">XUẤT SẮC!</h3><p class="text-green-600 text-[11px] font-bold">Bé đã thắng cuộc!</p></div>`;
                 return;
             }
             
@@ -392,17 +325,17 @@
             
             data.a.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "w-full bg-white border-4 border-indigo-50 p-6 rounded-3xl hover:border-indigo-400 font-bold text-2xl text-indigo-900 transition-all shadow-md active:scale-95";
+                btn.className = "w-full bg-white border-2 border-indigo-50 p-2 rounded-xl hover:border-indigo-400 font-bold text-xs text-indigo-900 shadow-sm";
                 btn.innerText = opt;
                 btn.onclick = () => {
                     if (idx === data.correct) {
-                        feedback.innerText = "🎉 Đúng rồi! Bé giỏi quá!";
-                        feedback.className = "mt-8 font-bold text-3xl text-green-600 block text-center animate-bounce";
+                        feedback.innerText = "🎉 Đúng rồi!";
+                        feedback.className = "mt-2 font-bold text-green-600 block text-center";
                         feedback.classList.remove('hidden');
-                        setTimeout(() => { currentQuestion++; loadQuestion(); }, 1500);
+                        setTimeout(() => { currentQuestion++; loadQuestion(); }, 1000);
                     } else {
-                        feedback.innerText = "❌ Bé suy nghĩ thêm chút nữa nhé!";
-                        feedback.className = "mt-8 font-bold text-2xl text-red-500 block text-center";
+                        feedback.innerText = "❌ Bé thử lại nhé!";
+                        feedback.className = "mt-2 font-bold text-red-500 block text-center";
                         feedback.classList.remove('hidden');
                     }
                 };
