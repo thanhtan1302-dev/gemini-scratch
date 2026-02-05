@@ -3,394 +3,418 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Học STEM: Đèn Hiệu & Biển Báo Giao Thông</title>
+    <title>STEM: Giao Thông Thông Minh</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #f0f9ff;
-            overflow-x: hidden;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
-        }
-        .traffic-light-bulb {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin: 10px auto;
-            background-color: #333;
-            border: 3px solid #111;
-        }
-        .light-red.active { background-color: #ff0000; box-shadow: 0 0 20px #ff0000; }
-        .light-yellow.active { background-color: #ffcc00; box-shadow: 0 0 20px #ffcc00; }
-        .light-green.active { background-color: #00ff00; box-shadow: 0 0 20px #00ff00; }
-        
-        .pedestrian-light {
-            width: 60px;
-            height: 100px;
-            background: #222;
-            padding: 10px;
-            border-radius: 10px;
-        }
-        .ped-man { font-size: 30px; text-align: center; line-height: 40px; }
-        .ped-red.active { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
-        .ped-green.active { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
-        
-        .btn-game {
-            transition: transform 0.1s;
-        }
-        .btn-game:active {
-            transform: scale(0.95);
+            background-color: #0f172a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* Nút thoát nổi */
+        .app-container {
+            width: 480px;
+            height: 360px;
+            background-color: #f8fafc;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #3b82f6;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
         .exit-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 50;
+        }
+
+        .content-section {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Đèn giao thông mini */
+        .light-bulb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #111;
+            margin: 4px auto;
+            border: 1px solid #444;
+        }
+        .red.active { background: #ff0000; box-shadow: 0 0 10px #ff0000; }
+        .yellow.active { background: #ffcc00; box-shadow: 0 0 10px #ffcc00; }
+        .green.active { background: #00ff00; box-shadow: 0 0 10px #00ff00; }
+
+        /* Custom Scrollbar */
+        .content-section::-webkit-scrollbar { width: 4px; }
+        .content-section::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .page-indicator {
+            background: #3b82f6;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 999px;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <!-- Nút THOÁT -->
-    <div class="exit-button">
-        <button onclick="exitApp()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-full shadow-lg flex items-center gap-2 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
-            </svg>
-            THOÁT
-        </button>
-    </div>
-
-    <!-- Header -->
-    <header class="text-center mb-8">
-        <div class="inline-block bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-2 tracking-widest uppercase">
-            Môn Học: STEM 1
+    <div class="app-container">
+        <!-- Nút Thoát -->
+        <div class="exit-button">
+            <button onclick="exitApp()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded-lg text-[9px] shadow-sm uppercase">
+                Thoát
+            </button>
         </div>
-        <h1 class="text-3xl md:text-4xl font-bold text-blue-900 mb-2">ĐÈN HIỆU VÀ BIỂN BÁO GIAO THÔNG</h1>
-        <p class="text-blue-600 italic">"Chúng mình cùng học cách tham gia giao thông an toàn nhé!"</p>
-    </header>
 
-    <!-- Navigation Tabs -->
-    <div class="max-w-4xl mx-auto mb-8 bg-white rounded-2xl p-2 shadow-md flex gap-2">
-        <button onclick="switchTab('learn')" id="tab-learn" class="flex-1 py-3 px-4 rounded-xl font-bold transition-all bg-blue-500 text-white">1. KHÁM PHÁ</button>
-        <button onclick="switchTab('quiz')" id="tab-quiz" class="flex-1 py-3 px-4 rounded-xl font-bold transition-all text-gray-500 hover:bg-blue-100">2. THỰC HÀNH</button>
-        <button onclick="switchTab('simulation')" id="tab-simulation" class="flex-1 py-3 px-4 rounded-xl font-bold transition-all text-gray-500 hover:bg-blue-100">3. MÔ PHỎNG</button>
-    </div>
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-2 flex justify-between items-center shadow-md">
+            <span class="text-[10px] font-bold uppercase tracking-tight">STEM: Giao Thông Thông Minh</span>
+            <span id="page-number" class="page-indicator">Trang 1/10</span>
+        </header>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="max-w-5xl mx-auto">
+        <!-- NỘI DUNG 10 TRANG -->
+        <main class="flex-1 overflow-hidden relative">
+            
+            <!-- TRANG 1: GIỚI THIỆU -->
+            <section id="page-1" class="content-section active">
+                <div class="text-center mt-4">
+                    <div class="text-4xl mb-2">🚦</div>
+                    <h2 class="text-lg font-bold text-blue-800 uppercase">Chào mừng em!</h2>
+                    <p class="text-xs text-gray-600 px-6 mt-2 leading-relaxed">
+                        Hôm nay chúng ta sẽ cùng khám phá thế giới giao thông để biết cách đi đường an toàn và thông minh nhé!
+                    </p>
+                    <div class="mt-6 bg-blue-50 p-3 rounded-xl border border-blue-200 mx-4">
+                        <p class="text-[10px] font-bold text-blue-700">MỤC TIÊU BÀI HỌC:</p>
+                        <ul class="text-[9px] text-left mt-1 list-disc list-inside text-gray-700">
+                            <li>Nhận biết các loại đèn tín hiệu</li>
+                            <li>Phân biệt 3 nhóm biển báo cơ bản</li>
+                            <li>Biết cách sang đường an toàn</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
-        <!-- TAB 1: LEARN -->
-        <section id="content-learn" class="block">
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Đèn tín hiệu phương tiện -->
-                <div class="bg-white p-6 rounded-3xl shadow-lg border-t-8 border-yellow-400">
-                    <h2 class="text-xl font-bold text-center mb-6">Đèn Hiệu Cho Xe</h2>
-                    <div class="flex items-center justify-around">
-                        <div class="bg-black p-4 rounded-3xl inline-block shadow-2xl">
-                            <div class="traffic-light-bulb light-red active" id="learn-red"></div>
-                            <div class="traffic-light-bulb light-yellow" id="learn-yellow"></div>
-                            <div class="traffic-light-bulb light-green" id="learn-green"></div>
+            <!-- TRANG 2: ĐÈN XE -->
+            <section id="page-2" class="content-section">
+                <h2 class="text-xs font-bold text-blue-800 mb-3 border-b pb-1">1. ĐÈN TÍN HIỆU PHƯƠNG TIỆN</h2>
+                <div class="flex items-center gap-4 bg-white p-3 rounded-xl shadow-sm">
+                    <div class="bg-gray-900 p-2 rounded-xl w-12">
+                        <div class="light-bulb red active" id="l2-r"></div>
+                        <div class="light-bulb yellow" id="l2-y"></div>
+                        <div class="light-bulb green" id="l2-g"></div>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="p-2 bg-red-50 rounded border-l-4 border-red-500 text-[10px]">
+                            <b class="text-red-600">ĐÈN ĐỎ:</b> Dừng lại trước vạch.
                         </div>
-                        <div class="space-y-4">
-                            <div class="p-3 rounded-lg bg-red-50 border-l-4 border-red-500">
-                                <b class="text-red-600">Đèn Đỏ:</b> Dừng lại ngay!
-                            </div>
-                            <div class="p-3 rounded-lg bg-yellow-50 border-l-4 border-yellow-500">
-                                <b class="text-yellow-600">Đèn Vàng:</b> Đi chậm, chuẩn bị dừng!
-                            </div>
-                            <div class="p-3 rounded-lg bg-green-50 border-l-4 border-green-500">
-                                <b class="text-green-600">Đèn Xanh:</b> Được phép đi!
-                            </div>
+                        <div class="p-2 bg-yellow-50 rounded border-l-4 border-yellow-500 text-[10px]">
+                            <b class="text-yellow-600">ĐÈN VÀNG:</b> Đi chậm, chuẩn bị dừng.
+                        </div>
+                        <div class="p-2 bg-green-50 rounded border-l-4 border-green-500 text-[10px]">
+                            <b class="text-green-600">ĐÈN XANH:</b> Được phép di chuyển.
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <!-- Đèn người đi bộ -->
-                <div class="bg-white p-6 rounded-3xl shadow-lg border-t-8 border-green-400">
-                    <h2 class="text-xl font-bold text-center mb-6">Đèn Cho Người Đi Bộ</h2>
-                    <div class="flex items-center justify-around">
-                        <div class="bg-black p-4 rounded-2xl inline-block shadow-2xl">
-                            <div class="pedestrian-light mb-2 flex flex-col justify-around">
-                                <div class="ped-man ped-red active" id="learn-ped-red">🧍</div>
-                                <div class="ped-man ped-green" id="learn-ped-green">🚶</div>
-                            </div>
+            <!-- TRANG 3: ĐÈN ĐI BỘ -->
+            <section id="page-3" class="content-section">
+                <h2 class="text-xs font-bold text-blue-800 mb-3 border-b pb-1">2. ĐÈN DÀNH CHO NGƯỜI ĐI BỘ</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white p-3 rounded-xl text-center border">
+                        <div class="bg-black w-10 h-16 mx-auto rounded flex flex-col justify-around p-1">
+                            <span class="text-red-500 text-xl font-bold">🧍</span>
+                            <span class="text-gray-800 text-xl">🚶</span>
                         </div>
-                        <div class="space-y-4 max-w-[200px]">
-                            <p class="text-sm font-semibold text-red-600">🔴 Hình người đứng: Dừng lại trên vỉa hè.</p>
-                            <p class="text-sm font-semibold text-green-600">🟢 Hình người bước đi: Được phép sang đường qua vạch kẻ.</p>
+                        <p class="text-[9px] font-bold mt-2 text-red-600">ĐỨNG ĐỢI</p>
+                        <p class="text-[8px] text-gray-500">Khi đèn hình người màu đỏ</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl text-center border">
+                        <div class="bg-black w-10 h-16 mx-auto rounded flex flex-col justify-around p-1">
+                            <span class="text-gray-800 text-xl">🧍</span>
+                            <span class="text-green-500 text-xl font-bold animate-pulse">🚶</span>
                         </div>
+                        <p class="text-[9px] font-bold mt-2 text-green-600">ĐƯỢC ĐI</p>
+                        <p class="text-[8px] text-gray-500">Khi đèn hình người màu xanh</p>
                     </div>
                 </div>
+            </section>
 
-                <!-- Biển báo giao thông -->
-                <div class="md:col-span-2 bg-white p-6 rounded-3xl shadow-lg border-t-8 border-blue-400">
-                    <h2 class="text-xl font-bold text-center mb-6">Biển Báo Giao Thông Thường Gặp</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        <div class="text-center p-4 border rounded-2xl card-hover bg-blue-50">
-                            <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto flex items-center justify-center text-white text-2xl mb-2 shadow-lg">🚶</div>
-                            <p class="text-xs font-bold uppercase">Đường cho người đi bộ</p>
-                            <p class="text-[10px] mt-1 text-gray-600">Nền xanh, hình tròn</p>
-                        </div>
-                        <div class="text-center p-4 border rounded-2xl card-hover bg-red-50">
-                            <div class="w-16 h-16 bg-white border-4 border-red-500 rounded-full mx-auto flex items-center justify-center text-red-500 text-2xl mb-2 shadow-lg relative">
-                                🚶 <div class="absolute w-full h-1 bg-red-500 rotate-45"></div>
-                            </div>
-                            <p class="text-xs font-bold uppercase text-red-600">Cấm người đi bộ</p>
-                            <p class="text-[10px] mt-1 text-gray-600">Viền đỏ, gạch chéo</p>
-                        </div>
-                        <div class="text-center p-4 border rounded-2xl card-hover bg-yellow-50">
-                            <div class="w-16 h-16 border-b-[64px] border-b-yellow-400 border-l-[32px] border-l-transparent border-r-[32px] border-r-transparent mx-auto relative mb-2">
-                                <span class="absolute top-8 left-[-10px] text-xs font-bold">🚶🚶</span>
-                            </div>
-                            <p class="text-xs font-bold uppercase">Trẻ em đi ngang</p>
-                            <p class="text-[10px] mt-1 text-gray-600">Tam giác, nền vàng</p>
-                        </div>
-                        <div class="text-center p-4 border rounded-2xl card-hover bg-red-50">
-                            <div class="w-16 h-16 bg-red-500 border-4 border-white rounded-full mx-auto flex items-center justify-center mb-2 shadow-lg">
-                                <div class="w-10 h-2 bg-white"></div>
-                            </div>
-                            <p class="text-xs font-bold uppercase text-red-600">Cấm đi ngược chiều</p>
-                            <p class="text-[10px] mt-1 text-gray-600">Hình tròn đỏ, vạch ngang</p>
-                        </div>
-                        <div class="text-center p-4 border rounded-2xl card-hover bg-blue-50">
-                            <div class="w-16 h-16 bg-blue-500 border-2 border-white mx-auto flex items-center justify-center text-white text-2xl mb-2 shadow-md relative overflow-hidden">
-                                🏙️ <div class="absolute w-full h-1 bg-red-500 rotate-[135deg]"></div>
-                            </div>
-                            <p class="text-xs font-bold uppercase">Hết khu đông dân cư</p>
-                            <p class="text-[10px] mt-1 text-gray-600">Hình vuông, gạch đỏ</p>
-                        </div>
+            <!-- TRANG 4: BIỂN BÁO CẤM -->
+            <section id="page-4" class="content-section">
+                <h2 class="text-xs font-bold text-red-600 mb-3 border-b pb-1">3. NHÓM BIỂN BÁO CẤM</h2>
+                <p class="text-[9px] mb-3">Đặc điểm: Hình tròn, viền đỏ, nền trắng.</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full border-4 border-red-500 flex items-center justify-center font-bold text-red-500">✖</div>
+                        <span class="text-[8px] font-bold">ĐƯỜNG CẤM</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center"><div class="w-5 h-1 bg-white"></div></div>
+                        <span class="text-[8px] font-bold">CẤM NGƯỢC CHIỀU</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full border-4 border-red-500 flex items-center justify-center relative">🚲<div class="absolute w-full h-0.5 bg-red-500 rotate-45"></div></div>
+                        <span class="text-[8px] font-bold">CẤM XE ĐẠP</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full border-4 border-red-500 flex items-center justify-center relative">🚶<div class="absolute w-full h-0.5 bg-red-500 rotate-45"></div></div>
+                        <span class="text-[8px] font-bold">CẤM NGƯỜI ĐI BỘ</span>
                     </div>
                 </div>
+            </section>
+
+            <!-- TRANG 5: BIỂN NGUY HIỂM -->
+            <section id="page-5" class="content-section">
+                <h2 class="text-xs font-bold text-yellow-600 mb-3 border-b pb-1">4. NHÓM BIỂN NGUY HIỂM</h2>
+                <p class="text-[9px] mb-3">Đặc điểm: Hình tam giác, viền đỏ, nền vàng.</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="text-xl">⚠️</div>
+                        <span class="text-[8px] font-bold">CẢNH BÁO CHUNG</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="text-xl">🧒</div>
+                        <span class="text-[8px] font-bold">TRẺ EM ĐI NGANG</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="text-xl">🚲</div>
+                        <span class="text-[8px] font-bold">XE ĐẠP CẮT NGANG</span>
+                    </div>
+                    <div class="bg-white p-2 rounded border flex items-center gap-2">
+                        <div class="text-xl">🚧</div>
+                        <span class="text-[8px] font-bold">CÔNG TRƯỜNG</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRANG 6: BIỂN CHỈ DẪN -->
+            <section id="page-6" class="content-section">
+                <h2 class="text-xs font-bold text-blue-600 mb-3 border-b pb-1">5. NHÓM BIỂN CHỈ DẪN</h2>
+                <p class="text-[9px] mb-3">Đặc điểm: Hình vuông hoặc chữ nhật, nền xanh.</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-blue-600 text-white p-2 rounded flex items-center gap-2">
+                        <div class="text-xl">🚶</div>
+                        <span class="text-[8px] font-bold">ĐƯỜNG NGƯỜI ĐI BỘ</span>
+                    </div>
+                    <div class="bg-blue-600 text-white p-2 rounded flex items-center gap-2">
+                        <div class="text-xl">🏥</div>
+                        <span class="text-[8px] font-bold">BỆNH VIỆN</span>
+                    </div>
+                    <div class="bg-blue-600 text-white p-2 rounded flex items-center gap-2">
+                        <div class="text-xl">🅿️</div>
+                        <span class="text-[8px] font-bold">BÃI ĐỖ XE</span>
+                    </div>
+                    <div class="bg-blue-600 text-white p-2 rounded flex items-center gap-2">
+                        <div class="text-xl">📞</div>
+                        <span class="text-[8px] font-bold">ĐIỆN THOẠI CÔNG CỘNG</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRANG 7: QUY TRÌNH SANG ĐƯỜNG -->
+            <section id="page-7" class="content-section">
+                <h2 class="text-xs font-bold text-blue-800 mb-3 border-b pb-1">6. QUY TẮC SANG ĐƯỜNG AN TOÀN</h2>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 bg-white p-2 rounded border">
+                        <span class="bg-blue-600 text-white w-4 h-4 rounded-full text-[8px] flex items-center justify-center">1</span>
+                        <span class="text-[9px]">Dừng lại trên vỉa hè trước vạch kẻ đường.</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white p-2 rounded border">
+                        <span class="bg-blue-600 text-white w-4 h-4 rounded-full text-[8px] flex items-center justify-center">2</span>
+                        <span class="text-[9px]">Quan sát trái, phải, sau đó quan sát trái lần nữa.</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white p-2 rounded border">
+                        <span class="bg-blue-600 text-white w-4 h-4 rounded-full text-[8px] flex items-center justify-center">3</span>
+                        <span class="text-[9px]">Chờ đèn đi bộ chuyển sang màu xanh.</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white p-2 rounded border">
+                        <span class="bg-blue-600 text-white w-4 h-4 rounded-full text-[8px] flex items-center justify-center">4</span>
+                        <span class="text-[9px]">Đi nhanh nhưng không chạy, luôn chú ý xe cộ.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRANG 8: MÔ PHỎNG -->
+            <section id="page-8" class="content-section">
+                <h2 class="text-xs font-bold text-blue-800 mb-2">7. THỰC HÀNH MÔ PHỎNG</h2>
+                <div class="relative h-28 bg-gray-200 rounded-lg border-2 border-gray-400 overflow-hidden mb-2">
+                    <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-16 bg-gray-700 flex items-center justify-center">
+                        <div class="w-16 h-full flex justify-between px-1">
+                            <div class="w-3 h-full bg-white"></div>
+                            <div class="w-3 h-full bg-white"></div>
+                            <div class="w-3 h-full bg-white"></div>
+                        </div>
+                    </div>
+                    <div id="ped" class="absolute bottom-2 left-4 text-2xl transition-all duration-1000">👦</div>
+                    <div id="car" class="absolute top-8 right-2 text-2xl transition-all duration-700">🚗</div>
+                    <div class="absolute top-1 right-10 bg-black p-1 rounded flex flex-col gap-0.5">
+                        <div id="sim-red" class="w-2 h-2 rounded-full bg-red-900"></div>
+                        <div id="sim-green" class="w-2 h-2 rounded-full bg-green-900"></div>
+                    </div>
+                </div>
+                <div class="flex justify-center gap-4">
+                    <button onclick="sim('red')" class="px-3 py-1 bg-red-600 text-white text-[9px] rounded font-bold">ĐÈN ĐỎ</button>
+                    <button onclick="sim('green')" class="px-3 py-1 bg-green-600 text-white text-[9px] rounded font-bold">ĐÈN XANH</button>
+                </div>
+            </section>
+
+            <!-- TRANG 9: THỬ THÁCH -->
+            <section id="page-9" class="content-section">
+                <h2 class="text-xs font-bold text-blue-800 mb-3 uppercase">8. Thử thách thông thái</h2>
+                <div id="quiz-area" class="bg-white p-3 rounded-xl border border-blue-100 text-center">
+                    <p id="q-text" class="text-[10px] font-bold mb-4">Loại biển báo nào sau đây có hình Tam giác, viền Đỏ, nền Vàng?</p>
+                    <div class="grid gap-2">
+                        <button onclick="ans(false)" class="p-2 border rounded-lg text-[9px] hover:bg-blue-50">Biển báo Cấm</button>
+                        <button onclick="ans(true)" class="p-2 border rounded-lg text-[9px] hover:bg-blue-50">Biển báo Nguy hiểm</button>
+                        <button onclick="ans(false)" class="p-2 border rounded-lg text-[9px] hover:bg-blue-50">Biển báo Chỉ dẫn</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRANG 10: TỔNG KẾT -->
+            <section id="page-10" class="content-section">
+                <div class="text-center mt-6">
+                    <div class="text-5xl mb-4">🏆</div>
+                    <h2 class="text-lg font-bold text-blue-800">CHÚC MỪNG EM!</h2>
+                    <p class="text-xs text-gray-600 px-6 mt-2">
+                        Em đã hoàn thành xuất sắc 10 trang bài học về Giao Thông Thông Minh.
+                    </p>
+                    <div class="mt-8">
+                        <button onclick="goToPage(1)" class="bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-bold shadow-lg">HỌC LẠI TỪ ĐẦU</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer: Điều hướng -->
+        <footer class="p-2 bg-gray-100 border-t flex justify-between items-center">
+            <button id="prev-btn" onclick="changePage(-1)" class="px-4 py-1.5 bg-gray-400 text-white rounded-lg text-[10px] font-bold disabled:opacity-30" disabled>TRƯỚC</button>
+            <div class="flex gap-1" id="page-dots">
+                <!-- Dots generated by JS -->
             </div>
-        </section>
-
-        <!-- TAB 2: QUIZ -->
-        <section id="content-quiz" class="hidden">
-            <div class="bg-white p-8 rounded-3xl shadow-xl max-w-2xl mx-auto text-center">
-                <div id="quiz-container">
-                    <h2 id="quiz-question" class="text-2xl font-bold text-blue-800 mb-8">Khi đèn tín hiệu màu ĐỎ bật sáng, em phải làm gì?</h2>
-                    <div class="grid gap-4" id="quiz-options">
-                        <button onclick="checkAnswer(true)" class="btn-game py-4 bg-red-100 border-2 border-red-500 rounded-2xl text-xl font-bold text-red-700 hover:bg-red-500 hover:text-white">Dừng Lại!</button>
-                        <button onclick="checkAnswer(false)" class="btn-game py-4 bg-green-100 border-2 border-green-500 rounded-2xl text-xl font-bold text-green-700 hover:bg-green-500 hover:text-white">Đi Tiếp!</button>
-                    </div>
-                </div>
-                <div id="feedback" class="hidden mt-8 p-4 rounded-2xl font-bold text-white"></div>
-                <button id="next-btn" onclick="nextQuiz()" class="hidden mt-6 px-8 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg">Câu hỏi tiếp theo →</button>
-            </div>
-        </section>
-
-        <!-- TAB 3: SIMULATION -->
-        <section id="content-simulation" class="hidden">
-            <div class="bg-white p-6 rounded-3xl shadow-xl">
-                <h2 class="text-2xl font-bold text-center mb-4">Mô Phỏng: Giúp Bạn Nhỏ Sang Đường</h2>
-                <div class="relative h-[300px] bg-gray-200 rounded-2xl border-4 border-gray-400 overflow-hidden mb-6">
-                    <div class="absolute inset-0 flex flex-col justify-center">
-                        <div class="h-40 bg-gray-600 relative">
-                            <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-32 flex justify-between px-2">
-                                <div class="h-full w-4 bg-white"></div>
-                                <div class="h-full w-4 bg-white"></div>
-                                <div class="h-full w-4 bg-white"></div>
-                                <div class="h-full w-4 bg-white"></div>
-                            </div>
-                            <div class="absolute top-1/2 left-0 right-0 h-1 border-t-2 border-dashed border-yellow-300"></div>
-                        </div>
-                    </div>
-                    <div id="sim-pedestrian" class="absolute bottom-4 left-4 text-4xl transition-all duration-1000">👧👦</div>
-                    <div id="sim-car" class="absolute top-1/4 right-4 text-4xl transition-all duration-500">🚗</div>
-                    <div class="absolute top-4 right-1/4 bg-black p-2 rounded-lg flex flex-col gap-1">
-                        <div id="sim-light-red" class="w-4 h-4 rounded-full bg-red-900"></div>
-                        <div id="sim-light-green" class="w-4 h-4 rounded-full bg-green-900"></div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <p id="sim-status" class="mb-4 font-bold text-gray-700">Đèn đỏ đang bật. Các bạn nhỏ phải đợi!</p>
-                    <div class="flex justify-center gap-4">
-                        <button onclick="setSimLight('red')" class="px-6 py-2 bg-red-600 text-white rounded-xl font-bold shadow-md">Bật Đèn Đỏ</button>
-                        <button onclick="setSimLight('green')" class="px-6 py-2 bg-green-600 text-white rounded-xl font-bold shadow-md">Bật Đèn Xanh</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <div id="msg-box" class="fixed bottom-4 right-4 max-w-xs bg-yellow-100 border-2 border-yellow-400 p-4 rounded-2xl shadow-xl hidden animate-bounce">
-        <p id="msg-text" class="text-sm font-bold text-yellow-800"></p>
+            <button id="next-btn" onclick="changePage(1)" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-[10px] font-bold">TIẾP</button>
+        </footer>
     </div>
 
     <script>
-        // Hàm thoát chương trình
+        let currentPage = 1;
+        const totalPages = 10;
+
         function exitApp() {
-            // Gửi lệnh đóng iframe (thường dùng cho các môi trường chạy bài giảng điện tử)
             window.parent.postMessage('close_iframe', '*');
-            
-            // Hoặc cố gắng đóng cửa sổ hiện tại
-            if (window.opener) {
-                window.close();
-            } else {
-                // Hiển thị thông báo nếu không thể tự đóng (do bảo mật trình duyệt)
-                alert("Đang yêu cầu đóng ứng dụng. Bạn có thể tự đóng tab này nếu không thấy phản hồi.");
+            document.body.innerHTML = "<div class='text-white text-center'><p>Tạm biệt em!</p></div>";
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                goToPage(newPage);
             }
         }
 
-        // State Management
-        let currentQuizIndex = 0;
-        const quizData = [
-            {
-                q: "Khi đèn tín hiệu màu ĐỎ bật sáng, em phải làm gì?",
-                options: ["Dừng lại!", "Đi tiếp!"],
-                correct: 0,
-                hint: "Đèn đỏ báo hiệu: Dừng lại!"
-            },
-            {
-                q: "Biển báo hình Tam Giác, nền Vàng có ý nghĩa gì?",
-                options: ["Cấm đi", "Cảnh báo nguy hiểm"],
-                correct: 1,
-                hint: "Hình tam giác là biển báo chỉ dẫn/cảnh báo."
-            },
-            {
-                q: "Đèn cho người đi bộ hình người bước đi màu Xanh nghĩa là?",
-                options: ["Đứng đợi", "Được qua đường"],
-                correct: 1,
-                hint: "Màu xanh là được phép di chuyển."
-            },
-            {
-                q: "Biển báo hình Tròn, viền Đỏ, nền trắng có vạch ngang Đỏ ở giữa là biển gì?",
-                options: ["Cấm đi ngược chiều", "Đường ưu tiên"],
-                correct: 0,
-                hint: "Đây là biển cấm các phương tiện đi vào chiều ngược lại."
-            },
-            {
-                q: "Khi thấy biển báo 'Trẻ em đi ngang', người lái xe cần làm gì?",
-                options: ["Tăng tốc thật nhanh", "Đi chậm, quan sát trẻ em"],
-                correct: 1,
-                hint: "Biển báo nguy hiểm yêu cầu chúng ta phải chú ý quan sát."
-            }
-        ];
-
-        // Tab Switching
-        function switchTab(tabName) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+        function goToPage(page) {
+            // Hide all
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            // Show target
+            const target = document.getElementById(`page-${page}`);
+            target.classList.add('active');
             
-            document.querySelectorAll('nav button, .max-w-4xl button').forEach(b => {
-                b.classList.remove('bg-blue-500', 'text-white');
-                b.classList.add('text-gray-500');
-            });
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            activeBtn.classList.remove('text-gray-500');
-            activeBtn.classList.add('bg-blue-500', 'text-white');
+            currentPage = page;
+            updateUI();
 
-            if(tabName === 'learn') startLightCycle();
-            else stopLightCycle();
+            // Special logic for page 2 (light cycle)
+            if (page === 2) startAutoLight(); else stopAutoLight();
         }
 
-        let cycleInterval;
-        function startLightCycle() {
+        function updateUI() {
+            document.getElementById('page-number').textContent = `Trang ${currentPage}/10`;
+            document.getElementById('prev-btn').disabled = currentPage === 1;
+            document.getElementById('next-btn').disabled = currentPage === totalPages;
+            
+            // Update dots
+            const dots = document.getElementById('page-dots');
+            dots.innerHTML = '';
+            for(let i=1; i<=totalPages; i++) {
+                const dot = document.createElement('div');
+                dot.className = `w-1.5 h-1.5 rounded-full ${i === currentPage ? 'bg-blue-600' : 'bg-gray-300'}`;
+                dots.appendChild(dot);
+            }
+        }
+
+        // Trang 2: Đèn xe chạy tự động
+        let lightInterval;
+        function startAutoLight() {
             let step = 0;
-            const lights = ['red', 'yellow', 'green'];
-            cycleInterval = setInterval(() => {
-                document.querySelectorAll('.traffic-light-bulb').forEach(l => l.classList.remove('active'));
-                const targetLight = document.getElementById(`learn-${lights[step]}`);
-                if (targetLight) targetLight.classList.add('active');
-                
-                const pedRed = document.getElementById('learn-ped-red');
-                const pedGreen = document.getElementById('learn-ped-green');
-                if (pedRed && pedGreen) {
-                    if(lights[step] === 'red') {
-                        pedRed.classList.remove('active');
-                        pedGreen.classList.add('active');
-                    } else {
-                        pedRed.classList.add('active');
-                        pedGreen.classList.remove('active');
-                    }
-                }
+            const colors = ['r', 'y', 'g'];
+            clearInterval(lightInterval);
+            lightInterval = setInterval(() => {
+                document.querySelectorAll('#page-2 .light-bulb').forEach(b => b.classList.remove('active'));
+                document.getElementById(`l2-${colors[step]}`).classList.add('active');
                 step = (step + 1) % 3;
-            }, 2000);
+            }, 1500);
         }
+        function stopAutoLight() { clearInterval(lightInterval); }
 
-        function stopLightCycle() {
-            clearInterval(cycleInterval);
-        }
-
-        function checkAnswer(isCorrect) {
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('next-btn');
-            feedback.classList.remove('hidden', 'bg-red-500', 'bg-green-500');
-            
-            if(isCorrect) {
-                feedback.textContent = "Chính xác! Giỏi quá! 🎉";
-                feedback.classList.add('bg-green-500');
-            } else {
-                feedback.textContent = "Chưa đúng rồi, hãy thử lại nhé! 🧐";
-                feedback.classList.add('bg-red-500');
-            }
-            nextBtn.classList.remove('hidden');
-        }
-
-        function nextQuiz() {
-            currentQuizIndex = (currentQuizIndex + 1) % quizData.length;
-            const data = quizData[currentQuizIndex];
-            document.getElementById('quiz-question').textContent = data.q;
-            const optionsDiv = document.getElementById('quiz-options');
-            optionsDiv.innerHTML = '';
-            
-            data.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `btn-game py-4 rounded-2xl text-xl font-bold border-2 transition-all ${idx === 0 ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`;
-                btn.textContent = opt;
-                btn.onclick = () => checkAnswer(idx === data.correct);
-                optionsDiv.appendChild(btn);
-            });
-            
-            document.getElementById('feedback').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-        }
-
-        function setSimLight(color) {
-            const redBulb = document.getElementById('sim-light-red');
-            const greenBulb = document.getElementById('sim-light-green');
+        // Trang 8: Mô phỏng
+        function sim(color) {
+            const r = document.getElementById('sim-red');
+            const g = document.getElementById('sim-green');
+            const ped = document.getElementById('ped');
+            const car = document.getElementById('car');
             const status = document.getElementById('sim-status');
-            const ped = document.getElementById('sim-pedestrian');
-            const car = document.getElementById('sim-car');
 
             if(color === 'green') {
-                redBulb.style.backgroundColor = '#421';
-                greenBulb.style.backgroundColor = '#0f0';
-                status.textContent = "Đèn Xanh! Các bạn nhỏ có thể sang đường an toàn.";
-                status.className = "mb-4 font-bold text-green-600";
-                ped.style.left = '45%';
-                car.style.right = '70%';
-                showMessage("Đúng rồi! Khi đèn xanh, người đi bộ được đi.");
+                r.className = "w-2 h-2 rounded-full bg-red-900";
+                g.className = "w-2 h-2 rounded-full bg-green-500 shadow-[0_0_5px_#0f0]";
+                ped.style.left = "45%";
+                car.style.right = "80%";
             } else {
-                redBulb.style.backgroundColor = '#f00';
-                greenBulb.style.backgroundColor = '#041';
-                status.textContent = "Đèn Đỏ! Các bạn nhỏ hãy dừng lại đợi xe nhé.";
-                status.className = "mb-4 font-bold text-red-600";
-                ped.style.left = '10%';
-                car.style.right = '10%';
+                r.className = "w-2 h-2 rounded-full bg-red-500 shadow-[0_0_5px_#f00]";
+                g.className = "w-2 h-2 rounded-full bg-green-900";
+                ped.style.left = "1rem";
+                car.style.right = "0.5rem";
             }
         }
 
-        function showMessage(text) {
-            const box = document.getElementById('msg-box');
-            const txt = document.getElementById('msg-text');
-            txt.textContent = text;
-            box.classList.remove('hidden');
-            setTimeout(() => box.classList.add('hidden'), 3000);
+        // Trang 9: Trắc nghiệm
+        function ans(correct) {
+            const area = document.getElementById('quiz-area');
+            if(correct) {
+                area.innerHTML = "<div class='text-green-600 font-bold'>🎉 CHÍNH XÁC!<br><span class='text-[8px] text-gray-500'>Em rất am hiểu về biển báo giao thông.</span></div><button onclick='changePage(1)' class='mt-4 bg-blue-600 text-white px-4 py-1 rounded text-[10px]'>TIẾP TỤC</button>";
+            } else {
+                alert("Chưa đúng rồi, em hãy chọn lại nhé!");
+            }
         }
 
-        window.onload = () => {
-            startLightCycle();
-            setSimLight('red');
-        };
+        // Khởi tạo
+        updateUI();
     </script>
 </body>
 </html>
