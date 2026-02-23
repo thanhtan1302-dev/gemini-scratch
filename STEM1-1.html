@@ -269,6 +269,33 @@
         .exit-btn:active {
             transform: scale(0.95);
         }
+        .explanation-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #f59e0b;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #334155;
+            text-align: left;
+        }
+        .explanation-box.blue {
+            border-left-color: #3b82f6;
+        }
+        .group-hint {
+            background-color: #dcfce7;
+            border: 2px dashed #22c55e;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #166534;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -337,6 +364,7 @@
                         </div>
                     </div>
                 </div>
+                <p class="text-[11px] font-bold text-slate-700 mb-2">Bạn tìm kết quả của phép tính bằng cách nào?</p>
                 <button onclick="revealAnswer(3)" class="bg-orange-500 text-white text-[10px] font-bold px-6 py-1.5 rounded-full shadow-md">Xem trả lời</button>
                 <div id="text-answer-3" class="answer-hidden bg-orange-400 text-white p-3 rounded-2xl text-xs font-bold w-4/5 mt-3 text-center">Bạn sử dụng que tính để tính</div>
             </section>
@@ -347,15 +375,16 @@
                     <div class="text-6xl mb-2">👦</div>
                     <div class="text-3xl tracking-widest">🖐️ ✌️</div>
                 </div>
+                <p class="text-[11px] font-bold text-slate-700 mb-2">Bạn tìm kết quả của phép tính bằng cách nào?</p>
                 <button onclick="revealAnswer(4)" class="bg-orange-500 text-white text-[10px] font-bold px-6 py-1.5 rounded-full shadow-md">Xem trả lời</button>
                 <div id="text-answer-4" class="answer-hidden bg-yellow-400 text-red-700 p-3 rounded-2xl text-xs font-bold w-4/5 mt-3 text-center">Bạn sử dụng ngón tay để tính</div>
             </section>
 
             <section id="page-5" class="page-content">
-                <h2 class="text-center text-sky-700 font-black text-sm mb-4">THỰC HIỆP PHÉP CỘNG</h2>
+                <h2 class="text-center text-sky-700 font-black text-sm mb-4 uppercase">Thực hiện phép cộng</h2>
                 <div class="flex flex-col items-center gap-2">
                     <div class="text-4xl font-black mb-2"><span class="text-orange-400">1</span> + <span class="text-sky-400">4</span> = <span class="text-red-600">5</span></div>
-                    <div class="w-full px-4 mt-6">
+                    <div class="w-full px-4 mt-2 mb-4">
                         <div class="number-line relative">
                             <div class="number-line-item">0</div>
                             <div class="number-line-item bg-sky-700 rounded-lg">1</div>
@@ -366,14 +395,17 @@
                             <div class="number-line-item">6</div>
                         </div>
                     </div>
+                    <div class="explanation-box">
+                        <strong>Cách tính:</strong> Để tìm kết quả của phép tính 1 + 4; từ 1 đếm thêm 4 số nữa, dừng lại ở số 5. Vậy 1 + 4 = 5.
+                    </div>
                 </div>
             </section>
 
             <section id="page-6" class="page-content">
-                <h2 class="text-center text-sky-700 font-black text-sm mb-4">THỰC HIỆN PHÉP TRỪ</h2>
-                <div class="flex flex-col items-center gap-4">
+                <h2 class="text-center text-sky-700 font-black text-sm mb-4 uppercase">Thực hiện phép trừ</h2>
+                <div class="flex flex-col items-center gap-2">
                     <div class="text-4xl font-black mb-2"><span class="text-sky-600">9</span> - <span class="text-orange-500">4</span> = <span class="text-red-600">5</span></div>
-                    <div class="w-full px-4 mt-6">
+                    <div class="w-full px-4 mt-2 mb-4">
                         <div class="number-line bg-purple-700 relative">
                             <div class="number-line-item">4</div>
                             <div class="number-line-item bg-red-600 rounded-full">5 <span class="arrow-jump-back">⤴️</span></div>
@@ -383,6 +415,9 @@
                             <div class="number-line-item bg-sky-700 rounded-lg">9</div>
                             <div class="number-line-item">10</div>
                         </div>
+                    </div>
+                    <div class="explanation-box blue">
+                        <strong>Cách tính:</strong> Để tìm kết quả của phép tính 9 - 4; từ 9 đếm lùi 4 số; dừng lại ở số 5. Vậy 9 - 4 = 5.
                     </div>
                 </div>
             </section>
@@ -422,9 +457,13 @@
 
             <section id="page-9" class="page-content">
                 <h2 class="text-center text-sky-900 font-black text-sm mb-2 uppercase">Làm dụng cụ tính toán</h2>
-                <div class="grid grid-cols-2 gap-3 flex-1 items-start">
+                <div class="grid grid-cols-2 gap-3 items-start">
                     <div class="craft-card"><span class="text-[16px]">🍦🌈🧁</span><div class="h-8 border-2 border-yellow-300 rounded bg-yellow-50 flex items-center justify-around px-1"><span class="text-[8px] font-bold">0 1 2... 10</span></div></div>
                     <div class="craft-card"><span class="text-[16px]">☀️🦋🐥</span><div class="h-8 border-2 border-sky-300 rounded bg-sky-50 flex items-center justify-center"><span class="text-red-500 text-[10px]">➕ 🍭 ➖</span></div></div>
+                </div>
+                <div class="group-hint">
+                    <span class="text-2xl">🤝</span>
+                    <p>Làm dụng cụ tính cộng, tính trừ theo cách của em hoặc nhóm em.</p>
                 </div>
             </section>
 
@@ -566,7 +605,6 @@
         }
 
         function exitApp() {
-            // Gửi message close_iframe lên parent window để thoát
             window.parent.postMessage("close_iframe", "*");
         }
 
