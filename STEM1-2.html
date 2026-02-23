@@ -41,7 +41,6 @@
             pointer-events: none;
         }
 
-        /* Đảm bảo nội dung không bao giờ vượt quá chiều cao cho phép */
         .content-section {
             flex: 1;
             padding: 12px;
@@ -49,7 +48,7 @@
             position: relative;
             z-index: 10;
             height: 100%;
-            overflow: hidden; /* Không cho cuộn */
+            overflow: hidden;
         }
 
         .content-section.active {
@@ -65,9 +64,9 @@
             100% { opacity: 1; transform: scale(1); }
         }
 
-        .text-main { font-size: 14px; line-height: 1.4; text-align: center; }
+        .text-main { font-size: 13px; line-height: 1.4; text-align: center; }
         .text-title { font-size: 18px; font-weight: 700; color: #1e40af; text-transform: uppercase; margin-bottom: 8px; }
-        .text-sub { font-size: 12px; font-weight: 600; }
+        .text-sub { font-size: 11px; font-weight: 600; }
 
         .btn-nav {
             padding: 6px 14px;
@@ -113,7 +112,6 @@
     <div class="app-container">
         <div class="bg-pattern"></div>
 
-        <!-- Header -->
         <header class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-2 flex justify-between items-center shadow-lg relative z-20">
             <div class="flex items-center gap-2">
                 <button onclick="exitApp()" class="btn-nav btn-exit text-[9px] px-3 py-1">✖ THOÁT</button>
@@ -176,47 +174,61 @@
 
             <!-- TRANG 4 -->
             <section id="p-4" class="content-section">
-                <h2 class="text-title text-red-600">🚫 BIỂN BÁO CẤM</h2>
-                <div class="grid grid-cols-2 gap-4 w-full px-6">
-                    <div class="bg-white p-4 rounded-2xl border-2 border-red-100 flex flex-col items-center">
-                        <div class="w-12 h-12 rounded-full border-4 border-red-500 flex items-center justify-center text-red-500 font-black text-2xl">✖</div>
-                        <span class="text-sub mt-2 font-bold">CẤM VÀO</span>
+                <h2 class="text-title text-red-600">⚠️ BIỂN BÁO TRẺ EM</h2>
+                <div class="flex flex-col items-center bg-yellow-50 p-3 rounded-2xl border-2 border-yellow-200 w-full max-w-[95%]">
+                    <div class="mb-3">
+                        <svg width="80" height="70" viewBox="0 0 100 90">
+                            <path d="M50 5 L95 85 L5 85 Z" fill="#fbbf24" stroke="#ef4444" stroke-width="6"/>
+                            <circle cx="42" cy="45" r="4" fill="black"/>
+                            <path d="M42 49 L42 65 M42 53 L35 60 M42 53 L49 60 M38 75 L42 65 L46 75" stroke="black" stroke-width="2.5" fill="none"/>
+                            <circle cx="60" cy="55" r="3" fill="black"/>
+                            <path d="M60 58 L60 70 M60 62 L55 67 M60 62 L65 67 M57 78 L60 70 L63 78" stroke="black" stroke-width="2" fill="none"/>
+                            <path d="M49 60 Q55 58 55 67" stroke="black" stroke-width="1.5" fill="none"/>
+                        </svg>
                     </div>
-                    <div class="bg-white p-4 rounded-2xl border-2 border-red-100 flex flex-col items-center">
-                        <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
-                            <div class="w-8 h-2 bg-white rounded"></div>
-                        </div>
-                        <span class="text-sub mt-2 font-bold">NGƯỢC CHIỀU</span>
+                    <div class="text-left w-full px-2 space-y-1">
+                        <p class="text-[12px]"><strong class="text-blue-700">Tên:</strong> Đoạn đường thường có trẻ em đi qua.</p>
+                        <p class="text-[11px] leading-tight"><strong class="text-blue-700">Ý nghĩa:</strong> Báo trước gần đến đoạn đường có trẻ em đi ngang qua hoặc tụ tập như gần trường học, vườn trẻ, câu lạc bộ.</p>
+                        <p class="text-[11px] leading-tight"><strong class="text-blue-700">Hình dạng:</strong> Biển hình tam giác, nền vàng, viền đỏ, hình vẽ người lớn dắt trẻ em màu đen ở giữa.</p>
                     </div>
                 </div>
             </section>
 
             <!-- TRANG 5 -->
             <section id="p-5" class="content-section">
-                <h2 class="text-title text-yellow-600">⚠️ BIỂN NGUY HIỂM</h2>
-                <div class="grid grid-cols-2 gap-4 w-full px-6">
-                    <div class="bg-yellow-50 p-4 rounded-2xl border-2 border-yellow-200 flex flex-col items-center">
-                        <div class="text-5xl">🧒</div>
-                        <span class="text-sub mt-2 font-bold">TRẺ EM</span>
+                <h2 class="text-title text-red-600">🚫 BIỂN CẤM RẼ TRÁI</h2>
+                <div class="flex flex-col items-center bg-red-50 p-3 rounded-2xl border-2 border-red-200 w-full max-w-[95%]">
+                    <div class="mb-3">
+                        <svg width="80" height="80" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" stroke="#ef4444" stroke-width="8" fill="white" />
+                            <path d="M65 70 V45 Q65 35 55 35 H35" fill="none" stroke="black" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M40 28 L30 35 L40 42 Z" fill="black" />
+                            <line x1="25" y1="25" x2="75" y2="75" stroke="#ef4444" stroke-width="8" stroke-linecap="round"/>
+                        </svg>
                     </div>
-                    <div class="bg-yellow-50 p-4 rounded-2xl border-2 border-yellow-200 flex flex-col items-center">
-                        <div class="text-5xl">🚲</div>
-                        <span class="text-sub mt-2 font-bold">XE ĐẠP</span>
+                    <div class="text-left w-full px-2 space-y-1">
+                        <p class="text-[12px]"><strong class="text-red-700">Tên biển báo:</strong> Cấm rẽ trái.</p>
+                        <p class="text-[11px] leading-tight"><strong class="text-red-700">Ý nghĩa:</strong> Cấm rẽ trái ở những chỗ đường giao nhau. Có hiệu lực với các loại xe (cơ giới và thô sơ) trừ xe ưu tiên.</p>
+                        <p class="text-[11px] leading-tight"><strong class="text-red-700">Hình dạng:</strong> Biển hình tròn, viền đỏ, nền trắng, mũi tên đen chỉ hướng trái kèm gạch chéo đỏ từ trên xuống.</p>
                     </div>
                 </div>
             </section>
 
             <!-- TRANG 6 -->
             <section id="p-6" class="content-section">
-                <h2 class="text-title text-blue-600">ℹ️ BIỂN CHỈ DẪN</h2>
-                <div class="grid grid-cols-2 gap-4 w-full px-6">
-                    <div class="bg-blue-600 text-white p-4 rounded-2xl flex flex-col items-center shadow-lg">
-                        <div class="text-5xl mb-1">🚶</div>
-                        <span class="text-sub font-bold">SANG ĐƯỜNG</span>
+                <h2 class="text-title text-blue-600">🔵 BIỂN DÀNH CHO NGƯỜI ĐI BỘ</h2>
+                <div class="flex flex-col items-center bg-blue-50 p-3 rounded-2xl border-2 border-blue-200 w-full max-w-[95%]">
+                    <div class="mb-3">
+                        <svg width="80" height="80" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="46" fill="#1e40af" />
+                            <circle cx="50" cy="25" r="8" fill="white"/>
+                            <path d="M50 35 L50 60 M50 40 L35 55 M50 40 L65 55 M50 60 L40 80 M50 60 L60 80" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+                        </svg>
                     </div>
-                    <div class="bg-blue-600 text-white p-4 rounded-2xl flex flex-col items-center shadow-lg">
-                        <div class="text-5xl mb-1">🏥</div>
-                        <span class="text-sub font-bold">BỆNH VIỆN</span>
+                    <div class="text-left w-full px-2 space-y-1">
+                        <p class="text-[12px]"><strong class="text-blue-800">Tên biển báo:</strong> Đoạn đường dành cho người đi bộ.</p>
+                        <p class="text-[11px] leading-tight"><strong class="text-blue-800">Ý nghĩa:</strong> Các loại xe cơ giới và thô sơ (kể cả xe ưu tiên) không được phép đi vào đường đã đặt biển này.</p>
+                        <p class="text-[11px] leading-tight"><strong class="text-blue-800">Hình dạng:</strong> Biển có hình tròn, nền xanh, vẽ người đi bộ ở giữa màu trắng.</p>
                     </div>
                 </div>
             </section>
@@ -267,16 +279,59 @@
                 </div>
             </section>
 
-            <!-- TRANG 10 -->
-            <section id="p-10" class="content-section">
-                <div class="text-7xl animate-bounce">🥇</div>
-                <h2 class="text-2xl font-black text-blue-600 mt-2">TUYỆT VỜI!</h2>
-                <p class="text-main font-bold text-gray-600 mt-1">Em là hiệp sĩ giao thông rồi!</p>
-                <button onclick="setPage(1)" class="mt-4 px-8 py-2 bg-yellow-400 text-yellow-900 rounded-full font-black text-sm shadow-lg border-b-4 border-yellow-600">HỌC LẠI 🔄</button>
+            <!-- TRANG 10 (CẬP NHẬT: MÔ HÌNH STEM VÀ HÌNH MINH HỌA) -->
+            <section id="p-10" class="content-section overflow-y-auto pt-4">
+                <h2 class="text-[15px] font-black text-indigo-700 text-center uppercase mb-2">🛠️ LÀM MÔ HÌNH GIAO THÔNG</h2>
+                
+                <!-- Khu vực hình ảnh mô hình -->
+                <div class="flex justify-center gap-6 mb-3">
+                    <!-- Mô hình đèn hiệu -->
+                    <div class="flex flex-col items-center">
+                        <svg width="40" height="90" viewBox="0 0 40 100">
+                            <!-- Cột (que kem) -->
+                            <rect x="17" y="50" width="6" height="40" fill="#d97706" rx="2" />
+                            <!-- Hộp đèn -->
+                            <rect x="10" y="5" width="20" height="50" fill="#1f2937" rx="4" stroke="#374151" stroke-width="1" />
+                            <circle cx="20" cy="15" r="5" fill="#ef4444" />
+                            <circle cx="20" cy="30" r="5" fill="#facc15" />
+                            <circle cx="20" cy="45" r="5" fill="#22c55e" />
+                            <!-- Đế (đất sét/nắp chai) -->
+                            <path d="M5 90 Q20 85 35 90 L35 98 L5 98 Z" fill="#94a3b8" />
+                        </svg>
+                        <p class="text-[9px] font-bold text-gray-500 mt-1">Đèn hiệu</p>
+                    </div>
+                    <!-- Mô hình biển báo -->
+                    <div class="flex flex-col items-center">
+                        <svg width="50" height="90" viewBox="0 0 50 100">
+                            <!-- Cột -->
+                            <rect x="22" y="45" width="6" height="45" fill="#d97706" rx="2" />
+                            <!-- Mặt biển tròn -->
+                            <circle cx="25" cy="25" r="22" fill="#1e40af" stroke="white" stroke-width="1" />
+                            <path d="M25 15 L25 35 M20 25 L30 25" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" />
+                            <!-- Đế -->
+                            <path d="M10 90 Q25 85 40 90 L40 98 L10 98 Z" fill="#94a3b8" />
+                        </svg>
+                        <p class="text-[9px] font-bold text-gray-500 mt-1">Biển báo</p>
+                    </div>
+                </div>
+
+                <div class="w-full px-4 space-y-2 mb-4">
+                    <div class="flex items-start gap-3 bg-white p-2 rounded-xl border border-indigo-100 shadow-sm">
+                        <div class="bg-indigo-600 text-white w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[9px]">1</div>
+                        <p class="text-[10px] leading-tight text-gray-700"><strong>Gợi ý 1:</strong> Chọn hình phẳng (tròn, tam giác) làm mặt biển báo.</p>
+                    </div>
+                    <div class="flex items-start gap-3 bg-white p-2 rounded-xl border border-indigo-100 shadow-sm">
+                        <div class="bg-indigo-600 text-white w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[9px]">2</div>
+                        <p class="text-[10px] leading-tight text-gray-700"><strong>Gợi ý 2:</strong> Vẽ hoặc xé dán hình thông tin lên biển báo.</p>
+                    </div>
+                    <div class="flex items-start gap-3 bg-white p-2 rounded-xl border border-indigo-100 shadow-sm">
+                        <div class="bg-indigo-600 text-white w-5 h-5 rounded-full flex items-center justify-center shrink-0 font-bold text-[9px]">3</div>
+                        <p class="text-[10px] leading-tight text-gray-700"><strong>Gợi ý 3:</strong> Gắn biển vào cột và cố định vào phần đế.</p>
+                    </div>
+                </div>
             </section>
         </main>
 
-        <!-- Footer -->
         <footer class="p-3 bg-blue-50 border-t-2 border-blue-100 flex justify-between items-center relative z-20">
             <button id="btn-back" onclick="nav(-1)" class="btn-nav btn-prev">⬅ TRƯỚC</button>
             <div class="flex gap-1.5" id="dots"></div>
@@ -294,6 +349,7 @@
                 <div class="flex flex-col items-center justify-center h-screen bg-blue-100 text-center p-6">
                     <div class="text-6xl mb-4">👋</div>
                     <h1 class="text-2xl font-bold text-blue-800">Tạm biệt em!</h1>
+                    <p class="mt-2 text-blue-600">Chúc em tham gia giao thông an toàn!</p>
                 </div>
             `;
         }
@@ -330,12 +386,19 @@
 
         let lInt;
         function startLights() {
-            let s = 0; const c = ['r', 'y', 'g'];
+            let s = 0;
             clearInterval(lInt);
             lInt = setInterval(() => {
-                document.querySelectorAll('#p-2 .light-bulb').forEach(b => b.classList.remove('active'));
-                const target = document.getElementById(`l-${c[s]}`);
-                if (target) target.classList.add('active');
+                const r = document.getElementById('l-r');
+                const y = document.getElementById('l-y');
+                const g = document.getElementById('l-g');
+                if(!r || !y || !g) return;
+                
+                [r,y,g].forEach(b => b.classList.remove('active'));
+                if(s===0) r.classList.add('active');
+                if(s===1) y.classList.add('active');
+                if(s===2) g.classList.add('active');
+                
                 s = (s+1)%3;
             }, 1200);
         }
@@ -367,7 +430,7 @@
             if(isOk) {
                 box.innerHTML = `
                     <div class="p-3 bg-green-100 rounded-2xl border-2 border-green-200 text-green-700 font-black text-center animate-bounce">🌟 ĐÚNG RỒI! GIỎI QUÁ!</div>
-                    <button onclick="nav(1)" class="w-full mt-2 py-2 bg-green-500 text-white rounded-full font-black text-xs">TIẾP THEO ➡</button>`;
+                    <button onclick="nav(1)" class="w-full mt-2 py-2 bg-green-500 text-white rounded-full font-black text-xs shadow-md">TIẾP THEO ➡</button>`;
             } else {
                 alert("Em hãy suy nghĩ lại nhé!");
             }
