@@ -268,7 +268,7 @@
 
         async function callGeminiWithSuggestions(prompt) {
             const systemPrompt = `Bạn là cô giáo lớp 1. Trả lời ngọt ngào (< 30 từ). Gợi ý 3 câu ngắn tiếp theo. PHẢN HỒI JSON: {"answer": "...", "suggestions": ["...", "...", "..."]}`;
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${getK()}`, {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${getK()}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
