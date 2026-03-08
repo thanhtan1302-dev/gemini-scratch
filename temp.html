@@ -3,178 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Góc Học Tập Cánh Diều</title>
+    <title>Voi Con Thông Thái - Học Lớp 1</title>
     <style>
-        /* Định dạng giao diện theo phong cách trẻ em (480x360px) */
+        :root {
+            --primary-color: #ff7f50;
+            --math-color: #4caf50;
+            --viet-color: #2196f3;
+            --stem-color: #9c27b0;
+            --bg-color: #f0f9ff;
+        }
+
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f8ff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        #app-container {
-            width: 480px;
-            height: 360px;
-            background-color: #ffffff;
-            border: 4px solid #ffcc00;
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 80vh;
+            background: white;
             border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 4px solid var(--primary-color);
         }
 
-        #header {
-            background-color: #ffcc00;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            color: #d35400;
-            font-size: 18px;
-        }
-
-        #chat-content {
-            flex: 1;
+        .chat-header {
+            background: var(--primary-color);
+            color: white;
             padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
             overflow-y: auto;
-            background-image: radial-gradient(#fff9c4 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: url('https://www.transparenttextures.com/patterns/kids-icons.png');
         }
 
         .message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
+            margin-bottom: 15px;
+            padding: 10px 15px;
             border-radius: 15px;
             max-width: 80%;
-            font-size: 14px;
-            line-height: 1.4;
+            line-height: 1.5;
         }
 
         .bot-msg {
-            background-color: #e3f2fd;
+            background: #e1ffc7;
             align-self: flex-start;
             border-bottom-left-radius: 2px;
-            color: #1565c0;
         }
 
         .user-msg {
-            background-color: #f1f8e9;
+            background: #d1e3ff;
             align-self: flex-end;
             margin-left: auto;
             border-bottom-right-radius: 2px;
-            color: #2e7d32;
         }
 
-        #input-area {
+        .controls {
+            padding: 15px;
+            background: #eee;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        button:active { transform: scale(0.95); }
+
+        .btn-math { background: var(--math-color); }
+        .btn-viet { background: var(--viet-color); }
+        .btn-stem { background: var(--stem-color); }
+
+        .input-area {
             display: flex;
             padding: 10px;
-            border-top: 2px solid #eee;
+            border-top: 1px solid #ddd;
         }
 
         input {
             flex: 1;
-            padding: 8px;
-            border: 2px solid #ddd;
+            padding: 10px;
+            border: 1px solid #ccc;
             border-radius: 20px;
             outline: none;
-        }
-
-        button {
-            margin-left: 5px;
-            padding: 8px 15px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        #exit-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #ff5252;
-            color: white;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            font-size: 12px;
-            cursor: pointer;
-            border: none;
         }
     </style>
 </head>
 <body>
 
-<div id="app-container">
-    <button id="exit-btn" onclick="closeApp()">X</button>
-    <div id="header">🍎 Cô Giáo Cánh Diều 📚</div>
-    <div id="chat-content">
-        <div class="message bot-msg">Chào con! Cô là giáo viên hướng dẫn. Con muốn học Toán hay Tiếng Việt hôm nay nào? 😊</div>
+<div class="chat-container">
+    <div class="chat-header">🐘 Voi Con Thông Thái - Học Cùng Bé</div>
+    
+    <div class="chat-box" id="chatBox">
+        <div class="message bot-msg">Chào bạn nhỏ! Tớ là Voi Con. Hôm nay chúng mình sẽ học gì nào? Hãy chọn một môn nhé! 👇</div>
     </div>
-    <div id="input-area">
-        <input type="text" id="user-input" placeholder="Hỏi cô điều gì đó...">
-        <button onclick="sendMessage()">Gửi</button>
+
+    <div class="controls">
+        <button class="btn-math" onclick="ask('math')">🔢 Toán Học</button>
+        <button class="btn-viet" onclick="ask('viet')">📖 Tiếng Việt</button>
+        <button class="btn-stem" onclick="ask('stem')">🌱 STEM</button>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Nhập câu trả lời của bé...">
     </div>
 </div>
 
 <script>
-    const API_KEY = "AIzaSyAkgPyk5j_CjaBMCaYyX95SKVt9WpdyeBo"; // API Key đã được cung cấp
-    const chatContent = document.getElementById('chat-content');
-    const userInput = document.getElementById('user-input');
+    const chatBox = document.getElementById('chatBox');
 
-    // Cấu hình TTS Leda
-    async function playTTS(text) {
-        console.log("Đang đọc nội dung bằng giọng Leda: " + text);
-        // Tích hợp hàm gọi TTS (Gemini TTS) ở đây
-    }
+    const data = {
+        math: "Câu đố Toán: Tớ có 3 viên kẹo, mẹ cho thêm 2 viên nữa. Đố bạn tớ có tất cả mấy viên kẹo? 🍬",
+        viet: "Câu đố Tiếng Việt: Bạn hãy tìm một từ có vần 'ao' (ví dụ: con cháo). Bạn tìm được từ nào khác không? 🎈",
+        stem: "Khám phá STEM: Bạn có biết tại sao con vịt lại nổi được trên mặt nước không? Hãy quan sát bộ lông của bạn ấy nhé! 🦆"
+    };
 
-    async function sendMessage() {
-        const text = userInput.value.trim();
-        if (!text) return;
-
-        // Hiển thị tin nhắn người dùng
-        appendMessage(text, 'user-msg');
-        userInput.value = '';
-
-        // Giả lập xử lý dữ liệu từ sách Cánh Diều
-        let response = "";
-        if (text.toLowerCase().includes("toán")) {
-            response = "Trong sách Toán 1 Cánh Diều, chúng mình sẽ học về các số trong phạm vi 10, các hình khối và phép cộng trừ đơn giản đấy!";
-        } else if (text.toLowerCase().includes("tiếng việt")) {
-            response = "Sách Tiếng Việt 1 sẽ giúp con làm quen với các âm, vần và những bài đọc thật hay về gia đình, nhà trường.";
-        } else {
-            response = "Con có thể hỏi cô về các bài học trong sách giáo khoa lớp 1 nhé!";
-        }
-
-        // Hiển thị phản hồi của giáo viên
-        setTimeout(() => {
-            appendMessage(response, 'bot-msg');
-            playTTS(response);
-        }, 500);
-    }
-
-    function appendMessage(text, className) {
+    function addMessage(text, type) {
         const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${className}`;
+        msgDiv.className = `message ${type}-msg`;
         msgDiv.innerText = text;
-        chatContent.appendChild(msgDiv);
-        chatContent.scrollTop = chatContent.scrollHeight;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    function closeApp() {
-        // Lệnh đóng iframe theo yêu cầu kỹ thuật
-        window.parent.postMessage('close-iframe', '*');
+    function ask(subject) {
+        addMessage(data[subject], 'bot');
     }
 
-    // Gửi tin nhắn bằng phím Enter
-    userInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendMessage();
+    document.getElementById('userInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && this.value.trim() !== "") {
+            addMessage(this.value, 'user');
+            setTimeout(() => {
+                addMessage("Ồ, bạn giỏi quá! Tiếp tục phát huy nhé! 🎉", "bot");
+            }, 1000);
+            this.value = "";
+        }
     });
 </script>
 
