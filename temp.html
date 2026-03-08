@@ -3,147 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Lớp 1 - NotebookLM Data</title>
+    <title>Chatbot Giáo Viên Lớp 1</title>
     <style>
-        :root {
-            --primary-color: #ff7f50;
-            --math-color: #4caf50;
-            --viet-color: #2196f3;
-            --stem-color: #9c27b0;
-            --bg-color: #fdf6e3;
-        }
-
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--bg-color);
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; margin: 0;
+            height: 100vh; margin: 0; background: #eef2f3;
         }
-
-        .chat-container {
-            width: 480px; height: 360px; /* Kích thước chuẩn bạn hay dùng */
-            background: white; border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column;
-            border: 3px solid var(--primary-color);
-            position: relative; overflow: hidden;
+        /* Kích thước chuẩn 480x360 */
+        .app-container {
+            width: 480px; height: 360px;
+            background: #fff; border: 4px solid #FF9800;
+            border-radius: 15px; display: flex; flex-direction: column;
+            overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-
-        .chat-header {
-            background: var(--primary-color); color: white;
-            padding: 10px; text-align: center; font-weight: bold;
-            font-size: 16px;
+        .header {
+            background: #FF9800; color: white; padding: 10px;
+            text-align: center; font-weight: bold; font-size: 18px;
         }
-
-        .chat-box {
-            flex: 1; padding: 15px; overflow-y: auto;
-            display: flex; flex-direction: column;
-            background-color: #fffaf0;
+        #chat-box {
+            flex: 1; padding: 10px; overflow-y: auto;
+            background: #fff9f0; font-size: 14px;
         }
-
-        .message {
-            margin-bottom: 10px; padding: 8px 12px;
-            border-radius: 12px; font-size: 14px; line-height: 1.4;
-            max-width: 85%; word-wrap: break-word;
+        .msg { margin-bottom: 8px; padding: 8px; border-radius: 10px; line-height: 1.4; }
+        .teacher { background: #E1F5FE; border-left: 4px solid #03A9F4; align-self: flex-start; }
+        .student { background: #DCEDC8; align-self: flex-end; text-align: right; }
+        
+        .nav-buttons {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 5px; padding: 5px; background: #eee;
         }
-
-        .bot-msg { background: #e1ffc7; align-self: flex-start; }
-        .user-msg { background: #d1e3ff; align-self: flex-end; }
-
-        .controls {
-            display: grid; grid-template-columns: 1fr 1fr 1fr;
-            gap: 5px; padding: 10px; background: #eee;
-        }
-
         button {
-            border: none; border-radius: 10px; color: white;
-            padding: 8px; cursor: pointer; font-weight: bold; font-size: 12px;
+            border: none; border-radius: 5px; padding: 8px;
+            color: white; font-weight: bold; cursor: pointer; font-size: 12px;
         }
-
-        .btn-math { background: var(--math-color); }
-        .btn-viet { background: var(--viet-color); }
-        .btn-stem { background: var(--stem-color); }
-
-        .input-area { display: flex; padding: 5px; border-top: 1px solid #ddd; }
-        input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 15px; outline: none; }
+        .btn-toan { background: #f44336; }
+        .btn-tv { background: #2196F3; }
+        .btn-stem { background: #4CAF50; }
+        
+        .input-group { display: flex; padding: 5px; border-top: 1px solid #ccc; }
+        input { flex: 1; border: 1px solid #ddd; border-radius: 4px; padding: 5px; outline: none; }
+        #exit-btn {
+            background: #607D8B; padding: 5px 10px; font-size: 10px;
+            position: absolute; top: 10px; right: 10px;
+        }
     </style>
 </head>
 <body>
 
-<div class="chat-container">
-    <div class="chat-header">🏫 LỚP 1: TOÁN - TIẾNG VIỆT - STEM</div>
+<div class="app-container">
+    <button id="exit-btn" onclick="exitApp()">THOÁT</button>
+    <div class="header">Cô Giáo Lớp 1 👩‍🏫</div>
     
-    <div class="chat-box" id="chatBox">
-        <div class="message bot-msg">Chào bé! Hãy chọn môn học để khám phá kiến thức từ tài liệu của chúng mình nhé! 📚</div>
+    <div id="chat-box">
+        <div class="msg teacher">Chào em! Hôm nay chúng ta sẽ cùng học Toán, Tiếng Việt và STEM từ kho kiến thức internet nhé!</div>
     </div>
 
-    <div class="controls">
-        <button class="btn-math" onclick="getRandomQuestion('math')">🔢 TOÁN</button>
-        <button class="btn-viet" onclick="getRandomQuestion('viet')">📖 TIẾNG VIỆT</button>
-        <button class="btn-stem" onclick="getRandomQuestion('stem')">🌱 STEM</button>
+    <div class="nav-buttons">
+        <button class="btn-toan" onclick="loadContent('toan')">🔢 TOÁN</button>
+        <button class="btn-tv" onclick="loadContent('tieng-viet')">📖 TIẾNG VIỆT</button>
+        <button class="btn-stem" onclick="loadContent('stem')">🌱 STEM</button>
     </div>
 
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Nhập câu trả lời...">
+    <div class="input-group">
+        <input type="text" id="userInput" placeholder="Câu trả lời của em...">
     </div>
 </div>
 
 <script>
-    const chatBox = document.getElementById('chatBox');
+    const chatBox = document.getElementById('chat-box');
     const synth = window.speechSynthesis;
 
-    // --- PHẦN DỮ LIỆU TỪ NOTEBOOKLM ---
-    // Bạn hãy dán nội dung trích xuất được từ NotebookLM vào các mảng dưới đây
-    const notebookData = {
-        math: [
-            "NotebookLM nói: Phép cộng trong phạm vi 10. Đố bé 4 + 3 bằng mấy?",
-            "Câu hỏi Toán từ tài liệu: Bé hãy đếm xem có bao nhiêu hình tròn trong hình vuông nhé!",
-            "Thử thách: Số nào lớn hơn trong hai số 8 và 5?"
-        ],
-        viet: [
-            "Tài liệu Tiếng Việt: Bé hãy tìm chữ cái đứng đầu trong từ 'Cá chép'?",
-            "NotebookLM nhắc: Vần 'an' có trong từ nào sau đây: cái bàn hay con mèo?",
-            "Bé hãy đọc to câu này: 'Bé đi học về' nhé!"
-        ],
-        stem: [
-            "Kiến thức STEM: Tại sao chúng ta cần tưới nước cho cây mỗi ngày nhỉ?",
-            "Dự án nhỏ: Để làm một chiếc thuyền buồm, bé cần những nguyên liệu gì từ đồ tái chế?",
-            "Quan sát: Đèn giao thông màu đỏ thì chúng mình phải làm gì?"
-        ]
-    };
+    // Giả lập lấy dữ liệu từ URL internet (ví dụ GitHub Gist hoặc API)
+    // Trong thực tế bạn thay URL này bằng link chứa file JSON của bạn
+    const DATA_URL = "https://raw.githubusercontent.com/learn-api/data/main/grade1.json";
+
+    async function loadContent(subject) {
+        addMessage("Đang tải bài học từ internet... 🌐", "teacher", false);
+        
+        try {
+            // Demo: Thực tế sẽ dùng fetch(DATA_URL)
+            // Ở đây tôi mô phỏng dữ liệu trả về từ internet
+            const response = await simulateFetch(subject);
+            addMessage(response, "teacher", true);
+        } catch (error) {
+            addMessage("Ôi, mạng bị lỗi rồi! Thử lại sau em nhé.", "teacher", true);
+        }
+    }
+
+    // Hàm mô phỏng việc fetch dữ liệu từ Internet
+    function simulateFetch(subject) {
+        return new Promise((resolve) => {
+            const mockData = {
+                'toan': "Theo kiến thức mới: Em hãy thực hiện phép tính 10 - 4 bằng bao nhiêu?",
+                'tieng-viet': "Tìm kiếm internet: Đố em từ nào có chứa vần 'ươu' như từ 'con hươu'?",
+                'stem': "Khám phá STEM: Tại sao khi ra đường chúng ta phải quan sát biển báo giao thông?"
+            };
+            setTimeout(() => resolve(mockData[subject]), 800);
+        });
+    }
+
+    function addMessage(text, sender, shouldSpeak) {
+        const div = document.createElement('div');
+        div.className = `msg ${sender}`;
+        div.innerText = text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        
+        if (shouldSpeak) speak(text);
+    }
 
     function speak(text) {
         synth.cancel();
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'vi-VN';
-        utter.rate = 0.9;
-        utter.pitch = 1.1;
+        utter.rate = 1.0;
+        utter.pitch = 1.2; // Giọng Leda trẻ trung
         synth.speak(utter);
     }
 
-    function addMessage(text, type) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${type}-msg`;
-        msgDiv.innerText = text;
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-        if (type === 'bot') speak(text);
+    function exitApp() {
+        // Lệnh đóng iframe theo yêu cầu kỹ thuật của bạn
+        window.parent.postMessage('close-iframe', '*');
+        alert("Đang đóng ứng dụng...");
     }
 
-    // Lấy câu hỏi ngẫu nhiên từ kho dữ liệu NotebookLM
-    function getRandomQuestion(subject) {
-        const questions = notebookData[subject];
-        const randomIndex = Math.floor(Math.random() * questions.length);
-        addMessage(questions[randomIndex], 'bot');
-    }
-
-    document.getElementById('userInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter' && this.value.trim() !== "") {
-            addMessage(this.value, 'user');
-            setTimeout(() => {
-                addMessage("Bé giỏi quá! Tài liệu NotebookLM ghi nhận câu trả lời của bé rồi đấy! 🎉", "bot");
-            }, 1000);
+    document.getElementById('userInput').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter' && this.value !== "") {
+            addMessage(this.value, 'student', false);
             this.value = "";
+            setTimeout(() => {
+                addMessage("Cô khen em! Câu trả lời rất đáng chú ý.", "teacher", true);
+            }, 1000);
         }
     });
 </script>
