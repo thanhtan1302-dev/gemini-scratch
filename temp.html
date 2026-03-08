@@ -26,44 +26,53 @@
         .chat-container {
             width: 100%;
             max-width: 500px;
-            height: 80vh;
+            height: 85vh;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 4px solid var(--primary-color);
+            border: 5px solid var(--primary-color);
         }
 
         .chat-header {
             background: var(--primary-color);
             color: white;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
         .chat-box {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background-image: url('https://www.transparenttextures.com/patterns/kids-icons.png');
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            display: flex;
+            flex-direction: column;
         }
 
         .message {
             margin-bottom: 15px;
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 80%;
-            line-height: 1.5;
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 85%;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            position: relative;
         }
 
         .bot-msg {
             background: #e1ffc7;
             align-self: flex-start;
             border-bottom-left-radius: 2px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
         }
 
         .user-msg {
@@ -75,23 +84,29 @@
 
         .controls {
             padding: 15px;
-            background: #eee;
+            background: #f9f9f9;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
+            border-top: 2px dashed #ff7f50;
         }
 
         button {
-            padding: 8px 15px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             color: white;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
         button:active { transform: scale(0.95); }
 
         .btn-math { background: var(--math-color); }
@@ -100,47 +115,76 @@
 
         .input-area {
             display: flex;
-            padding: 10px;
-            border-top: 1px solid #ddd;
+            padding: 15px;
+            background: white;
         }
 
         input {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
             outline: none;
+            font-size: 1rem;
+        }
+        
+        /* Hiệu ứng loa đang nói */
+        .speaking {
+            border: 2px solid #ffeb3b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 235, 59, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0); }
         }
     </style>
 </head>
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">🐘 Voi Con Thông Thái - Học Cùng Bé</div>
+    <div class="chat-header">
+        <span>🐘</span> Voi Con Thông Thái
+    </div>
     
     <div class="chat-box" id="chatBox">
-        <div class="message bot-msg">Chào bạn nhỏ! Tớ là Voi Con. Hôm nay chúng mình sẽ học gì nào? Hãy chọn một môn nhé! 👇</div>
+        <div class="message bot-msg">Chào bạn nhỏ! Tớ là Voi Con. Hôm nay chúng mình sẽ học gì nào? Hãy nhấn vào các nút màu sắc nhé! 🔊</div>
     </div>
 
     <div class="controls">
-        <button class="btn-math" onclick="ask('math')">🔢 Toán Học</button>
+        <button class="btn-math" onclick="ask('math')">🔢 Toán</button>
         <button class="btn-viet" onclick="ask('viet')">📖 Tiếng Việt</button>
         <button class="btn-stem" onclick="ask('stem')">🌱 STEM</button>
     </div>
 
     <div class="input-area">
-        <input type="text" id="userInput" placeholder="Nhập câu trả lời của bé...">
+        <input type="text" id="userInput" placeholder="Bé nhập câu trả lời vào đây...">
     </div>
 </div>
 
 <script>
     const chatBox = document.getElementById('chatBox');
+    const synth = window.speechSynthesis;
 
     const data = {
-        math: "Câu đố Toán: Tớ có 3 viên kẹo, mẹ cho thêm 2 viên nữa. Đố bạn tớ có tất cả mấy viên kẹo? 🍬",
-        viet: "Câu đố Tiếng Việt: Bạn hãy tìm một từ có vần 'ao' (ví dụ: con cháo). Bạn tìm được từ nào khác không? 🎈",
-        stem: "Khám phá STEM: Bạn có biết tại sao con vịt lại nổi được trên mặt nước không? Hãy quan sát bộ lông của bạn ấy nhé! 🦆"
+        math: "Câu đố Toán học: Tớ có 3 quả cam, mẹ cho tớ thêm 2 quả nữa. Đố bạn tớ có tất cả mấy quả cam nào?",
+        viet: "Câu đố Tiếng Việt: Bạn hãy tìm một từ có chứa vần 'ao'. Ví dụ như là: 'ngôi sao'. Bạn còn biết từ nào nữa không?",
+        stem: "Khám phá Khoa học: Bạn có biết tại sao con vịt lại nổi được trên mặt nước không? Đó là nhờ bộ lông của các bạn ấy có một lớp dầu đặc biệt đấy!"
     };
+
+    // Hàm đọc văn bản
+    function speak(text) {
+        // Hủy các yêu cầu đọc đang dở dang
+        synth.cancel();
+        
+        const utterThis = new SpeechSynthesisUtterance(text);
+        utterThis.lang = 'vi-VN'; // Thiết lập tiếng Việt
+        utterThis.rate = 0.9;      // Tốc độ đọc (0.9 là hơi chậm, phù hợp cho bé)
+        utterThis.pitch = 1.2;     // Độ cao giọng (1.2 cho giọng trẻ trung, dễ thương)
+        
+        synth.speak(utterThis);
+    }
 
     function addMessage(text, type) {
         const msgDiv = document.createElement('div');
@@ -148,6 +192,11 @@
         msgDiv.innerText = text;
         chatBox.appendChild(msgDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
+        
+        // Nếu là tin nhắn của Bot thì tự động đọc
+        if (type === 'bot') {
+            speak(text);
+        }
     }
 
     function ask(subject) {
@@ -157,12 +206,28 @@
     document.getElementById('userInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter' && this.value.trim() !== "") {
             addMessage(this.value, 'user');
+            
+            // Phản hồi ngẫu nhiên sau khi bé trả lời
             setTimeout(() => {
-                addMessage("Ồ, bạn giỏi quá! Tiếp tục phát huy nhé! 🎉", "bot");
+                const praises = [
+                    "Ồ, bạn giỏi quá! Thật là thông minh! 🌟",
+                    "Đúng rồi! Bạn trả lời tuyệt vời lắm! 🎉",
+                    "Hay quá! Chúng mình cùng học tiếp nhé! ❤️"
+                ];
+                const randomPraise = praises[Math.floor(Math.random() * praises.length)];
+                addMessage(randomPraise, "bot");
             }, 1000);
+            
             this.value = "";
         }
     });
+
+    // Chào mừng khi vừa mở trang
+    window.onload = () => {
+        setTimeout(() => {
+            speak("Chào bạn nhỏ! Tớ là Voi Con. Hôm nay chúng mình sẽ học gì nào?");
+        }, 500);
+    };
 </script>
 
 </body>
