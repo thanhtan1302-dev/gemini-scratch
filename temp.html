@@ -3,163 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voi Con Thông Thái - Học Lớp 1</title>
+    <title>Chatbot Lớp 1 - NotebookLM Data</title>
     <style>
         :root {
             --primary-color: #ff7f50;
             --math-color: #4caf50;
             --viet-color: #2196f3;
             --stem-color: #9c27b0;
-            --bg-color: #f0f9ff;
+            --bg-color: #fdf6e3;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0;
         }
 
         .chat-container {
-            width: 100%;
-            max-width: 500px;
-            height: 85vh;
-            background: white;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 5px solid var(--primary-color);
+            width: 480px; height: 360px; /* Kích thước chuẩn bạn hay dùng */
+            background: white; border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+            border: 3px solid var(--primary-color);
+            position: relative; overflow: hidden;
         }
 
         .chat-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            background: var(--primary-color); color: white;
+            padding: 10px; text-align: center; font-weight: bold;
+            font-size: 16px;
         }
 
         .chat-box {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-            display: flex;
-            flex-direction: column;
+            flex: 1; padding: 15px; overflow-y: auto;
+            display: flex; flex-direction: column;
+            background-color: #fffaf0;
         }
 
         .message {
-            margin-bottom: 15px;
-            padding: 12px 18px;
-            border-radius: 20px;
-            max-width: 85%;
-            line-height: 1.6;
-            font-size: 1.1rem;
-            position: relative;
+            margin-bottom: 10px; padding: 8px 12px;
+            border-radius: 12px; font-size: 14px; line-height: 1.4;
+            max-width: 85%; word-wrap: break-word;
         }
 
-        .bot-msg {
-            background: #e1ffc7;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .user-msg {
-            background: #d1e3ff;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 2px;
-        }
+        .bot-msg { background: #e1ffc7; align-self: flex-start; }
+        .user-msg { background: #d1e3ff; align-self: flex-end; }
 
         .controls {
-            padding: 15px;
-            background: #f9f9f9;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            border-top: 2px dashed #ff7f50;
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px; padding: 10px; background: #eee;
         }
 
         button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            border: none; border-radius: 10px; color: white;
+            padding: 8px; cursor: pointer; font-weight: bold; font-size: 12px;
         }
-
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-        button:active { transform: scale(0.95); }
 
         .btn-math { background: var(--math-color); }
         .btn-viet { background: var(--viet-color); }
         .btn-stem { background: var(--stem-color); }
 
-        .input-area {
-            display: flex;
-            padding: 15px;
-            background: white;
-        }
-
-        input {
-            flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #ddd;
-            border-radius: 30px;
-            outline: none;
-            font-size: 1rem;
-        }
-        
-        /* Hiệu ứng loa đang nói */
-        .speaking {
-            border: 2px solid #ffeb3b;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 235, 59, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 235, 59, 0); }
-        }
+        .input-area { display: flex; padding: 5px; border-top: 1px solid #ddd; }
+        input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 15px; outline: none; }
     </style>
 </head>
 <body>
 
 <div class="chat-container">
-    <div class="chat-header">
-        <span>🐘</span> Voi Con Thông Thái
-    </div>
+    <div class="chat-header">🏫 LỚP 1: TOÁN - TIẾNG VIỆT - STEM</div>
     
     <div class="chat-box" id="chatBox">
-        <div class="message bot-msg">Chào bạn nhỏ! Tớ là Voi Con. Hôm nay chúng mình sẽ học gì nào? Hãy nhấn vào các nút màu sắc nhé! 🔊</div>
+        <div class="message bot-msg">Chào bé! Hãy chọn môn học để khám phá kiến thức từ tài liệu của chúng mình nhé! 📚</div>
     </div>
 
     <div class="controls">
-        <button class="btn-math" onclick="ask('math')">🔢 Toán</button>
-        <button class="btn-viet" onclick="ask('viet')">📖 Tiếng Việt</button>
-        <button class="btn-stem" onclick="ask('stem')">🌱 STEM</button>
+        <button class="btn-math" onclick="getRandomQuestion('math')">🔢 TOÁN</button>
+        <button class="btn-viet" onclick="getRandomQuestion('viet')">📖 TIẾNG VIỆT</button>
+        <button class="btn-stem" onclick="getRandomQuestion('stem')">🌱 STEM</button>
     </div>
 
     <div class="input-area">
-        <input type="text" id="userInput" placeholder="Bé nhập câu trả lời vào đây...">
+        <input type="text" id="userInput" placeholder="Nhập câu trả lời...">
     </div>
 </div>
 
@@ -167,23 +92,33 @@
     const chatBox = document.getElementById('chatBox');
     const synth = window.speechSynthesis;
 
-    const data = {
-        math: "Câu đố Toán học: Tớ có 3 quả cam, mẹ cho tớ thêm 2 quả nữa. Đố bạn tớ có tất cả mấy quả cam nào?",
-        viet: "Câu đố Tiếng Việt: Bạn hãy tìm một từ có chứa vần 'ao'. Ví dụ như là: 'ngôi sao'. Bạn còn biết từ nào nữa không?",
-        stem: "Khám phá Khoa học: Bạn có biết tại sao con vịt lại nổi được trên mặt nước không? Đó là nhờ bộ lông của các bạn ấy có một lớp dầu đặc biệt đấy!"
+    // --- PHẦN DỮ LIỆU TỪ NOTEBOOKLM ---
+    // Bạn hãy dán nội dung trích xuất được từ NotebookLM vào các mảng dưới đây
+    const notebookData = {
+        math: [
+            "NotebookLM nói: Phép cộng trong phạm vi 10. Đố bé 4 + 3 bằng mấy?",
+            "Câu hỏi Toán từ tài liệu: Bé hãy đếm xem có bao nhiêu hình tròn trong hình vuông nhé!",
+            "Thử thách: Số nào lớn hơn trong hai số 8 và 5?"
+        ],
+        viet: [
+            "Tài liệu Tiếng Việt: Bé hãy tìm chữ cái đứng đầu trong từ 'Cá chép'?",
+            "NotebookLM nhắc: Vần 'an' có trong từ nào sau đây: cái bàn hay con mèo?",
+            "Bé hãy đọc to câu này: 'Bé đi học về' nhé!"
+        ],
+        stem: [
+            "Kiến thức STEM: Tại sao chúng ta cần tưới nước cho cây mỗi ngày nhỉ?",
+            "Dự án nhỏ: Để làm một chiếc thuyền buồm, bé cần những nguyên liệu gì từ đồ tái chế?",
+            "Quan sát: Đèn giao thông màu đỏ thì chúng mình phải làm gì?"
+        ]
     };
 
-    // Hàm đọc văn bản
     function speak(text) {
-        // Hủy các yêu cầu đọc đang dở dang
         synth.cancel();
-        
-        const utterThis = new SpeechSynthesisUtterance(text);
-        utterThis.lang = 'vi-VN'; // Thiết lập tiếng Việt
-        utterThis.rate = 0.9;      // Tốc độ đọc (0.9 là hơi chậm, phù hợp cho bé)
-        utterThis.pitch = 1.2;     // Độ cao giọng (1.2 cho giọng trẻ trung, dễ thương)
-        
-        synth.speak(utterThis);
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'vi-VN';
+        utter.rate = 0.9;
+        utter.pitch = 1.1;
+        synth.speak(utter);
     }
 
     function addMessage(text, type) {
@@ -192,42 +127,25 @@
         msgDiv.innerText = text;
         chatBox.appendChild(msgDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
-        
-        // Nếu là tin nhắn của Bot thì tự động đọc
-        if (type === 'bot') {
-            speak(text);
-        }
+        if (type === 'bot') speak(text);
     }
 
-    function ask(subject) {
-        addMessage(data[subject], 'bot');
+    // Lấy câu hỏi ngẫu nhiên từ kho dữ liệu NotebookLM
+    function getRandomQuestion(subject) {
+        const questions = notebookData[subject];
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        addMessage(questions[randomIndex], 'bot');
     }
 
     document.getElementById('userInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter' && this.value.trim() !== "") {
             addMessage(this.value, 'user');
-            
-            // Phản hồi ngẫu nhiên sau khi bé trả lời
             setTimeout(() => {
-                const praises = [
-                    "Ồ, bạn giỏi quá! Thật là thông minh! 🌟",
-                    "Đúng rồi! Bạn trả lời tuyệt vời lắm! 🎉",
-                    "Hay quá! Chúng mình cùng học tiếp nhé! ❤️"
-                ];
-                const randomPraise = praises[Math.floor(Math.random() * praises.length)];
-                addMessage(randomPraise, "bot");
+                addMessage("Bé giỏi quá! Tài liệu NotebookLM ghi nhận câu trả lời của bé rồi đấy! 🎉", "bot");
             }, 1000);
-            
             this.value = "";
         }
     });
-
-    // Chào mừng khi vừa mở trang
-    window.onload = () => {
-        setTimeout(() => {
-            speak("Chào bạn nhỏ! Tớ là Voi Con. Hôm nay chúng mình sẽ học gì nào?");
-        }, 500);
-    };
 </script>
 
 </body>
